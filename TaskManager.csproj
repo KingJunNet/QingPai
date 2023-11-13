@@ -1,0 +1,671 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CA99E6B6-194E-4E3B-A80C-6E1FCC0C8B70}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>TaskManager</RootNamespace>
+    <AssemblyName>新轻排业务管理系统</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ICON.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>default</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>0</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.BonusSkins.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Charts.v16.2.Core, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Data.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Images.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 16.2\Components\Bin\Framework\DevExpress.Images.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Printing.v16.2.Core, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Sparkline.v16.2.Core, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Utils.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Xpo.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 16.2\Components\Bin\Framework\DevExpress.XtraCharts.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v16.2.UI, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v16.2.Wizard, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraEditors.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraPrinting.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraTreeList.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>Lib\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="JsonObject">
+      <HintPath>..\dll\JsonObject\JsonObject.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI">
+      <HintPath>Lib\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>Lib\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>Lib\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>Lib\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Doc, Version=10.4.6.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>packages\Spire.Doc.10.4.6\lib\net40\Spire.Doc.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Pdf, Version=8.4.15.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>packages\Spire.Doc.10.4.6\lib\net40\Spire.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="application\iservice\ISampleCommandService.cs" />
+    <Compile Include="application\iservice\ISampleQueryService.cs" />
+    <Compile Include="application\service\ISampleCommandService.cs" />
+    <Compile Include="application\service\SampleQueryService.cs" />
+    <Compile Include="application\viewmodel\SampleOfVinViewModel.cs" />
+    <Compile Include="Dialogs\AuthorityForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AuthorityForm.Designer.cs">
+      <DependentUpon>AuthorityForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\UserStructure.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\UserStructure.designer.cs">
+      <DependentUpon>UserStructure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ReminderDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ReminderDialog.Designer.cs">
+      <DependentUpon>ReminderDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ReplaceSelectRows.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ReplaceSelectRows.Designer.cs">
+      <DependentUpon>ReplaceSelectRows.cs</DependentUpon>
+    </Compile>
+    <Compile Include="domain\entity\TestStatisticEntity.cs" />
+    <Compile Include="domain\repository\ITestStatisticRepository.cs" />
+    <Compile Include="domain\valueobject\SampleBrief.cs" />
+    <Compile Include="infrastructure\db\TestStatisticDbRepository.cs" />
+    <Compile Include="MessageFilter.cs" />
+    <Compile Include="Model\Copy.cs" />
+    <Compile Include="Model\Filter.cs" />
+    <Compile Include="Model\MyDelegate.cs" />
+    <Compile Include="Model\SqlHelper.cs" />
+    <Compile Include="主界面\CreateTaskForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="主界面\CreateTaskForm.Designer.cs">
+      <DependentUpon>CreateTaskForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="主界面\SampleEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="主界面\SampleEditDialog.Designer.cs">
+      <DependentUpon>SampleEditDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="主界面\SampleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="主界面\SampleForm.Designer.cs">
+      <DependentUpon>SampleForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\updateVIN.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\updateVIN.Designer.cs">
+      <DependentUpon>updateVIN.cs</DependentUpon>
+    </Compile>
+    <Compile Include="任务管理\AlertTemplate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="任务管理\AlertTemplate.Designer.cs">
+      <DependentUpon>AlertTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="任务管理\Delegate.cs" />
+    <Compile Include="任务管理\EditTemplate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="任务管理\EditTemplate.Designer.cs">
+      <DependentUpon>EditTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="任务管理\freshForm.cs" />
+    <Compile Include="任务管理\NewTaskForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="任务管理\NewTaskForm.Designer.cs">
+      <DependentUpon>NewTaskForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="任务管理\ProjectInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="任务管理\ProjectInfo.Designer.cs">
+      <DependentUpon>ProjectInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="任务管理\SelectTemplate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="任务管理\SelectTemplate.Designer.cs">
+      <DependentUpon>SelectTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="任务管理\NewTaskEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="任务管理\NewTaskEditDialog.Designer.cs">
+      <DependentUpon>NewTaskEditDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="任务管理\Templatecolumn.cs" />
+    <Compile Include="统计\ChartForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="统计\ChartForm.Designer.cs">
+      <DependentUpon>ChartForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="统计\ShowInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="统计\ShowInfo.Designer.cs">
+      <DependentUpon>ShowInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="统计\StatisticForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="统计\StatisticForm.Designer.cs">
+      <DependentUpon>StatisticForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="编辑数据\AllocateTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="编辑数据\AllocateTest.Designer.cs">
+      <DependentUpon>AllocateTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="编辑数据\EditDialog\EquipEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="编辑数据\EditDialog\EquipEditDialog.Designer.cs">
+      <DependentUpon>EquipEditDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="编辑数据\FileView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="编辑数据\FileView.Designer.cs">
+      <DependentUpon>FileView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="主界面\EquipmentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="主界面\EquipmentForm.Designer.cs">
+      <DependentUpon>EquipmentForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="编辑数据\FileView1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="编辑数据\FileView1.designer.cs">
+      <DependentUpon>FileView1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="编辑数据\Frmreport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="编辑数据\Frmreport.designer.cs">
+      <DependentUpon>Frmreport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="编辑数据\SelectWebsite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="编辑数据\SelectWebsite.Designer.cs">
+      <DependentUpon>SelectWebsite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="编辑数据\StructureDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="编辑数据\StructureDialog.Designer.cs">
+      <DependentUpon>StructureDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="编辑数据\蒸发组\ImportData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="编辑数据\蒸发组\ImportData.Designer.cs">
+      <DependentUpon>ImportData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="编辑数据\AllocateTaskDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="编辑数据\AllocateTaskDialog.Designer.cs">
+      <DependentUpon>AllocateTaskDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="编辑数据\TaskPreview.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="编辑数据\TaskPreview.Designer.cs">
+      <DependentUpon>TaskPreview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="编辑数据\EditDialog\BaseEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="编辑数据\EditDialog\BaseEditDialog.Designer.cs">
+      <DependentUpon>BaseEditDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ComboxForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ComboxForm.Designer.cs">
+      <DependentUpon>ComboxForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\DataControl.cs" />
+    <Compile Include="主界面\BaseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="主界面\BaseForm.designer.cs">
+      <DependentUpon>BaseForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\FormDataBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\FormDataBase.designer.cs">
+      <DependentUpon>FormDataBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\FormUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\FormUser.designer.cs">
+      <DependentUpon>FormUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SplashScreen1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SplashScreen1.designer.cs">
+      <DependentUpon>SplashScreen1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\WaitForm1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\WaitForm1.designer.cs">
+      <DependentUpon>WaitForm1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\DataField.cs" />
+    <Compile Include="Model\MyGridViewHandler.cs" />
+    <Compile Include="Model\FormTable.cs" />
+    <Compile Include="Model\User.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Dialogs\FormLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\FormLog.Designer.cs">
+      <DependentUpon>FormLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\FormSignIn.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\FormSignIn.designer.cs">
+      <DependentUpon>FormSignIn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="主界面\TableControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="主界面\TableControl.designer.cs">
+      <DependentUpon>TableControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="试验统计\AddTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="试验统计\AddTestForm.Designer.cs">
+      <DependentUpon>AddTestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="试验统计\TestEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="试验统计\TestEditDialog.Designer.cs">
+      <DependentUpon>TestEditDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="试验统计\TestStatistic.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="试验统计\TestStatistic.Designer.cs">
+      <DependentUpon>TestStatistic.cs</DependentUpon>
+    </Compile>
+    <Compile Include="项目报价\ProjectEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="项目报价\ProjectEditDialog.Designer.cs">
+      <DependentUpon>ProjectEditDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="项目报价\ProjectPrice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="项目报价\ProjectPrice.Designer.cs">
+      <DependentUpon>ProjectPrice.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Dialogs\UserStructure.resx">
+      <DependentUpon>UserStructure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ReminderDialog.resx">
+      <DependentUpon>ReminderDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\updateVIN.resx">
+      <DependentUpon>updateVIN.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="主界面\CreateTaskForm.resx">
+      <DependentUpon>CreateTaskForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="任务管理\EditTemplate.resx">
+      <DependentUpon>EditTemplate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="编辑数据\AllocateTest.resx">
+      <DependentUpon>AllocateTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="编辑数据\FileView1.resx">
+      <DependentUpon>FileView1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="编辑数据\Frmreport.resx">
+      <DependentUpon>Frmreport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="编辑数据\SelectWebsite.resx">
+      <DependentUpon>SelectWebsite.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="编辑数据\StructureDialog.resx">
+      <DependentUpon>StructureDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="试验统计\AddTestForm.resx">
+      <DependentUpon>AddTestForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="试验统计\TestEditDialog.resx">
+      <DependentUpon>TestEditDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="试验统计\TestStatistic.resx">
+      <DependentUpon>TestStatistic.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="项目报价\ProjectEditDialog.resx">
+      <DependentUpon>ProjectEditDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="项目报价\ProjectPrice.resx">
+      <DependentUpon>ProjectPrice.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
+    <None Include="packages.config" />
+    <EmbeddedResource Include="Dialogs\ReplaceSelectRows.resx">
+      <DependentUpon>ReplaceSelectRows.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="主界面\EquipmentForm.resx">
+      <DependentUpon>EquipmentForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="主界面\SampleEditDialog.resx">
+      <DependentUpon>SampleEditDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="主界面\SampleForm.resx">
+      <DependentUpon>SampleForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="任务管理\AlertTemplate.resx">
+      <DependentUpon>AlertTemplate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="任务管理\NewTaskForm.resx">
+      <DependentUpon>NewTaskForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="任务管理\ProjectInfo.resx">
+      <DependentUpon>ProjectInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="任务管理\SelectTemplate.resx">
+      <DependentUpon>SelectTemplate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="任务管理\NewTaskEditDialog.resx">
+      <DependentUpon>NewTaskEditDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="统计\ChartForm.resx">
+      <DependentUpon>ChartForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="统计\ShowInfo.resx">
+      <DependentUpon>ShowInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="统计\StatisticForm.resx">
+      <DependentUpon>StatisticForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="编辑数据\EditDialog\EquipEditDialog.resx">
+      <DependentUpon>EquipEditDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AuthorityForm.resx">
+      <DependentUpon>AuthorityForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="编辑数据\FileView.resx">
+      <DependentUpon>FileView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="编辑数据\蒸发组\ImportData.resx">
+      <DependentUpon>ImportData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="编辑数据\AllocateTaskDialog.resx">
+      <DependentUpon>AllocateTaskDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="编辑数据\TaskPreview.resx">
+      <DependentUpon>TaskPreview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="编辑数据\EditDialog\BaseEditDialog.resx">
+      <DependentUpon>BaseEditDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ComboxForm.resx">
+      <DependentUpon>ComboxForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="主界面\BaseForm.resx">
+      <DependentUpon>BaseForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\FormDataBase.resx">
+      <DependentUpon>FormDataBase.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\FormUser.resx">
+      <DependentUpon>FormUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\SplashScreen1.resx">
+      <DependentUpon>SplashScreen1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\WaitForm1.resx">
+      <DependentUpon>WaitForm1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="主界面\TableControl.resx">
+      <DependentUpon>TableControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Dialogs\FormLog.resx">
+      <DependentUpon>FormLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\FormSignIn.resx">
+      <DependentUpon>FormSignIn.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="IO\IO.csproj">
+      <Project>{32fd579d-8d8f-4b92-9ab2-088c882b0f86}</Project>
+      <Name>IO</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Word">
+      <Guid>{00020905-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>8</VersionMajor>
+      <VersionMinor>7</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Office">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ICON.ico" />
+    <None Include="Resources\绿.png" />
+    <None Include="Resources\红.png" />
+    <None Include="Resources\警报.gif" />
+    <None Include="Resources\无警报.png" />
+    <None Include="Resources\警报.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
