@@ -75,19 +75,20 @@
             this.ribbonPageGroup12 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.accordionControl1 = new DevExpress.XtraBars.Navigation.AccordionControl();
             this.试验组综合管理 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
-            this.accordionControlElement4 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
-            this.accordionControlElement6 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
-            this.accordionControlElement37 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement38 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
-            this.系统网址 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
-            this.任务管理 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
-            this.accordionControlElement34 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
-            this.样品信息 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
-            this.accordionControlElement42 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.试验统计 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement44 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.任务管理 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.accordionControlElement34 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.样品管理 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.accordionControlElement42 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.accordionControlElement37 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.accordionControlElement39 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.项目报价 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement43 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.网址链接 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.accordionControlElement6 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.accordionControlElement4 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.系统维护 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement14 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement19 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
@@ -209,7 +210,7 @@
             this.backstageViewClientControl1.Controls.Add(this.lblUser);
             this.backstageViewClientControl1.Location = new System.Drawing.Point(146, 0);
             this.backstageViewClientControl1.Name = "backstageViewClientControl1";
-            this.backstageViewClientControl1.Size = new System.Drawing.Size(899, 794);
+            this.backstageViewClientControl1.Size = new System.Drawing.Size(899, 683);
             this.backstageViewClientControl1.TabIndex = 1;
             // 
             // groupBox2
@@ -576,15 +577,16 @@
             this.accordionControl1.Dock = System.Windows.Forms.DockStyle.Left;
             this.accordionControl1.Elements.AddRange(new DevExpress.XtraBars.Navigation.AccordionControlElement[] {
             this.试验组综合管理,
-            this.accordionControlElement4,
-            this.accordionControlElement6,
-            this.accordionControlElement37,
             this.accordionControlElement38,
-            this.系统网址,
-            this.任务管理,
-            this.样品信息,
             this.试验统计,
+            this.任务管理,
+            this.样品管理,
+            this.accordionControlElement37,
+            this.accordionControlElement39,
             this.项目报价,
+            this.网址链接,
+            this.accordionControlElement6,
+            this.accordionControlElement4,
             this.系统维护});
             this.accordionControl1.Location = new System.Drawing.Point(0, 190);
             this.accordionControl1.LookAndFeel.SkinMaskColor = System.Drawing.Color.Transparent;
@@ -603,84 +605,15 @@
             this.试验组综合管理.Text = "试验组综合管理";
             this.试验组综合管理.Visible = false;
             // 
-            // accordionControlElement4
-            // 
-            this.accordionControlElement4.Appearance.Normal.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.accordionControlElement4.Appearance.Normal.Options.UseFont = true;
-            this.accordionControlElement4.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("accordionControlElement4.ImageOptions.Image")));
-            this.accordionControlElement4.Name = "accordionControlElement4";
-            this.accordionControlElement4.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-            this.accordionControlElement4.Text = "PVE系统";
-            this.accordionControlElement4.Click += new System.EventHandler(this.accordionControlElement4_Click);
-            // 
-            // accordionControlElement6
-            // 
-            this.accordionControlElement6.Appearance.Normal.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.accordionControlElement6.Appearance.Normal.Options.UseFont = true;
-            this.accordionControlElement6.ImageOptions.Image = global::TaskManager.Properties.Resources.蒸发;
-            this.accordionControlElement6.Name = "accordionControlElement6";
-            this.accordionControlElement6.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-            this.accordionControlElement6.Text = "蒸发系统";
-            this.accordionControlElement6.Click += new System.EventHandler(this.accordionControlElement6_Click_1);
-            // 
-            // accordionControlElement37
-            // 
-            this.accordionControlElement37.Appearance.Normal.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.accordionControlElement37.Appearance.Normal.Options.UseFont = true;
-            this.accordionControlElement37.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("accordionControlElement37.ImageOptions.Image")));
-            this.accordionControlElement37.Name = "accordionControlElement37";
-            this.accordionControlElement37.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-            this.accordionControlElement37.Text = "设备管理";
-            this.accordionControlElement37.Click += new System.EventHandler(this.accordionControlElement37_Click);
-            // 
             // accordionControlElement38
             // 
             this.accordionControlElement38.Appearance.Normal.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.accordionControlElement38.Appearance.Normal.Options.UseFont = true;
-            this.accordionControlElement38.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("accordionControlElement38.ImageOptions.Image")));
+            this.accordionControlElement38.ImageOptions.Image = global::TaskManager.Properties.Resources.report;
             this.accordionControlElement38.Name = "accordionControlElement38";
             this.accordionControlElement38.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-            this.accordionControlElement38.Text = "创建任务";
+            this.accordionControlElement38.Text = "试验计划";
             this.accordionControlElement38.Click += new System.EventHandler(this.CreateTask_Click);
-            // 
-            // 系统网址
-            // 
-            this.系统网址.Appearance.Normal.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.系统网址.Appearance.Normal.Options.UseFont = true;
-            this.系统网址.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("系统网址.ImageOptions.Image")));
-            this.系统网址.Name = "系统网址";
-            this.系统网址.Text = "系统网址";
-            this.系统网址.Click += new System.EventHandler(this.accordionControlElement6_Click);
-            // 
-            // 任务管理
-            // 
-            this.任务管理.Elements.AddRange(new DevExpress.XtraBars.Navigation.AccordionControlElement[] {
-            this.accordionControlElement34});
-            this.任务管理.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("任务管理.ImageOptions.Image")));
-            this.任务管理.Name = "任务管理";
-            this.任务管理.Text = "任务管理";
-            // 
-            // accordionControlElement34
-            // 
-            this.accordionControlElement34.Name = "accordionControlElement34";
-            this.accordionControlElement34.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-            this.accordionControlElement34.Text = "默认模板";
-            this.accordionControlElement34.Click += new System.EventHandler(this.accordionControlElement34_Click);
-            // 
-            // 样品信息
-            // 
-            this.样品信息.Elements.AddRange(new DevExpress.XtraBars.Navigation.AccordionControlElement[] {
-            this.accordionControlElement42});
-            this.样品信息.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("样品信息.ImageOptions.Image")));
-            this.样品信息.Name = "样品信息";
-            this.样品信息.Text = "样品信息";
-            // 
-            // accordionControlElement42
-            // 
-            this.accordionControlElement42.Name = "accordionControlElement42";
-            this.accordionControlElement42.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-            this.accordionControlElement42.Text = "默认模板";
-            this.accordionControlElement42.Click += new System.EventHandler(this.accordionControlElement42_Click);
             // 
             // 试验统计
             // 
@@ -697,6 +630,56 @@
             this.accordionControlElement44.Text = "默认模板";
             this.accordionControlElement44.Click += new System.EventHandler(this.accordionControlElement44_Click);
             // 
+            // 任务管理
+            // 
+            this.任务管理.Elements.AddRange(new DevExpress.XtraBars.Navigation.AccordionControlElement[] {
+            this.accordionControlElement34});
+            this.任务管理.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("任务管理.ImageOptions.Image")));
+            this.任务管理.Name = "任务管理";
+            this.任务管理.Text = "任务管理";
+            // 
+            // accordionControlElement34
+            // 
+            this.accordionControlElement34.Name = "accordionControlElement34";
+            this.accordionControlElement34.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.accordionControlElement34.Text = "默认模板";
+            this.accordionControlElement34.Click += new System.EventHandler(this.accordionControlElement34_Click);
+            // 
+            // 样品管理
+            // 
+            this.样品管理.Elements.AddRange(new DevExpress.XtraBars.Navigation.AccordionControlElement[] {
+            this.accordionControlElement42});
+            this.样品管理.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("样品管理.ImageOptions.Image")));
+            this.样品管理.Name = "样品管理";
+            this.样品管理.Text = "样品管理";
+            // 
+            // accordionControlElement42
+            // 
+            this.accordionControlElement42.Name = "accordionControlElement42";
+            this.accordionControlElement42.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.accordionControlElement42.Text = "默认模板";
+            this.accordionControlElement42.Click += new System.EventHandler(this.accordionControlElement42_Click);
+            // 
+            // accordionControlElement37
+            // 
+            this.accordionControlElement37.Appearance.Normal.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.accordionControlElement37.Appearance.Normal.Options.UseFont = true;
+            this.accordionControlElement37.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("accordionControlElement37.ImageOptions.Image")));
+            this.accordionControlElement37.Name = "accordionControlElement37";
+            this.accordionControlElement37.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.accordionControlElement37.Text = "设备管理";
+            this.accordionControlElement37.Click += new System.EventHandler(this.accordionControlElement37_Click);
+            // 
+            // accordionControlElement39
+            // 
+            this.accordionControlElement39.Appearance.Normal.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.accordionControlElement39.Appearance.Normal.Options.UseFont = true;
+            this.accordionControlElement39.ImageOptions.Image = global::TaskManager.Properties.Resources.buy;
+            this.accordionControlElement39.Name = "accordionControlElement39";
+            this.accordionControlElement39.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.accordionControlElement39.Text = "设备使用";
+            this.accordionControlElement39.Click += new System.EventHandler(this.accordionControlElement39_Click);
+            // 
             // 项目报价
             // 
             this.项目报价.Elements.AddRange(new DevExpress.XtraBars.Navigation.AccordionControlElement[] {
@@ -712,6 +695,35 @@
             this.accordionControlElement43.Text = "默认模板";
             this.accordionControlElement43.Click += new System.EventHandler(this.accordionControlElement43_Click);
             // 
+            // 网址链接
+            // 
+            this.网址链接.Appearance.Normal.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.网址链接.Appearance.Normal.Options.UseFont = true;
+            this.网址链接.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("网址链接.ImageOptions.Image")));
+            this.网址链接.Name = "网址链接";
+            this.网址链接.Text = "网址链接";
+            this.网址链接.Click += new System.EventHandler(this.accordionControlElement6_Click);
+            // 
+            // accordionControlElement6
+            // 
+            this.accordionControlElement6.Appearance.Normal.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.accordionControlElement6.Appearance.Normal.Options.UseFont = true;
+            this.accordionControlElement6.ImageOptions.Image = global::TaskManager.Properties.Resources.蒸发;
+            this.accordionControlElement6.Name = "accordionControlElement6";
+            this.accordionControlElement6.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.accordionControlElement6.Text = "蒸发系统";
+            this.accordionControlElement6.Click += new System.EventHandler(this.accordionControlElement6_Click_1);
+            // 
+            // accordionControlElement4
+            // 
+            this.accordionControlElement4.Appearance.Normal.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.accordionControlElement4.Appearance.Normal.Options.UseFont = true;
+            this.accordionControlElement4.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("accordionControlElement4.ImageOptions.Image")));
+            this.accordionControlElement4.Name = "accordionControlElement4";
+            this.accordionControlElement4.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.accordionControlElement4.Text = "PVE系统";
+            this.accordionControlElement4.Click += new System.EventHandler(this.accordionControlElement4_Click);
+            // 
             // 系统维护
             // 
             this.系统维护.Elements.AddRange(new DevExpress.XtraBars.Navigation.AccordionControlElement[] {
@@ -719,10 +731,9 @@
             this.accordionControlElement19,
             this.accordionControlElement1,
             this.accordionControlElement3});
-            this.系统维护.Expanded = true;
             this.系统维护.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("系统维护.ImageOptions.Image")));
             this.系统维护.Name = "系统维护";
-            this.系统维护.Text = "系统维护";
+            this.系统维护.Text = "系统配置";
             // 
             // accordionControlElement14
             // 
@@ -847,7 +858,7 @@
             this.Controls.Add(this.ribbonControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
-            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "Form1";
             this.Ribbon = this.ribbonControl1;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -903,6 +914,7 @@
         private DevExpress.XtraBars.BarStaticItem lblServer;
         private DevExpress.XtraBars.Navigation.AccordionControlElement 试验组综合管理;
         private DevExpress.XtraBars.Navigation.AccordionControlElement accordionControlElement37;
+        private DevExpress.XtraBars.Navigation.AccordionControlElement accordionControlElement39;
         private DevExpress.XtraBars.Navigation.AccordionControlElement accordionControlElement38;
         private DevExpress.XtraBars.Ribbon.BackstageViewControl backstageViewControl1;
         private DevExpress.XtraBars.Ribbon.BackstageViewClientControl backstageViewClientControl1;
@@ -930,7 +942,7 @@
         private DevExpress.XtraBars.BarButtonItem barRemainder;
         private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel1;
         private DevExpress.XtraBars.Navigation.AccordionControlElement 任务管理;
-        private DevExpress.XtraBars.Navigation.AccordionControlElement 样品信息;
+        private DevExpress.XtraBars.Navigation.AccordionControlElement 样品管理;
         private DevExpress.XtraBars.Navigation.AccordionControlElement 试验统计;
         private DevExpress.XtraBars.Navigation.AccordionControlElement 项目报价;
         private DevExpress.XtraBars.Navigation.AccordionControlElement accordionControlElement34;
@@ -944,7 +956,7 @@
         private DevExpress.XtraBars.BarButtonItem barButtonItem1;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup1;
         private DevExpress.XtraBars.Navigation.AccordionControlElement accordionControlElement4;
-        public DevExpress.XtraBars.Navigation.AccordionControlElement 系统网址;
+        public DevExpress.XtraBars.Navigation.AccordionControlElement 网址链接;
         private DevExpress.XtraBars.BarButtonItem barButtonItem2;
         private DevExpress.XtraEditors.Repository.RepositoryItemImageEdit repositoryItemImageEdit1;
         private DevExpress.XtraBars.BarStaticItem baralert;

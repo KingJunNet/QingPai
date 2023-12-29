@@ -8,6 +8,11 @@ namespace ExpertLib.Controls
 {
     public partial class TitleCombox : TitleControl
     {
+        /// <summary>
+        /// 视图数据
+        /// </summary>
+        public List<Object> ViewModels { get; set; }
+
         public TitleCombox()
         {
             InitializeComponent();
@@ -24,8 +29,9 @@ namespace ExpertLib.Controls
         public void SetTextChange(EventHandler handler)
         {
             comboBox1.TextChanged += handler;
-           
         }
+
+
 
 
 
@@ -63,6 +69,13 @@ namespace ExpertLib.Controls
 
             comboBox1.Items.AddRange(only.ToArray());
             comboBox1.EndUpdate();
+        }
+
+        public void SetViewmModels(List<Object> vms)
+        {
+            this.ViewModels = vms;
+            List<string> values = vms.Select(item => item.ToString()).ToList();
+            this.SetItems(values);
         }
 
         private void comboBox1_TextChanged(object sender, EventArgs e)

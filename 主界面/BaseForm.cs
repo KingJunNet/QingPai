@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using DevExpress.XtraBars;
 using DevExpress.XtraGrid.Views.Grid;
+using TaskManager.domain.valueobject;
 
 namespace TaskManager
 {
@@ -19,12 +20,14 @@ namespace TaskManager
 
 
         protected string _group => comGroup.EditValue?.ToString().Trim();
+        protected string _user => comboxState.EditValue?.ToString().Trim();
         protected int _finishState => _state != null && _state.Equals("已完成") ? 1 :
             (_state != null && _state.Equals("未完成") ? -1 : 0);
 
         public FormType Type;
         public FormTable FormTable;
         public string Department;
+        public string user;
 
         #endregion
 
@@ -38,10 +41,10 @@ namespace TaskManager
         public BaseForm(FormType formType, string selectedDept)
         {
             InitializeComponent();
-            if (DesignMode) 
+            if (DesignMode)
                 return;
 
-           
+
             //int year = DateTime.Now.Year;//当前年 
             //int mouth = DateTime.Now.Month;//当前月 
 
@@ -66,20 +69,19 @@ namespace TaskManager
             //startdate.EditValue = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek + 1).ToString("yyyy/MM/dd");
             //enddate.EditValue = DateTime.Now.AddDays(7 - (int)DateTime.Now.DayOfWeek).ToString("yyyy/MM/dd");
 
-            startdate.EditValue = DateTime.Now.AddYears(-1).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            enddate.EditValue = DateTime.Now.ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            this.setTimeSpanCondition();
 
             Type = formType;
             FormTable = new FormTable(formType, selectedDept);
             Department = selectedDept;
+            user= FormSignIn.CurrentUser.Name;
 
-
-           
 
             _control.FormTable = FormTable;
             _control.Year = DateTime.Now.Year.ToString();
             _control.FinishState = 0;
             _control.Department = FormSignIn.CurrentUser.Department.ToString();
+            _control.user = FormSignIn.CurrentUser.Name;
             _control.startdate = Convert.ToDateTime(startdate.EditValue).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
             _control.enddate = Convert.ToDateTime(enddate.EditValue).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
 
@@ -88,24 +90,24 @@ namespace TaskManager
             _control.OpenClick += 打开ToolStripMenuItem_Click;
         }
 
+        protected virtual void setTimeSpanCondition() {
+            startdate.EditValue = DateTime.Now.AddYears(-1).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            enddate.EditValue = DateTime.Now.ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+        }
+
         protected void FormLoad(object sender, EventArgs e)
         {
-            if (DesignMode) 
+            if (DesignMode)
                 return;
 
+          
+            baseInitUi();
             InitUi();
             InitUiByAuthority();
 
-            repositoryItemComboBox6.Items.Add("所有组别");
-            repositoryItemComboBox6.Items.AddRange(FormSignIn.UserDic.Keys.ToList());
+            //设置群组条件
+            this.InitComGrouopView();
 
-
-            comGroup.EditValue = FormSignIn.CurrentUser.Department.ToString();
-            if (FormSignIn.CurrentUser.Department.ToString() == "体系组")
-            {
-                comGroup.EditValue = "所有组别";
-                _control.Department = "所有组别";
-            }
             //必须在Init之前先定义事件
             //_control.AfterSetSaveStatus += TableControl1_AfterSetSaveStatus;
 
@@ -119,15 +121,61 @@ namespace TaskManager
             this.Text = FormTable.FormTitle;
         }
 
+        private void InitComGrouopView()
+        {
+            repositoryItemComboBox6.Items.Add("所有组别");
+            repositoryItemComboBox6.Items.AddRange(FormSignIn.UserDic.Keys.ToList());
+            comGroup.EditValue = FormSignIn.CurrentUser.Department.ToString();
+            if (FormSignIn.CurrentUser.Department.ToString() == "体系组")
+            {
+                comGroup.EditValue = "所有组别";
+                _control.Department = "所有组别";
+            }
+        }
+
+        protected void InitComUserView()
+        {
+            repositoryItemComboBox5.Items.Clear();
+            repositoryItemComboBox5.Items.Add("所有人");
+            repositoryItemComboBox5.Items.AddRange(FormSignIn.Users);
+            comboxState.EditValue = FormSignIn.CurrentUser.Name;
+            comboxState.Caption = "使用人";
+        }
+
+        protected void InitComItemView()
+        {
+            repositoryItemComboBox55.Items.Clear();
+            repositoryItemComboBox55.Items.Add("所有项目");
+            repositoryItemComboBox55.Items.AddRange(Form1.ComboxDictionary["项目简称"]);
+            textYear.Edit = this.repositoryItemComboBox55;
+            textYear.EditValue = "所有项目";
+            textYear.Caption = "项   目";
+        }
+
         private void BaseForm_Shown(object sender, EventArgs e)
         {
-            
             Log.w("BaseForm_Shown");
         }
 
         protected virtual void InitUi()
         {
             throw new Exception("BaseForm.InitUi is Empty");
+        }
+
+        protected void baseInitUi() {
+            //导出word默认隐藏
+            btnExportWord.Visibility = BarItemVisibility.Never;
+
+            //导入，
+            string userRole = FormSignIn.CurrentUser.Role;
+            if (!(userRole.Equals(Role.超级管理员.ToString())|| userRole.Equals(Role.管理员.ToString())))
+            {
+                btnBatchReplace.Visibility = BarItemVisibility.Never;
+                btnEditCfgItems.Visibility = BarItemVisibility.Never;
+                btnImport.Visibility = BarItemVisibility.Never;
+                btnExport.Visibility = BarItemVisibility.Never;
+                btnExportEmptyTpl.Visibility = BarItemVisibility.Never;
+            }
         }
 
         /// <summary>
@@ -137,24 +185,24 @@ namespace TaskManager
         {
             if (!FormTable.Edit)
             {
-                barEdit.Caption = "详细信息";
+                btnEdit.Caption = "详细信息";
                 btnDetail.Caption = "详细信息";
                 打开ToolStripMenuItem.Text = "查看详细信息";
             }
             else
             {
-                barEdit.Caption = "编辑数据";
+                btnEdit.Caption = "编辑数据";
                 btnDetail.Caption = "编辑数据";
                 打开ToolStripMenuItem.Text = "编辑";
             }
 
             //右键菜单
             新建ToolStripMenuItem.Enabled = FormTable.Add;
-            barButtonItem1.Enabled = FormTable.Add;
+            btnCopyPaste.Enabled = FormTable.Add;
             删除toolStripMenuItem1.Enabled = FormTable.Delete;
 
             //Ribbon和View的状态
-            导入Btn.Enabled = FormTable.Add;
+            btnImport.Enabled = FormTable.Add;
             btnSave.Enabled = FormTable.Save;
             btnNew.Enabled = FormTable.Add;
             //if((int)FormTable.Type<100||(int)FormTable.Type==301||(int)FormTable.Type==401)
@@ -188,7 +236,7 @@ namespace TaskManager
         {
             //打开ToolStripMenuItem.Enabled = _control.FocusedRowHandle >= 0;
         }
-        
+
         /// <summary>
         /// 以下的快捷键都在TableControl中定义, BaseForm中的快捷键定义其实是无效的
         /// </summary>
@@ -209,7 +257,7 @@ namespace TaskManager
             if (!FormTable.Add)
                 return;
 
-            OpenEditFormClick(_control._view, -1);
+            OpenAddFormClick(_control._view, _control.FocusedRowHandle);
         }
 
         private void 删除toolStripMenuItem1_Click(object sender, EventArgs e)
@@ -219,11 +267,11 @@ namespace TaskManager
             //只允许删自己创建的信息
             if (FormTable.Module == "样品信息")
             {
-                for(int i =0; i < _control._view.SelectedRowsCount; i++)
+                for (int i = 0; i < _control._view.SelectedRowsCount; i++)
                 {
                     if (FormSignIn.CurrentUser.Department == "系统维护" || _control._view.GetRowCellValue(_control._view.GetSelectedRows()[i], "CreatePeople").ToString() == FormSignIn.CurrentUser.Name)
                     {
-                       
+
                     }
                     else
                     {
@@ -231,7 +279,7 @@ namespace TaskManager
                         return;
                     }
                 }
-               
+
             }
             if (FormTable.Module == "试验统计")
             {
@@ -240,14 +288,14 @@ namespace TaskManager
                     MessageBox.Show("无权限进行删除");
                     return;
                 }
-           
-            
+
+
             }
             if (FormTable.Module == "任务管理")
             {
                 if (FormSignIn.CurrentUser.Department == "体系组" || FormSignIn.CurrentUser.Department == "系统维护")
                 {
-                    
+
                 }
                 else
                 {
@@ -267,6 +315,18 @@ namespace TaskManager
             _control.DeleteSelectedRows();
         }
 
+        protected void hideCopyMenuItem() {
+            this.复制ToolStripMenuItem.Visible = false;
+            this.粘贴ToolStripMenuItem.Visible = false;
+        }
+
+        protected void hideAddEtitCopyItem()
+        {
+            this.新建ToolStripMenuItem.Visible = false;
+            this.打开ToolStripMenuItem.Visible = false;
+            this.hideCopyMenuItem();
+        }
+
         private void 复制ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _control.CopySelectedRows();
@@ -276,7 +336,7 @@ namespace TaskManager
         {
             _control.PasteSelectedRows();
         }
-    
+
         /// <summary>
         /// 批量替换
         /// </summary>
@@ -302,12 +362,13 @@ namespace TaskManager
             }
 
         }
-            /// <summary>
-            /// 打开编辑器
-            /// </summary>
-            /// <param name="view"></param>
-            /// <param name="hand"></param>
-        private void OpenEditFormClick(GridView view, int hand)
+
+        /// <summary>
+        /// 打开编辑器
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="hand"></param>
+        protected virtual void OpenEditFormClick(GridView view, int hand)
         {
             try
             {
@@ -317,10 +378,48 @@ namespace TaskManager
                 //    MessageBox.Show("请在样品板块新增试验统计");
                 //    return;
                 //}
-                
+
 
                 var oldSaveStatus = _control.SAVE_EDIT;
-                
+
+                var newRow = hand < 0;
+                if (newRow)//新数据
+                    view.AddNewRow();
+
+                var result = OpenEditForm(view, hand, _control.Fields);
+                if (newRow)
+                {
+                    if (result != DialogResult.OK)
+                        view.DeleteRow(view.FocusedRowHandle);
+                    else
+                        view.MoveLast();
+                }
+
+                if (result == DialogResult.Cancel && oldSaveStatus)
+                    _control.SetSaveStatus(true);
+            }
+            catch (Exception ex)
+            {
+                Log.e(ex.ToString());
+            }
+            finally
+            {
+                //Form1.CloseWaitForm();
+            }
+        }
+
+        /// <summary>
+        /// 打开新建表单
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="hand"></param>
+        protected virtual void OpenAddFormClick(GridView view, int hand)
+        {
+            try
+            {
+                hand = -1;
+                var oldSaveStatus = _control.SAVE_EDIT;
+
                 var newRow = hand < 0;
                 if (newRow)//新数据
                     view.AddNewRow();
@@ -333,8 +432,8 @@ namespace TaskManager
                     else
                         view.MoveLast();
                 }
-                
-                if(result == DialogResult.Cancel && oldSaveStatus)
+
+                if (result == DialogResult.Cancel && oldSaveStatus)
                     _control.SetSaveStatus(true);
             }
             catch (Exception ex)
@@ -380,7 +479,7 @@ namespace TaskManager
         {
             打开ToolStripMenuItem_Click(sender, e);
         }
-        
+
         private void btnNew_ItemClick(object sender, ItemClickEventArgs e)
         {
 
@@ -389,17 +488,40 @@ namespace TaskManager
 
         private void btnRefresh_ItemClick(object sender, ItemClickEventArgs e)
         {
-            _control.RefreshClick(_year, _startdate, _enddate, _finishState,_group);
+            this.reloadData();
+        }
+
+        protected void reloadData() {
+            string user = null;
+            if (comboxState.Caption == "使用人")
+            {
+                user = _user;
+            }
+            _control.RefreshClick(_year, _startdate, _enddate, _finishState, _group, user);
         }
 
         private void btnSave_ItemClick(object sender, ItemClickEventArgs e)
         {
             _control.SaveClick();
         }
-                
+
         private void btnExport_ItemClick(object sender, ItemClickEventArgs e)
         {
+            this.exportEvent();
+        }
+
+        private void btnExportWord_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            this.exportWordEvent();
+        }
+
+        protected virtual void exportEvent() {
             _control.Export();
+        }
+
+        protected virtual void exportWordEvent()
+        {
+            
         }
 
         private void barReplace_ItemClick(object sender, ItemClickEventArgs e)
@@ -409,7 +531,7 @@ namespace TaskManager
         }
         private void 导入Btn_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(!_control.SAVE_EDIT)
+            if (!_control.SAVE_EDIT)
             {
                 MessageBox.Show("导入前请先保存当前更改");
                 return;
@@ -445,7 +567,7 @@ namespace TaskManager
         private void barButtonItem1_ItemClick(object sender, ItemClickEventArgs e)
         {
             _control.CopySelectedRows();
-            _control.PasteSelectedRows();            
+            _control.PasteSelectedRows();
         }
 
         /// <summary>
@@ -457,7 +579,7 @@ namespace TaskManager
         {
             _control.CorrectDate();
         }
-        
+
         /// <summary>
         /// 编辑备选项
         /// </summary>
@@ -465,7 +587,7 @@ namespace TaskManager
         /// <param name="e"></param>
         private void barButtonItem2_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var dialog = new ComboxForm(FormTable.Module,_control);
+            var dialog = new ComboxForm(FormTable.Module, _control);
             dialog.ShowDialog();
         }
 

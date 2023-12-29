@@ -7,6 +7,12 @@ using System.Windows.Forms;
 using DevExpress.XtraBars;
 using DevExpress.XtraGrid.Views.Grid;
 using ExpertLib.Utils;
+using TaskManager.common.utils;
+using TaskManager.controller;
+using TaskManager.domain.entity;
+using TaskManager.domain.repository;
+using TaskManager.domain.valueobject;
+using TaskManager.infrastructure.db;
 
 namespace TaskManager
 {
@@ -16,12 +22,14 @@ namespace TaskManager
         public readonly string Server;
         private const string RootFolder = "轻排参数表服务器";
         private const string Category = "设备管理";
+
         protected EquipmentForm()
         {
             InitializeComponent();
         }
         public EquipmentForm(FormType formType, string selectedDept) : base(formType, selectedDept)
         {
+           
             InitializeComponent();
             if (DesignMode)
                 return;
@@ -43,6 +51,31 @@ namespace TaskManager
 
             startdate.Visibility = BarItemVisibility.Never;
             enddate.Visibility = BarItemVisibility.Never;
+
+            //操作区功能可见性
+            btnNew.Visibility = BarItemVisibility.Never;
+            btnEdit.Visibility = BarItemVisibility.Never;
+            btnCopyPaste.Visibility = BarItemVisibility.Never;
+            btnEditCfgItems.Visibility = BarItemVisibility.Never;
+            btnBatchReplace.Visibility = BarItemVisibility.Never;
+
+            //隐藏右键菜单功能
+            this.hideAddEtitCopyItem();
+        }
+
+        /// <summary>
+        /// 导入数据前先处理一下日期问题
+        /// </summary>
+        /// <param name="targetRow"></param>
+        /// <param name="sourceRow"></param>
+        private static void BeforeAddRowOnImportExcelBack(DataRow targetRow, DataRow sourceRow)
+        {
+            var period = targetRow.CorrectValue("Period", 1.0);
+            var months = (int)(period * 12);
+            var checkDate = targetRow.CorrectValue("CheckDate", DateTime.Now.Date);
+
+            var checkEndDate = checkDate.AddMonths(months).AddDays(-1);
+            targetRow["CheckEndDate"] = checkEndDate;
         }
 
         /// <summary>
@@ -52,20 +85,34 @@ namespace TaskManager
         /// <param name="sourceRow"></param>
         private static void BeforeAddRowOnImportExcel(DataRow targetRow, DataRow sourceRow)
         {
-            var period = targetRow.CorrectValue("Period", 1.0);
-            var months = (int) (period * 12);
-            var checkDate = targetRow.CorrectValue("CheckDate", DateTime.Now.Date);
+            //处置有效期
+            double period = targetRow.CorrectValue("CalibrationCycle", 12.0);
+            var months = (int)(period * 1);
+            DateTime calibratingDate = targetRow.CorrectValue("CalibrationDate", DateTime.Now.Date);
+            DateTime expireDate = targetRow.CorrectValue("ExpireDate", calibratingDate.AddMonths(months).AddDays(-1));
 
-            var checkEndDate = checkDate.AddMonths(months).AddDays(-1);
-            targetRow["CheckEndDate"] = checkEndDate;
+            //处置组别
+            string owner = DbHelper.dataColumn2String(targetRow["Owner"]);
+            if (string.IsNullOrWhiteSpace(owner))
+            {
+                return;
+            }
+
+            //反推组别信息
+            UserHelper.Instance.loadUsers();
+            if (UserHelper.Instance.UserMap.ContainsKey(owner)) {
+                targetRow["GroupName"] = UserHelper.Instance.UserMap[owner].Department;
+            }
         }
-        
+
+       
+
         /// <summary>
         /// 行标色
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ViewOnRowStyle(object sender, RowStyleEventArgs e)
+        private void ViewOnRowStyleBack(object sender, RowStyleEventArgs e)
         {
             if (e.RowHandle >= 0)
             {
@@ -164,14 +211,14 @@ namespace TaskManager
                     }
                 }
             }
-        
 
-         
+
+
 
 
             if (e.RowHandle >= 0)
             {
-                if(_control._view.GetRowCellValue(e.RowHandle, _control._view.Columns["EquipState"])?.ToString() == "停用")
+                if (_control._view.GetRowCellValue(e.RowHandle, _control._view.Columns["EquipState"])?.ToString() == "停用")
                 {
                     e.Appearance.BackColor = Color.DarkGray;
                 }
@@ -189,15 +236,15 @@ namespace TaskManager
                         }
 
                     }
-                    if(_control._view.GetRowCellValue(e.RowHandle, _control._view.Columns["EquipState"])?.ToString() == "检定")
+                    if (_control._view.GetRowCellValue(e.RowHandle, _control._view.Columns["EquipState"])?.ToString() == "检定")
                     {
                         if (_control._view.GetRowCellValue(e.RowHandle, _control._view.Columns["alert"])?.ToString() != "")
                         {
                             _control._view.SetRowCellValue(e.RowHandle, _control._view.Columns["alert"], "");
                         }
-                        
-                        
-                        
+
+
+
                     }
                 }
                 else
@@ -206,7 +253,7 @@ namespace TaskManager
                     {
                         _control._view.SetRowCellValue(e.RowHandle, _control._view.Columns["alert"], "");
                     }
-                    
+
 
                 }
             }
@@ -214,10 +261,44 @@ namespace TaskManager
 
         }
 
+        /// <summary>
+        /// 行标色
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ViewOnRowStyle(object sender, RowStyleEventArgs e)
+        {
+            if (e.RowHandle >= 0)
+            {
+                string state = _control._view.GetRowCellValue(e.RowHandle, "State")?.ToString().Trim();
+                if (StringUtils.isEquals(state, EquipmentStateChn.使用中.ToString()))
+                {
+
+                }
+                else if (StringUtils.isEquals(state, EquipmentStateChn.未启用.ToString()))
+                {
+                    e.Appearance.BackColor = Color.Red;
+                }
+                else if (StringUtils.isEquals(state, EquipmentStateChn.待检定.ToString()))
+                {
+                    e.Appearance.BackColor = Color.Yellow;
+                }
+                else if (StringUtils.isEquals(state, EquipmentStateChn.停用.ToString()))
+                {
+                    e.Appearance.BackColor = Color.Red;
+                }
+                else if (StringUtils.isEquals(state, EquipmentStateChn.报废.ToString()))
+                {
+                    e.Appearance.BackColor = Color.Gray;
+                }
+            }
+
+        }
+
         protected override DialogResult OpenEditForm(GridView view, int hand, List<DataField> fields)
         {
             Log.e("OpenEditForm");
-            var dialog = new EquipEditDialog(FormTable.Edit, _control._view,hand, fields,FormType.Equipment);
+            var dialog = new EquipEditDialog(FormTable.Edit, _control._view, hand, fields, FormType.Equipment);
             return dialog.ShowDialog();
         }
         protected override DialogResult OpenReplaceForm(GridView view, int hand, List<DataField> fields)

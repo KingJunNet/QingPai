@@ -89,9 +89,9 @@
             this.barButtonleft,
             this.barButtonItemleft,
             this.barButtonItem15});
-            this.ribbonControl1.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.ribbonControl1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.ribbonControl1.MaxItemId = 68;
-            this.ribbonControl1.Size = new System.Drawing.Size(2449, 230);
+            this.ribbonControl1.Size = new System.Drawing.Size(1562, 190);
             this.ribbonControl1.Click += new System.EventHandler(this.ribbonControl1_Click);
             // 
             // ribbonPage1
@@ -127,9 +127,8 @@
             // 
             // _control
             // 
-            this._control.Location = new System.Drawing.Point(0, 230);
-            this._control.Margin = new System.Windows.Forms.Padding(2, 5, 2, 5);
-            this._control.Size = new System.Drawing.Size(2449, 706);
+            this._control.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
+            this._control.Size = new System.Drawing.Size(1562, 581);
             this._control.Load += new System.EventHandler(this._control_Load);
             // 
             // barButtonItem2
@@ -287,9 +286,9 @@
             // 
             // SampleForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
-            this.ClientSize = new System.Drawing.Size(2449, 936);
-            this.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
+            this.ClientSize = new System.Drawing.Size(1562, 771);
+            this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.Name = "SampleForm";
             this.Activated += new System.EventHandler(this.SampleForm_Activated);
             this.Load += new System.EventHandler(this.TaskForm_Load);

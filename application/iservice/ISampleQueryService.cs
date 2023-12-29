@@ -19,7 +19,7 @@ namespace TaskManager.application.Iservice
         /// </summary>
         /// <param name="vin">vin</param>
         /// <returns>样本信息</returns>
-        SampleOfVinViewModel SamplesOfVin(string vin);
+        SampleOfVinViewModel samplesOfVin(string vin);
 
  
     }

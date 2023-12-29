@@ -18,5 +18,13 @@ namespace TaskManager.application.viewmodel
         /// Id
         /// </summary>
         public SampleBrief FromStatisticTable { get; set; }
+
+        public SampleOfVinViewModel() {
+        }
+
+        public SampleOfVinViewModel(SampleBrief fromSampleTable, SampleBrief fromStatisticTable) {
+            this.FromSampleTable = fromSampleTable;
+            this.FromStatisticTable = fromStatisticTable;
+        }
     }
 }

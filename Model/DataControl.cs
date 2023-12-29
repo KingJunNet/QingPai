@@ -259,6 +259,42 @@ public class DataControl
     /// <summary>
     /// 执行没有返回的数据库操作
     /// </summary>
+    /// <param name="strsql"></param>
+    /// <param name="parameterValues"></param>
+    public int ExecuteAddQuery(string strsql, SqlParameter[] parameterValues)
+    {
+        strsql = strsql + ";select SCOPE_IDENTITY()";
+        int id = 0;
+        using (var conn = new SqlConnection(strCon))
+        {
+            conn.Open();
+            // Invoke RegionUpdate Procedure
+            var cmd = new SqlCommand(strsql, conn)
+            {
+                CommandType = CommandType.Text,
+                CommandTimeout = 0
+            };
+            foreach (var p in parameterValues)
+            {
+                if (p.Direction == ParameterDirection.InputOutput && p.Value == null)
+                {
+                    p.Value = DBNull.Value;
+                }
+
+                cmd.Parameters.Add(p);
+            }
+            id = Convert.ToInt32(cmd.ExecuteScalar());
+
+            conn.Close();
+            conn.Dispose();
+        }
+
+        return id;
+    }
+
+    /// <summary>
+    /// 执行没有返回的数据库操作
+    /// </summary>
     /// <param name="strSql">语句</param>
     public void ExecuteNonQuery(string strSql)
     {
@@ -277,6 +313,32 @@ public class DataControl
             SqlConn.Close();
             SqlConn.Dispose();
         }
+    }
+
+    /// <summary>
+    /// 获取最新插入数据的id
+    /// </summary>
+    public int SelectLastId()
+    {
+        int id;
+        string strSql = @"select last_insert_rowid()";
+        using (var SqlConn = new SqlConnection())
+        {
+            SqlConn.ConnectionString = strCon;
+            SqlConn.Open();
+            var Comm = new SqlCommand(strSql, SqlConn);
+
+
+            if (SqlConn.State == 0)
+                SqlConn.Open();
+            id=(int)Comm.ExecuteScalar();
+            Comm.Dispose();
+
+            SqlConn.Close();
+            SqlConn.Dispose();
+        }
+
+        return id;
     }
 
     #endregion

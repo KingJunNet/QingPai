@@ -43,23 +43,24 @@
             this.repositoryItemFontEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemFontEdit();
             this.ribbonControl1 = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.btnExport = new DevExpress.XtraBars.BarButtonItem();
+            this.btnExportWord = new DevExpress.XtraBars.BarButtonItem();
             this.btnRefresh = new DevExpress.XtraBars.BarButtonItem();
             this.btnNew = new DevExpress.XtraBars.BarButtonItem();
             this.btnSave = new DevExpress.XtraBars.BarButtonItem();
             this.textYear = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemTextEdit3 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.btnDetail = new DevExpress.XtraBars.BarButtonItem();
-            this.btnEmpty = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
+            this.btnExportEmptyTpl = new DevExpress.XtraBars.BarButtonItem();
+            this.btnCopyPaste = new DevExpress.XtraBars.BarButtonItem();
             this.btnCorrectDate = new DevExpress.XtraBars.BarButtonItem();
             this.comboxState = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemComboBox5 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
-            this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
-            this.导入Btn = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem3 = new DevExpress.XtraBars.BarButtonItem();
+            this.btnEditCfgItems = new DevExpress.XtraBars.BarButtonItem();
+            this.btnImport = new DevExpress.XtraBars.BarButtonItem();
+            this.btnBatchReplace = new DevExpress.XtraBars.BarButtonItem();
             this.comGroup = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemComboBox6 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
-            this.barEdit = new DevExpress.XtraBars.BarButtonItem();
+            this.btnEdit = new DevExpress.XtraBars.BarButtonItem();
             this.startdate = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemDateEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
             this.enddate = new DevExpress.XtraBars.BarEditItem();
@@ -81,6 +82,7 @@
             this.repositoryItemComboBox3 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repositoryItemComboBox4 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repositoryItemCheckEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
+            this.repositoryItemComboBox55 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.barButtonItem5 = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.barButtonGroup1 = new DevExpress.XtraBars.BarButtonGroup();
@@ -121,6 +123,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox55)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -141,24 +144,25 @@
             this.ribbonControl1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.ribbonControl1.ExpandCollapseItem,
             this.btnExport,
+            this.btnExportWord,
             this.btnRefresh,
             this.btnNew,
             this.btnSave,
             this.textYear,
             this.btnDetail,
-            this.btnEmpty,
-            this.barButtonItem1,
+            this.btnExportEmptyTpl,
+            this.btnCopyPaste,
             this.btnCorrectDate,
             this.comboxState,
-            this.barButtonItem2,
-            this.导入Btn,
-            this.barButtonItem3,
+            this.btnEditCfgItems,
+            this.btnImport,
+            this.btnBatchReplace,
             this.comGroup,
-            this.barEdit,
+            this.btnEdit,
             this.startdate,
             this.enddate});
             this.ribbonControl1.Location = new System.Drawing.Point(0, 0);
-            this.ribbonControl1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ribbonControl1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ribbonControl1.MaxItemId = 27;
             this.ribbonControl1.Name = "ribbonControl1";
             this.ribbonControl1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
@@ -180,12 +184,13 @@
             this.repositoryItemComboBox4,
             this.repositoryItemCheckEdit1,
             this.repositoryItemComboBox5,
+            this.repositoryItemComboBox55,
             this.repositoryItemComboBox6,
             this.repositoryItemDateEdit2,
             this.repositoryItemDateEdit3});
             this.ribbonControl1.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.True;
             this.ribbonControl1.ShowExpandCollapseButton = DevExpress.Utils.DefaultBoolean.True;
-            this.ribbonControl1.Size = new System.Drawing.Size(1502, 230);
+            this.ribbonControl1.Size = new System.Drawing.Size(1212, 190);
             // 
             // btnExport
             // 
@@ -197,6 +202,16 @@
             this.btnExport.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
             | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.btnExport.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnExport_ItemClick);
+            // 
+            // btnExportWord
+            // 
+            this.btnExportWord.Caption = "导出Word\r\n";
+            this.btnExportWord.Id = 401;
+            this.btnExportWord.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.exporttoxls_32x32;
+            this.btnExportWord.Name = "btnExportWord";
+            this.btnExportWord.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.btnExportWord.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnExportWord_ItemClick);
             // 
             // btnRefresh
             // 
@@ -264,27 +279,27 @@
             this.btnDetail.Name = "btnDetail";
             this.btnDetail.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnDetail_ItemClick);
             // 
-            // btnEmpty
+            // btnExportEmptyTpl
             // 
-            this.btnEmpty.Caption = "导出空白模板";
-            this.btnEmpty.Id = 4;
-            this.btnEmpty.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.exporttoxls_32x32;
-            this.btnEmpty.Name = "btnEmpty";
-            this.btnEmpty.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnEmpty_ItemClick);
+            this.btnExportEmptyTpl.Caption = "导出空白模板";
+            this.btnExportEmptyTpl.Id = 4;
+            this.btnExportEmptyTpl.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.exporttoxls_32x32;
+            this.btnExportEmptyTpl.Name = "btnExportEmptyTpl";
+            this.btnExportEmptyTpl.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnEmpty_ItemClick);
             // 
-            // barButtonItem1
+            // btnCopyPaste
             // 
-            this.barButtonItem1.Caption = "复制粘贴";
-            this.barButtonItem1.Id = 5;
-            this.barButtonItem1.ImageOptions.Image = global::TaskManager.Properties.Resources.copy_16x16;
-            this.barButtonItem1.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.copy_32x32;
-            this.barButtonItem1.Name = "barButtonItem1";
-            this.barButtonItem1.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            this.btnCopyPaste.Caption = "复制粘贴";
+            this.btnCopyPaste.Id = 5;
+            this.btnCopyPaste.ImageOptions.Image = global::TaskManager.Properties.Resources.copy_16x16;
+            this.btnCopyPaste.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.copy_32x32;
+            this.btnCopyPaste.Name = "btnCopyPaste";
+            this.btnCopyPaste.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
             | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             toolTipItem2.Text = "复制选中行，然后粘贴到表格的最前面";
             superToolTip2.Items.Add(toolTipItem2);
-            this.barButtonItem1.SuperTip = superToolTip2;
-            this.barButtonItem1.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem1_ItemClick);
+            this.btnCopyPaste.SuperTip = superToolTip2;
+            this.btnCopyPaste.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem1_ItemClick);
             // 
             // btnCorrectDate
             // 
@@ -326,34 +341,34 @@
             this.repositoryItemComboBox5.Name = "repositoryItemComboBox5";
             this.repositoryItemComboBox5.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             // 
-            // barButtonItem2
+            // btnEditCfgItems
             // 
-            this.barButtonItem2.Caption = "编辑备选项";
-            this.barButtonItem2.Id = 14;
-            this.barButtonItem2.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.dropdown;
-            this.barButtonItem2.Name = "barButtonItem2";
-            this.barButtonItem2.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large;
+            this.btnEditCfgItems.Caption = "编辑备选项";
+            this.btnEditCfgItems.Id = 14;
+            this.btnEditCfgItems.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.dropdown;
+            this.btnEditCfgItems.Name = "btnEditCfgItems";
+            this.btnEditCfgItems.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large;
             toolTipItem4.Text = "编辑单元格下拉框的备选项，以方便用户输入";
             superToolTip4.Items.Add(toolTipItem4);
-            this.barButtonItem2.SuperTip = superToolTip4;
-            this.barButtonItem2.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem2_ItemClick);
+            this.btnEditCfgItems.SuperTip = superToolTip4;
+            this.btnEditCfgItems.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem2_ItemClick);
             // 
-            // 导入Btn
+            // btnImport
             // 
-            this.导入Btn.Caption = "导入";
-            this.导入Btn.Id = 16;
-            this.导入Btn.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("导入Btn.ImageOptions.LargeImage")));
-            this.导入Btn.Name = "导入Btn";
-            this.导入Btn.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.导入Btn_ItemClick);
+            this.btnImport.Caption = "导入";
+            this.btnImport.Id = 16;
+            this.btnImport.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("导入Btn.ImageOptions.LargeImage")));
+            this.btnImport.Name = "btnImport";
+            this.btnImport.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.导入Btn_ItemClick);
             // 
-            // barButtonItem3
+            // btnBatchReplace
             // 
-            this.barButtonItem3.Caption = "批量替换";
-            this.barButtonItem3.Id = 18;
-            this.barButtonItem3.ImageOptions.Image = global::TaskManager.Properties.Resources.preview_32x32;
-            this.barButtonItem3.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.preview_32x32;
-            this.barButtonItem3.Name = "barButtonItem3";
-            this.barButtonItem3.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barReplace_ItemClick);
+            this.btnBatchReplace.Caption = "批量替换";
+            this.btnBatchReplace.Id = 18;
+            this.btnBatchReplace.ImageOptions.Image = global::TaskManager.Properties.Resources.preview_32x32;
+            this.btnBatchReplace.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.preview_32x32;
+            this.btnBatchReplace.Name = "btnBatchReplace";
+            this.btnBatchReplace.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barReplace_ItemClick);
             // 
             // comGroup
             // 
@@ -373,14 +388,14 @@
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.repositoryItemComboBox6.Name = "repositoryItemComboBox6";
             // 
-            // barEdit
+            // btnEdit
             // 
-            this.barEdit.Caption = "编辑数据";
-            this.barEdit.Id = 24;
-            this.barEdit.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barEdit.ImageOptions.Image")));
-            this.barEdit.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barEdit.ImageOptions.LargeImage")));
-            this.barEdit.Name = "barEdit";
-            this.barEdit.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem4_ItemClick);
+            this.btnEdit.Caption = "编辑数据";
+            this.btnEdit.Id = 24;
+            this.btnEdit.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barEdit.ImageOptions.Image")));
+            this.btnEdit.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barEdit.ImageOptions.LargeImage")));
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem4_ItemClick);
             // 
             // startdate
             // 
@@ -450,7 +465,7 @@
             this.ribbonPageGroup1.ItemLinks.Add(this.btnRefresh);
             this.ribbonPageGroup1.ItemLinks.Add(this.btnSave);
             this.ribbonPageGroup1.ItemLinks.Add(this.btnExport);
-            this.ribbonPageGroup1.ItemLinks.Add(this.导入Btn);
+            this.ribbonPageGroup1.ItemLinks.Add(this.btnExportWord);
             this.ribbonPageGroup1.MergeOrder = 0;
             this.ribbonPageGroup1.Name = "ribbonPageGroup1";
             toolTipTitleItem3.Text = "数据的导入导出";
@@ -461,12 +476,13 @@
             // ribbonPageGroup6
             // 
             this.ribbonPageGroup6.ItemLinks.Add(this.btnNew);
-            this.ribbonPageGroup6.ItemLinks.Add(this.barEdit);
-            this.ribbonPageGroup6.ItemLinks.Add(this.btnEmpty);
-            this.ribbonPageGroup6.ItemLinks.Add(this.barButtonItem1);
+            this.ribbonPageGroup6.ItemLinks.Add(this.btnEdit);
+            this.ribbonPageGroup6.ItemLinks.Add(this.btnCopyPaste);
             this.ribbonPageGroup6.ItemLinks.Add(this.btnCorrectDate);
-            this.ribbonPageGroup6.ItemLinks.Add(this.barButtonItem2);
-            this.ribbonPageGroup6.ItemLinks.Add(this.barButtonItem3);
+            this.ribbonPageGroup6.ItemLinks.Add(this.btnEditCfgItems);
+            this.ribbonPageGroup6.ItemLinks.Add(this.btnBatchReplace);
+            this.ribbonPageGroup6.ItemLinks.Add(this.btnImport);
+            this.ribbonPageGroup6.ItemLinks.Add(this.btnExportEmptyTpl);
             this.ribbonPageGroup6.Name = "ribbonPageGroup6";
             this.ribbonPageGroup6.Text = "编辑";
             // 
@@ -587,6 +603,18 @@
             this.repositoryItemCheckEdit1.AutoHeight = false;
             this.repositoryItemCheckEdit1.Name = "repositoryItemCheckEdit1";
             // 
+            // repositoryItemComboBox55
+            // 
+            this.repositoryItemComboBox55.AutoHeight = false;
+            this.repositoryItemComboBox55.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemComboBox55.Items.AddRange(new object[] {
+            "已完成",
+            "未完成",
+            "全部"});
+            this.repositoryItemComboBox55.Name = "repositoryItemComboBox55";
+            this.repositoryItemComboBox55.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            // 
             // barButtonItem5
             // 
             this.barButtonItem5.Caption = "barButtonItem2";
@@ -614,10 +642,10 @@
             this._control._Menu = this.contextMenuStrip1;
             this._control.Dock = System.Windows.Forms.DockStyle.Fill;
             this._control.FormTable = null;
-            this._control.Location = new System.Drawing.Point(0, 230);
+            this._control.Location = new System.Drawing.Point(0, 190);
             this._control.Margin = new System.Windows.Forms.Padding(2);
             this._control.Name = "_control";
-            this._control.Size = new System.Drawing.Size(1502, 994);
+            this._control.Size = new System.Drawing.Size(1212, 712);
             this._control.TabIndex = 0;
             this._control.Load += new System.EventHandler(this._control_Load);
             // 
@@ -633,14 +661,14 @@
             this.toolStripMenuItem1,
             this.删除toolStripMenuItem1});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(190, 178);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(171, 166);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenuStrip1Opening);
             // 
             // 全选ToolStripMenuItem
             // 
             this.全选ToolStripMenuItem.Name = "全选ToolStripMenuItem";
             this.全选ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.全选ToolStripMenuItem.Size = new System.Drawing.Size(189, 28);
+            this.全选ToolStripMenuItem.Size = new System.Drawing.Size(170, 26);
             this.全选ToolStripMenuItem.Text = "全选";
             this.全选ToolStripMenuItem.Click += new System.EventHandler(this.全选ToolStripMenuItem_Click);
             // 
@@ -649,7 +677,7 @@
             this.打开ToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("打开ToolStripMenuItem.Image")));
             this.打开ToolStripMenuItem.Name = "打开ToolStripMenuItem";
             this.打开ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.打开ToolStripMenuItem.Size = new System.Drawing.Size(189, 28);
+            this.打开ToolStripMenuItem.Size = new System.Drawing.Size(170, 26);
             this.打开ToolStripMenuItem.Text = "编辑";
             this.打开ToolStripMenuItem.Click += new System.EventHandler(this.打开ToolStripMenuItem_Click);
             // 
@@ -658,7 +686,7 @@
             this.新建ToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("新建ToolStripMenuItem.Image")));
             this.新建ToolStripMenuItem.Name = "新建ToolStripMenuItem";
             this.新建ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.新建ToolStripMenuItem.Size = new System.Drawing.Size(189, 28);
+            this.新建ToolStripMenuItem.Size = new System.Drawing.Size(170, 26);
             this.新建ToolStripMenuItem.Text = "新建";
             this.新建ToolStripMenuItem.Click += new System.EventHandler(this.新建ToolStripMenuItem_Click);
             // 
@@ -666,7 +694,7 @@
             // 
             this.复制ToolStripMenuItem.Name = "复制ToolStripMenuItem";
             this.复制ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.复制ToolStripMenuItem.Size = new System.Drawing.Size(189, 28);
+            this.复制ToolStripMenuItem.Size = new System.Drawing.Size(170, 26);
             this.复制ToolStripMenuItem.Text = "复制";
             this.复制ToolStripMenuItem.Click += new System.EventHandler(this.复制ToolStripMenuItem_Click);
             // 
@@ -674,20 +702,20 @@
             // 
             this.粘贴ToolStripMenuItem.Name = "粘贴ToolStripMenuItem";
             this.粘贴ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.粘贴ToolStripMenuItem.Size = new System.Drawing.Size(189, 28);
+            this.粘贴ToolStripMenuItem.Size = new System.Drawing.Size(170, 26);
             this.粘贴ToolStripMenuItem.Text = "粘贴";
             this.粘贴ToolStripMenuItem.Click += new System.EventHandler(this.粘贴ToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(186, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(167, 6);
             // 
             // 删除toolStripMenuItem1
             // 
             this.删除toolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("删除toolStripMenuItem1.Image")));
             this.删除toolStripMenuItem1.Name = "删除toolStripMenuItem1";
-            this.删除toolStripMenuItem1.Size = new System.Drawing.Size(189, 28);
+            this.删除toolStripMenuItem1.Size = new System.Drawing.Size(170, 26);
             this.删除toolStripMenuItem1.Text = "删除";
             this.删除toolStripMenuItem1.Click += new System.EventHandler(this.删除toolStripMenuItem1_Click);
             // 
@@ -726,13 +754,13 @@
             // BaseForm
             // 
             this.AllowFormGlass = DevExpress.Utils.DefaultBoolean.True;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1502, 1224);
+            this.ClientSize = new System.Drawing.Size(1212, 902);
             this.Controls.Add(this._control);
             this.Controls.Add(this.ribbonControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "BaseForm";
             this.Ribbon = this.ribbonControl1;
             this.ShowIcon = false;
@@ -765,6 +793,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox55)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -777,6 +806,7 @@
         protected DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage1;
         protected DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup1;
         protected DevExpress.XtraBars.BarButtonItem btnExport;
+        protected DevExpress.XtraBars.BarButtonItem btnExportWord;
         protected DevExpress.XtraBars.BarButtonItem barButtonItem5;
         protected DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup2;
         protected DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit2;
@@ -803,8 +833,8 @@
         protected System.Windows.Forms.ToolStripMenuItem 打开ToolStripMenuItem;
         protected System.Windows.Forms.ToolStripMenuItem 新建ToolStripMenuItem;
         protected System.Windows.Forms.ToolStripMenuItem 删除toolStripMenuItem1;
-        protected DevExpress.XtraBars.BarButtonItem btnEmpty;
-        protected DevExpress.XtraBars.BarButtonItem barButtonItem1;
+        protected DevExpress.XtraBars.BarButtonItem btnExportEmptyTpl;
+        protected DevExpress.XtraBars.BarButtonItem btnCopyPaste;
         protected DevExpress.XtraBars.BarButtonItem btnCorrectDate;
         protected DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit4;
         protected DevExpress.XtraBars.BarEditItem barEditItem1;
@@ -813,20 +843,21 @@
         protected DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox4;
         protected DevExpress.XtraBars.BarEditItem comboxState;
         protected DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox5;
+        protected DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox55;
         protected DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit repositoryItemCheckEdit1;
         private System.ComponentModel.IContainer components;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem2;
-        private DevExpress.XtraBars.BarButtonItem 导入Btn;
+        protected DevExpress.XtraBars.BarButtonItem btnEditCfgItems;
+        protected DevExpress.XtraBars.BarButtonItem btnImport;
         private System.Windows.Forms.ToolStripMenuItem 全选ToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem 复制ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 粘贴ToolStripMenuItem;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem3;
+        protected DevExpress.XtraBars.BarButtonItem btnBatchReplace;
         public DevExpress.XtraBars.BarEditItem comGroup;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox6;
         private DevExpress.XtraBars.BarEditItem barEditItem2;
         private DevExpress.XtraBars.BarEditItem barEditItem3;
-        protected DevExpress.XtraBars.BarButtonItem barEdit;
+        protected DevExpress.XtraBars.BarButtonItem btnEdit;
         private DevExpress.XtraEditors.Repository.RepositoryItemDateEdit repositoryItemDateEdit2;
         private DevExpress.XtraEditors.Repository.RepositoryItemDateEdit repositoryItemDateEdit3;
         protected DevExpress.XtraBars.BarEditItem enddate;

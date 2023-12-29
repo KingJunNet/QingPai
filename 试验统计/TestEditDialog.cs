@@ -1,34 +1,126 @@
-﻿using System;
+﻿using DevExpress.XtraGrid.Views.Grid;
+using ExpertLib.Controls;
+using ExpertLib.Controls.TitleEditor;
+using LabSystem.DAL;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-
-using DevExpress.XtraGrid.Views.Grid;
-using ExpertLib.Controls;
-using ExpertLib.Controls.TitleEditor;
-using LabSystem.DAL;
+using TaskManager.application.Iservice;
+using TaskManager.application.service;
+using TaskManager.application.viewmodel;
+using TaskManager.common.utils;
+using TaskManager.domain.entity;
+using TaskManager.domain.repository;
+using TaskManager.domain.service;
+using TaskManager.domain.valueobject;
+using TaskManager.infrastructure.db;
 
 namespace TaskManager
 {
     public partial class TestEditDialog : BaseEditDialog
     {
+       
+
         private readonly bool IsAllocateTask;
-        
-        private TestEditDialog():base()
+
+        private ISampleQueryService sampleQueryService;
+        private ISampleCommandService sampleCommandService;
+        private IEquipmentQueryService equipmentQueryService;
+        private IEquipmentCommandService equipmentCommandService;
+
+        private ITestStatisticRepository testStatisticRepository;
+        private IEquipmentUsageRecordRepository equipmentUsageRecordRepository;
+        private IUserStructureRepository userStructureRepository;
+        private ITaskRepository taskRepository;
+
+        private int testStatisticId;
+        private List<string> vins;
+
+        private List<UserStructureLite> userStructureLites;
+        private List<string> groups;
+        private List<string> experimentSites;
+        private List<string> locationNumbers;
+
+        private string itemName = "";
+
+        private List<EquipmentBreiefViewModel> equipmentBreiefViewModels;
+        private Dictionary<string, EquipmentBreiefViewModel> equipmentMap;
+
+        private List<EquipmentUsageRecordLite> testEquipments;
+        private List<EquipmentLite> itemEquipments;
+
+        private List<string> itemNowEquipmentCodes;
+
+        private Dictionary<string, EquipmentLite> itemEquipmentMap;
+
+        private Dictionary<string, List<EquipmentLite>> itemOriEquipmentsMap = new Dictionary<string, List<EquipmentLite>>();
+
+        private bool isAddItemEquipments = false;
+
+        private bool isNeedUpdateItemEquipments = false;
+
+        private bool isUpdateItemEquipments = false;
+
+        private TestStatisticEntity oriTestStatisticEntity;
+        private List<String> oriTestEquipmentCodes;
+
+        private TestStatisticEntity testStatisticEntity;
+
+        private List<EquipmentUsageRecordEntity> equipmentUsageRecordEntities;
+
+        private EquipmentUsageRecordTestPart equipmentUsageRecordTestPart;
+
+        private SampleBrief updatedSampleBrief;
+
+        private SampleOfVinViewModel sampleOfVin;
+
+        private bool isVinFromStatistic = false;
+
+        private bool isAddSample = false;
+
+        private bool isNeedUpdateSample = false;
+
+        private bool isUpdateSample = false;
+
+        private bool isNeedReplaceTestEquipments = false;
+        private bool isNeedUpdateEquipmentRecordTestProperty = false;
+
+        private Button btn = new Button();
+
+        private bool isItemNameValueInitial = true;
+        private bool isVinValueInitial = true;
+
+        private string sampleModel;
+
+        private List<TaskBrief> taskBriefs;
+        private Dictionary<string, TaskBrief> taskBriefMap=new Dictionary<string, TaskBrief>();
+
+       
+
+        private TestEditDialog() : base()
         {
             InitializeComponent();
         }
 
         public TestEditDialog(bool authorityEdit, GridView theView, int theHand, List<DataField> fields, FormType Type1,
             bool isAllocateTask)
-            : base(authorityEdit, theView, theHand, fields,Type1)
+            : base(authorityEdit, theView, theHand, fields, Type1)
         {
             InitializeComponent();
             IsAllocateTask = isAllocateTask;
+
+            this.sampleQueryService = new SampleQueryService();
+            this.sampleCommandService = new SampleCommandService();
+            this.testStatisticRepository = new TestStatisticRepository();
+            this.equipmentQueryService = new EquipmentQueryService();
+            this.equipmentCommandService = new EquipmentCommandService();
+            this.equipmentUsageRecordRepository = new EquipmentUsageRecordRepository();
+            this.userStructureRepository = new UserStructureRepository();
+            this.taskRepository = new TaskRepository();
         }
 
         protected TitleCombox FinishState;
@@ -37,386 +129,47 @@ namespace TaskManager
         {
             flowLayoutPanel1.SuspendLayout();
             SuspendLayout();
+
+            //初始化控件
             controls = GetAllControls(out Panel);
             var count = InitControls();
 
-            #region 调整窗口大小
+            //调整窗口大小
+            this.setWindowSize();
 
-            //var borderX = Size.Width - Panel.Width;
-            //var borderY = Size.Height - Panel.Height;
-
-            //const int len = 370 + 4;
-            //const int height = 30 + 4;
-            //var rowCount = (int)Math.Ceiling(count / 2.0) + 1;
-
-            //var w = len * 2 + Panel.Margin.Left + Panel.Margin.Right + borderX;
-            //var h = rowCount * height + Panel.Margin.Top + Panel.Margin.Bottom + borderY;
-            //Size = new Size(w, h);
-
-            #endregion
-
-            #region 事件注册
-
-
-
-            // 总里程
-            if (GetControlByFieldName("StartMileage") is TitleCombox StartMileage &&
-                GetControlByFieldName("EndMileage") is TitleCombox EndMileage)
-            {
-                StartMileage.SetTextChange(MileageHandler);
-                EndMileage.SetTextChange(MileageHandler);
-                MileageHandler(null, null);
-            }
-
-
-            //费用总计
-            if (GetControlByFieldName("ProjectPrice") is TitleCombox ProjectPrice &&
-                GetControlByFieldName("ProjectTotal") is TitleCombox ProjectTotal)
-            {
-                ProjectPrice.SetTextChange(ProjectPriceHandler);
-
-                ProjectPriceHandler(null, null);
-            }
-
-
-            if (GetControlByFieldName("TestStartDate") is DateEdit  StartTime &&
-                GetControlByFieldName("TestEndDate") is DateEdit EndTime &&
-                GetControlByFieldName("Testtime") is TitleCombox)
-            {
-                StartTime.SetValueChange(TimeSpanHandler);
-                EndTime.SetValueChange(TimeSpanHandler);
-                TimeSpanHandler(null, null);
-            }
-
-            if ( GetControlByFieldName("FinishDate") is TitleDate finishMonth &&
-             GetControlByFieldName("State") is TitleCombox state)
-            {
-                FinishMonth = finishMonth;
-                FinishState = state;
-                FinishState.SetTextChange(FinishStateChangeHandler);
-                FinishStateChangeHandler(null, null);
-            }
-
-            #endregion
+            //事件注册
+            this.bindEventForView();
 
             flowLayoutPanel1.ResumeLayout(true);
             ResumeLayout(true);
             Log.e("BaseEditDialog_Load");
         }
 
-
-        private void FinishStateChangeHandler(object sender, EventArgs e)
-        {
-
-
-
-            if (!FinishState.Value().Trim().Equals("已完成"))
-            {
-                FinishMonth.SetValue("");
-                return;
-            }
-            else
-            {
-                string month = DateTime.Now.ToString("yyyy-MM-dd");
-
-                FinishMonth.SetValue(month);
-            }
-
-            //if (string.IsNullOrWhiteSpace(PlanMonth.Value()))
-            //    return;
-
-        }
-
-        protected override bool FieldVisible(DataField field)
-        {
-            if (!IsAllocateTask)
-                return field.EditorVisible;
-            else
-                return field.EditorVisible && field.Group.Equals("分配试验任务");
-        }
-
-
-        private void ProjectPriceHandler(object sender, EventArgs e)
-        {
-
-            if (!(GetControlByFieldName("ProjectPrice") is TitleCombox ProjectPrice) ||
-              !(GetControlByFieldName("ProjectTotal") is TitleCombox ProjectTotal))
-                return;
-            if (ProjectTotal.Value() == "")
-            {
-                ProjectTotal.SetValue(ProjectPrice.Value().ToString());
-            }
-            
-
-        }
-
-
-        private void MileageHandler(object sender, EventArgs e)
-        {
-           
-            if (!(GetControlByFieldName("StartMileage") is TitleCombox StartMileage) ||
-                !(GetControlByFieldName("EndMileage") is TitleCombox EndMileage) ||
-                !(GetControlByFieldName("TotalMileage") is TitleCombox TotalMileage))
-                return;
- 
-                double.TryParse(StartMileage.Value(), out var start);
-                double.TryParse(EndMileage.Value(), out var end);
-                var total = end > start ? end - start : 0;
-                TotalMileage.SetValue(total.ToString());
-
-       
-               
-            
-        }
-
-
-        /// <summary>
-        /// 耐久组
-        /// </summary>
-        /// <param name="department"></param>
-        /// <param name="vin"></param>
-        /// <param name="startDate"></param>
-        /// <param name="startMileage"></param>
-        /// <returns></returns>
-        public static bool IsStartMileageRight(string department,string vin,DateTime startDate,double startMileage)
-        {
-            if (string.IsNullOrWhiteSpace(vin) || !department.Equals("耐久组"))
-                return true;
-            var strsql = $" select * from TaskTable where  carvin='{vin}' " + $" and ISNUMERIC(EndMileage)=1 and EndMileage>{startMileage} and TestStartDate<@startDate";
-
-                var sql = new DataControl();
-              
-                var dt = sql.ExecuteQuery(strsql,new[] {
-                    new SqlParameter("startDate",startDate)
-                });
-            return dt.Tables[0].Rows.Count == 0;
-            
-        }
-        /// <summary>
-        /// 其他组
-        /// </summary>
-        /// <param name="department"></param>
-        /// <param name="vin"></param>
-        /// <param name="startDate"></param>
-        /// <param name="startMileage"></param>
-        /// <returns></returns>
-        public static bool OtherMileageRight(string department, string vin, DateTime startDate, double startMileage)
-        {
-            if (string.IsNullOrWhiteSpace(vin))
-                return true;
-            var strsql = $" select * from TaskTable where  carvin='{vin}' " + $" and  startMileage>{startMileage} and TestStartDate<@startDate";
-
-            var sql = new DataControl();
-
-            var dt = sql.ExecuteQuery(strsql, new[] {
-                    new SqlParameter("startDate",startDate)
-                });
-            return dt.Tables[0].Rows.Count == 0;
-
-        }
-
-
-        /// <summary>
-        /// 时间自动计算
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TimeSpanHandler(object sender, EventArgs e)
-        {
-            if (!(GetControlByFieldName("TestStartDate") is DateEdit StartTime) ||
-                !(GetControlByFieldName("TestEndDate") is DateEdit EndTime) ||
-                !(GetControlByFieldName("Testtime") is TitleCombox TimeSpan)) return;
-
-            if (EndTime.Value() == null)
-            {
-                return;
-            }
-            var start = StartTime.Value().Replace("：",":");
-            var end = EndTime.Value().Replace("：", ":");
-
-            if (!DateTime.TryParse(start, out var startTime) || !DateTime.TryParse(end, out var endTime)) 
-                return;
-            
-            var span = endTime - startTime;
-            TimeSpan.SetValue(span.TotalHours.ToString());
-
-        }
-
-        private void TaskEditDialog_Shown(object sender, EventArgs e)
-        {
-            Log.e("TaskEditDialog_Shown");
-          
-        }
-
-
-        protected override void BtnUpdateClick(object sender, EventArgs e)
-        {
-
-            var taskcode0 = GetControlByFieldName("Taskcode").Value().Trim();
-            var SampleModel0 = GetControlByFieldName("SampleModel").Value().Trim();
-            if (taskcode0 != "")
-            {
-                string sqlmoneysure = $"select count(*) from TestStatistic where Taskcode='{taskcode0}' and MoneySure ='是'";
-                if (SqlHelper.GetList(sqlmoneysure).Rows[0][0].ToString() != "0" && !taskcode0.Contains("?"))
-                {
-
-                    if (MessageBox.Show("该任务单号费用已确认，是否重新填写！", "提示", MessageBoxButtons.OKCancel) != DialogResult.OK)
-                    {
-                        GetControlByFieldName("Taskcode").SetValue(taskcode0 + "?");
-                    }
-                    else
-                    {
-                        return;
-                    };
-                    
-                }
-
-                string sqlcartype = $"select count(*) from NewTaskTable where Taskcode='{taskcode0}' and Model ='{SampleModel0}'";
-                if (SqlHelper.GetList(sqlcartype).Rows[0][0].ToString() == "0" && !taskcode0.Contains("?"))
-                {
-
-                    if (MessageBox.Show("该任务单号与车型不一致，是否重新填写！", "提示", MessageBoxButtons.OKCancel) != DialogResult.OK)
-                    {
-                        GetControlByFieldName("Taskcode").SetValue(taskcode0 + "?");
-                    }
-                    else
-                    {
-                        return;
-                    };
-         
-                }
-            }
-
-
-            //判断登记日期
-       
-          
-
-            foreach (var control in controls)
-            {
-                var fieldName = control.Value.Tag?.ToString();
-                if (string.IsNullOrWhiteSpace(fieldName))
-                    continue;
-
-                var value = control.Value.Value();
-                view.SetRowCellValue(hand, fieldName, value);
-            }
-            view.FocusedRowHandle = hand + 1;
-            view.FocusedRowHandle = hand; //防止出错
-
-            //string taskcode = view.GetRowCellValue(hand, "Taskcode").ToString();
-            //if (btnUpdate.Text == "新增")
-            //{
-            //    view.SetRowCellValue(hand, "RegistrationDate", $"{DateTime.Now:yyyy/MM/dd HH:mm}");
-            //}
-                //自动更新保密级别    
-                if (taskcode0 != "")
-                {
-                    string sql = $"select SecurityLevel from NewTaskTable where Taskcode='{taskcode0}'";
-                    if (SqlHelper.GetList(sql).Rows.Count > 0)
-                    {
-                        view.SetRowCellValue(hand, "Confidentiality", SqlHelper.GetList(sql).Rows[0][0].ToString());
-                    }
-                }
-
-                //string sql2 = $"update TaskManager.dbo.TaskTable set MoneySure='{view.GetRowCellValue(hand, "MoneySure").ToString()}' where TaskTable.Taskcode='{view.GetRowCellValue(hand, "Taskcode").ToString()}'";
-                //SqlHelper.ExecuteNonquery(sql2, CommandType.Text);
-
-            //}
-           
-
-
-
-
-
-                DialogResult = DialogResult.OK;
-            Close();
-
-
-        }
-
-
         private void TestEditDialog_Load(object sender, EventArgs e)
         {
-            string vin = view.GetRowCellValue(hand, "Carvin").ToString();
+            this.initPage();
+            this.initControlByDepartment();
+        }
 
-            string sql0 = $"select NationalFive,NationalSix from teststatistic where Carvin ='{vin}'";
-            List<string> list1 = new List<string>();
-            //list1 = null;
-            List<string> list2 = new List<string>();
-            //list2 = null;
-            foreach (DataRow row in SqlHelper.GetList(sql0).Rows)
+        private void initPage()
+        {
+            this.initData();
+            this.initView();
+        }
+
+        public int getId() {
+            return this.testStatisticId;
+        }
+
+        private void initControlByDepartment()
+        {
+            GetControlByFieldName("Carvin").SetReadOnly(false);
+            GetControlByFieldName("ItemBrief").SetReadOnly(false);
+            GetControlByFieldName("Taskcode").SetReadOnly(false);
+
+            if (FormSignIn.CurrentUser.Department == "系统维护")
             {
-                if (row[0].ToString() != "")
-                {
-                    list1.Add(row[0].ToString());
-                }
-                if (row[1].ToString() != "")
-                {
-                    list2.Add(row[1].ToString());
-                }
-                
-
-            }
-            if (list1 != null)
-            {
-                titleCombox25.SetItems(list1);
-            }
-            if (list2 != null)
-            {
-                titleCombox26.SetItems(list2);
-            }
-
-
-            string SampleModel = view.GetRowCellValue(hand, "SampleModel").ToString();
-
-            string sql1 = $"select taskcode from newtasktable where model ='{SampleModel}'";
-            List<string> list3 = new List<string>();
-          
-            foreach (DataRow row in SqlHelper.GetList(sql1).Rows)
-            {
-                if (row[0].ToString() != "")
-                {
-                    list3.Add(row[0].ToString());
-                }
-               
-
-            }
-            if (list3 != null)
-            {
-                titleCombox11.SetItems(list3);
-            }
-
-            //查询试验地点和定位编号
-            string sqlnum = $"select Experimentsite,Locationnumber from UserStructure where  Username like '%{FormSignIn.CurrentUser.Name.ToString()}%'";
-            DataTable danum = SqlHelper.GetList(sqlnum);
-            if (danum.Rows.Count > 0)
-            {
-                List<string> listsite = new List<string>();
-                List<string> listnumber = new List<string>();
-                foreach (DataRow row in danum.Rows)
-                {
-                    if (row[0].ToString() != "" && !listsite.Contains(row[0].ToString()))
-                    {
-                        listsite.Add(row[0].ToString());
-                    }
-                    if (row[1].ToString() != "" && !listnumber.Contains(row[1].ToString()))
-                    {
-                        listnumber.Add(row[1].ToString());
-                    }
-                }
-                titleCombox3.SetItems(listsite);
-                titleCombox1.SetItems(listnumber);
-                titleCombox3.SetValue(listsite[0].ToString());
-                titleCombox1.SetValue(listnumber[0].ToString());
-
-
-            }
-
-
-            
-
-            if (FormSignIn.CurrentUser.Department == "系统维护"){
+                //TODO:之后记得恢复
                 return;
             }
             if (FormSignIn.CurrentUser.Department != "体系组")
@@ -467,8 +220,8 @@ namespace TaskManager
                 titleCombox15.SetReadOnly(true);
                 titleCombox6.SetReadOnly(true);
                 titleCombox14.SetReadOnly(true);
-               
-                titleCombox39.SetReadOnly(true);
+
+                //titleCombox39.SetReadOnly(true);
                 titleCombox18.SetReadOnly(true);
                 titleCombox19.SetReadOnly(true);
                 titleCombox20.SetReadOnly(true);
@@ -484,24 +237,1078 @@ namespace TaskManager
                 titleCombox24.comboBox1.SelectAll();
                 titleCombox28.comboBox1.SelectAll();
             }
-            //titleCombox16.SetReadOnly(true);
-            //titleCombox14.SetReadOnly(true);
-            //titleCombox6.SetReadOnly(true);
-            //titleCombox15.SetReadOnly(true);
-            //titleCombox19.SetReadOnly(true);
-            //titleCombox20.SetReadOnly(true);
-            //titleCombox21.SetReadOnly(true);
-            //titleCombox23.SetReadOnly(true);
-            //titleCombox22.comboBox1.BackColor = Color.AliceBlue;
-            //titleCombox24.comboBox1.BackColor = Color.AliceBlue;
-            //titleCombox28.comboBox1.BackColor = Color.AliceBlue;
+        }
 
-            //转动惯量NationalFive
-            //阻力 NationalSix
-        
+        private void setWindowSize()
+        {
+            //var borderX = Size.Width - Panel.Width;
+            //var borderY = Size.Height - Panel.Height;
+
+            //const int len = 370 + 4;
+            //const int height = 30 + 4;
+            //var rowCount = (int)Math.Ceiling(count / 2.0) + 1;
+
+            //var w = len * 2 + Panel.Margin.Left + Panel.Margin.Right + borderX;
+            //var h = rowCount * height + Panel.Margin.Top + Panel.Margin.Bottom + borderY;
+            //Size = new Size(w, h);
+        }
+
+        private void bindEventForView()
+        {
+            // 总里程
+            if (GetControlByFieldName("StartMileage") is TitleCombox StartMileage &&
+                GetControlByFieldName("EndMileage") is TitleCombox EndMileage)
+            {
+                StartMileage.SetTextChange(MileageHandler);
+                EndMileage.SetTextChange(MileageHandler);
+                MileageHandler(null, null);
+            }
+            //费用总计
+            //注：2023-12-11该功能注释掉
+            //if (GetControlByFieldName("ProjectPrice") is TitleCombox ProjectPrice &&
+            //    GetControlByFieldName("ProjectTotal") is TitleCombox ProjectTotal)
+            //{
+            //    ProjectPrice.SetTextChange(ProjectPriceHandler);
+            //    ProjectPriceHandler(null, null);
+            //}
+            if (GetControlByFieldName("TestStartDate") is DateEdit StartTime &&
+                GetControlByFieldName("TestEndDate") is DateEdit EndTime &&
+                GetControlByFieldName("Testtime") is TitleCombox)
+            {
+                StartTime.SetValueChange(TimeSpanHandler);
+                EndTime.SetValueChange(TimeSpanHandler);
+                TimeSpanHandler(null, null);
+            }
+            if (GetControlByFieldName("FinishDate") is TitleDate finishMonth &&
+                 GetControlByFieldName("State") is TitleCombox state)
+            {
+                FinishMonth = finishMonth;
+                FinishState = state;
+                FinishState.SetTextChange(FinishStateChangeHandler);
+                FinishStateChangeHandler(null, null);
+            }
+        }
+
+
+        protected override void BtnUpdateClick(object sender, EventArgs e)
+        {
+            try
+            {
+                //验证taskCode
+                if (!validateTaskCode())
+                {
+                    return;
+                }
+
+                //提取统计数据
+                this.extractDataFromUi();
+
+                //参数合法性验证
+                string errorInfo = "";
+                if (!this.validateTestStatisticParam(out errorInfo))
+                {
+                    MessageBox.Show($"参数有误：{errorInfo}", "错误信息", MessageBoxButtons.OK);
+                    return;
+                }
+
+                //设备记录更新策略
+                this.updateTestEquipmentStrategy();
+
+                //样本同步策略
+                this.syncSampleStrategy();
+
+                //项目设备同步策略
+                this.syncItemEquipmentStrategy();
+            }
+            catch (Exception ex) {
+                MessageBox.Show("更新试验计划失败！", "错误信息", MessageBoxButtons.OK);
+                return;
+            }
+           
+            //是否需要更新样本
+            if (this.isNeedUpdateSample)
+            {
+                DialogResult result = MessageBox.Show("检测到该VIN样本信息有变化，需要将该样本信息更新至样本数据表么", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    this.isUpdateSample = true;
+                }
+            }
+            //是否需要更新样本
+            if (this.isNeedUpdateItemEquipments)
+            {
+                DialogResult result = MessageBox.Show("检测到该项目的使用设备信息有变化，需要将该项目使用设备信息更新至数据库么", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    this.isUpdateItemEquipments = true;
+                }
+            }
+
+            //保存数据
+            try
+            {
+                this.executeSaveData();
+                DialogResult result = MessageBox.Show("更新试验计划成功", "提示", MessageBoxButtons.OK);
+                if (result == DialogResult.OK)
+                {
+                    afterUpdateSuccess();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("更新试验计划失败！", "错误信息", MessageBoxButtons.OK);
+            }
+        }
+
+        private void afterUpdateSuccess()
+        {
+            //更新控件值
+            foreach (var control in controls)
+            {
+                var fieldName = control.Value.Tag?.ToString();
+                if (string.IsNullOrWhiteSpace(fieldName))
+                    continue;
+
+                var value = control.Value.Value();
+                view.SetRowCellValue(hand, fieldName, value);
+            }
+            //更新设备信息
+            view.SetRowCellValue(hand, "Equipments", this.testStatisticEntity.Equipments);
+            view.FocusedRowHandle = hand + 1;
+            view.FocusedRowHandle = hand; //防止出错
+            //自动更新保密级别   
+            //注：2023-12-11注释该功能
+            //if (this.testStatisticEntity.Taskcode != "")
+            //{
+            //    string sql = $"select SecurityLevel from NewTaskTable where Taskcode='{this.testStatisticEntity.Taskcode}'";
+            //    if (SqlHelper.GetList(sql).Rows.Count > 0)
+            //    {
+            //        view.SetRowCellValue(hand, "Confidentiality", SqlHelper.GetList(sql).Rows[0][0].ToString());
+            //    }
+            //}
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        private bool validateTaskCode()
+        {
+            string taskCode = GetControlByFieldName("Taskcode").Value().Trim();
+            if (string.IsNullOrWhiteSpace(taskCode) || taskCode.Contains("?"))
+            {
+                return true;
+            }
+
+            //验证费用
+            string sqlmoneysure = $"select count(*) from TestStatistic where Taskcode='{taskCode}' and MoneySure ='是'";
+            if (SqlHelper.GetList(sqlmoneysure).Rows[0][0].ToString() != "0")
+            {
+                if (MessageBox.Show("该任务单号费用已确认，是否重新填写！", "提示", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    return false;
+                }
+                else
+                {
+                    GetControlByFieldName("Taskcode").SetValue(taskCode + "?");
+                };
+            }
+
+            //验证任务单好和样本型号匹配
+            string sampleModel = GetControlByFieldName("SampleModel").Value().Trim();
+            //任务单号有疑问或者样本模型为空，不做进一步验证
+            if (string.IsNullOrWhiteSpace(sampleModel))
+            {
+                return true;
+            }
+
+            if (!this.taskBriefMap.ContainsKey(taskCode))
+            {
+
+                if (MessageBox.Show("该任务单号与车型不一致，是否重新填写！", "提示", MessageBoxButtons.OKCancel) != DialogResult.OK)
+                {
+                    GetControlByFieldName("Taskcode").SetValue(taskCode + "?");
+                }
+                else
+                {
+                    return false;
+                };
+            }
+
+            return true;
+        }
+
+        private TestStatisticEntity extractDataFromUi()
+        {
+            this.testStatisticEntity = new TestStatisticEntity();
+
+            this.testStatisticEntity.Id = int.Parse(this.getValue("ID"));
+            this.testStatisticEntity.Department = ((TitleCombox)GetControlByFieldName("department")).Text;
+            this.testStatisticEntity.ExperimentalSite = ((TitleCombox)GetControlByFieldName("ExperimentalSite")).Text;
+            this.testStatisticEntity.LocationNumber = ((TitleCombox)GetControlByFieldName("LocationNumber")).Text;
+            this.testStatisticEntity.Registrant = ((TitleCombox)GetControlByFieldName("Registrant")).Text;
+            this.testStatisticEntity.Taskcode = ((TitleCombox)GetControlByFieldName("Taskcode")).Text;
+            this.testStatisticEntity.Taskcode2 = ((TitleCombox)GetControlByFieldName("Taskcode2")).Text;
+            this.testStatisticEntity.CarType = ((TitleCombox)GetControlByFieldName("CarType")).Text;
+            this.testStatisticEntity.ItemType = ((TitleCombox)GetControlByFieldName("ItemType")).Text;
+            this.testStatisticEntity.ItemBrief = ((TitleCombox)GetControlByFieldName("ItemBrief")).Text;
+            this.testStatisticEntity.TestStartDate = ((DateEdit)GetControlByFieldName("TestStartDate")).Date;
+            this.testStatisticEntity.TestEndDate = ((DateEdit)GetControlByFieldName("TestEndDate")).Date;
+            this.testStatisticEntity.TestTime = ((TitleCombox)GetControlByFieldName("Testtime")).Text;
+            this.testStatisticEntity.SampleModel = ((TitleCombox)GetControlByFieldName("SampleModel")).Text;
+            this.testStatisticEntity.Producer = ((TitleCombox)GetControlByFieldName("Producer")).Text;
+            this.testStatisticEntity.CarVin = ((TitleCombox)GetControlByFieldName("Carvin")).Text;
+            this.testStatisticEntity.Confidentiality = ((TitleCombox)GetControlByFieldName("Confidentiality")).Text;
+            this.testStatisticEntity.YNDirect = ((TitleCombox)GetControlByFieldName("YNDirect")).Text;
+            this.testStatisticEntity.PowerType = ((TitleCombox)GetControlByFieldName("PowerType")).Text;
+            this.testStatisticEntity.TransmissionType = ((TitleCombox)GetControlByFieldName("TransmissionType")).Text;
+            this.testStatisticEntity.EngineModel = ((TitleCombox)GetControlByFieldName("EngineModel")).Text;
+            this.testStatisticEntity.EngineProduct = ((TitleCombox)GetControlByFieldName("EngineProduct")).Text;
+            this.testStatisticEntity.DriverType = ((TitleCombox)GetControlByFieldName("Drivertype")).Text;
+            this.testStatisticEntity.TirePressure = ((TitleCombox)GetControlByFieldName("Tirepressure")).Text;
+            this.testStatisticEntity.NationalFive = ((TitleCombox)GetControlByFieldName("Tirepressure")).Text;
+            this.testStatisticEntity.NationalSix = ((TitleCombox)GetControlByFieldName("NationalSix")).Text;
+            this.testStatisticEntity.StartMileage = ((TitleCombox)GetControlByFieldName("StartMileage")).Text;
+            this.testStatisticEntity.EndMileage = ((TitleCombox)GetControlByFieldName("EndMileage")).Text;
+            this.testStatisticEntity.TotalMileage = ((TitleCombox)GetControlByFieldName("TotalMileage")).Text;
+            this.testStatisticEntity.FuelType = ((TitleCombox)GetControlByFieldName("FuelType")).Text;
+            this.testStatisticEntity.Oil = ((TitleCombox)GetControlByFieldName("Oil")).Text;
+            this.testStatisticEntity.FuelLabel = ((TitleCombox)GetControlByFieldName("FuelLabel")).Text;
+            this.testStatisticEntity.StandardStage = ((TitleCombox)GetControlByFieldName("StandardStage")).Text;
+            this.testStatisticEntity.YNcountry = ((TitleCombox)GetControlByFieldName("YNcountry")).Text;
+            this.testStatisticEntity.ProjectPrice = this.string2Double((((TitleCombox)GetControlByFieldName("ProjectPrice"))).Text);
+            this.testStatisticEntity.ProjectTotal = this.string2Double((((TitleCombox)GetControlByFieldName("ProjectTotal"))).Text);
+            this.testStatisticEntity.PriceDetail = ((TitleCombox)GetControlByFieldName("PriceDetail")).Text;
+            this.testStatisticEntity.Finishstate = ((TitleCombox)GetControlByFieldName("Finishstate")).Text;
+            this.testStatisticEntity.QualificationStatus = ((TitleCombox)GetControlByFieldName("QualificationStatus")).Text;
+            this.testStatisticEntity.LogisticsInformation = ((TitleCombox)GetControlByFieldName("LogisticsInformation")).Text;
+            this.testStatisticEntity.Remark = ((TitleCombox)GetControlByFieldName("Remark")).Text;
+            this.testStatisticEntity.Contacts = ((TitleCombox)GetControlByFieldName("Contacts")).Text;
+            this.testStatisticEntity.PhoneNum = ((TitleCombox)GetControlByFieldName("phoneNum")).Text;
+            this.testStatisticEntity.Email = ((TitleCombox)GetControlByFieldName("Email")).Text;
+            this.testStatisticEntity.MoneySure = ((TitleCombox)GetControlByFieldName("MoneySure")).Text;
+            this.testStatisticEntity.RegistrationDate = this.oriTestStatisticEntity.RegistrationDate;
+            this.testStatisticEntity.Question = this.oriTestStatisticEntity.Question;
+            this.testStatisticEntity.setEquipments(this.itemEquipments);
+
+            //维护信息
+            this.testStatisticEntity.CreateUser = this.oriTestStatisticEntity.CreateUser;
+            this.testStatisticEntity.CreateTime = this.oriTestStatisticEntity.CreateTime;
+            this.testStatisticEntity.UpdateTime = DateTime.Now;
+
+
+            return testStatisticEntity;
+        }
+
+        private void buildTestEquipmentRecords()
+        {
+            this.equipmentUsageRecordEntities = new List<EquipmentUsageRecordEntity>();
+
+            this.itemEquipments.ForEach(equipment =>
+            {
+                EquipmentUsageRecordEntity entity = new EquipmentUsageRecordEntity()
+                .defaultParam()
+                .equipmentInfo(equipment)
+                .fromTest(this.testStatisticEntity);
+
+                this.equipmentUsageRecordEntities.Add(entity);
+            });
+        }
+
+        private bool validateTestStatisticParam(out string errorInfo)
+        {
+            errorInfo = this.testStatisticEntity.validate();
+
+            return string.IsNullOrWhiteSpace(errorInfo);
+        }
+
+        private void syncSampleStrategy()
+        {
+            //构造样本信息
+            this.updatedSampleBrief = this.testStatisticEntity.sampleBriefInfo();
+            this.updatedSampleBrief.SampleType = "整车";
+            if (this.sampleOfVin == null || this.sampleOfVin.FromSampleTable == null)
+            {
+                this.isAddSample = true;
+                return;
+            }
+            this.updatedSampleBrief.Id = this.sampleOfVin.FromSampleTable.Id;
+            this.updatedSampleBrief.SampleType = this.sampleOfVin.FromSampleTable.SampleType;
+            this.isNeedUpdateSample = !this.sampleOfVin.FromSampleTable.equals(this.updatedSampleBrief);
+        }
+
+        private void syncItemEquipmentStrategy()
+        {
+            //新添加则直接保存
+            this.itemNowEquipmentCodes = this.itemEquipments.Select(item => item.Code).ToList();
+            List<string> itemOriEquipmentCodes = this.itemOriEquipmentsMap[this.itemName].Select(item => item.Code).ToList();
+            if (Collections.isEmpty(itemOriEquipmentCodes))
+            {
+                this.isAddItemEquipments = true;
+                return;
+            }
+
+            this.isNeedUpdateItemEquipments = !Collections.equals(itemOriEquipmentCodes, itemNowEquipmentCodes);
+        }
+
+        private void updateTestEquipmentStrategy()
+        {
+            //新添加则直接保存
+            this.itemNowEquipmentCodes = this.itemEquipments.Select(item => item.Code).ToList();
+
+            this.isNeedReplaceTestEquipments = !Collections.equals(oriTestEquipmentCodes, itemNowEquipmentCodes);
+
+            //构造实验用设备记录
+            if (this.isNeedReplaceTestEquipments)
+            {
+                this.buildTestEquipmentRecords();
+            }
+            else
+            {
+                this.equipmentUsageRecordTestPart = new EquipmentUsageRecordTestPart().fromTest(this.testStatisticEntity);
+                EquipmentUsageRecordTestPart oriEquipmentUsageRecordTestPart = new EquipmentUsageRecordTestPart().fromTest(this.oriTestStatisticEntity);
+                this.isNeedUpdateEquipmentRecordTestProperty = !this.equipmentUsageRecordTestPart.equals(oriEquipmentUsageRecordTestPart);
+            }
+        }
+
+        private void executeSaveData()
+        {
+            //保存统计信息
+            this.testStatisticId = this.testStatisticRepository.save(this.testStatisticEntity);
+            this.testStatisticEntity.Id = this.testStatisticId;
+
+            //保存设备使用记录
+            if (this.isNeedReplaceTestEquipments)
+            {
+                this.equipmentUsageRecordRepository.removeByTestTaskId(testStatisticId);
+                this.equipmentUsageRecordEntities.ForEach(entity => entity.TestTaskId = testStatisticId);
+                this.equipmentUsageRecordRepository.batchSave(this.equipmentUsageRecordEntities);
+            }
+            else if (this.isNeedUpdateEquipmentRecordTestProperty)
+            {
+                this.equipmentUsageRecordRepository.updateTestTaskProperty(this.equipmentUsageRecordTestPart);
+
+                this.updateEquipmentUsageRecordrRemark();
+            }
+
+
+            //更新样本信息
+            if (isAddSample)
+            {
+                this.sampleCommandService.createByBrief(this.updatedSampleBrief);
+            }
+            else if (isUpdateSample)
+            {
+                this.sampleCommandService.updateByBrief(this.updatedSampleBrief);
+            }
+
+            //更新项目设备信息
+            if (isAddItemEquipments)
+            {
+                this.equipmentCommandService.createItemEquipments(this.testStatisticEntity.ItemBrief,
+                    this.testStatisticEntity.Department, this.itemNowEquipmentCodes);
+            }
+            else if (isUpdateItemEquipments)
+            {
+                this.equipmentCommandService.updateItemEquipments(this.testStatisticEntity.ItemBrief,
+                    this.testStatisticEntity.Department, this.itemNowEquipmentCodes);
+            }
+            this.itemOriEquipmentsMap[this.testStatisticEntity.ItemBrief] = this.itemEquipments;
+
+        }
+
+        private void FinishStateChangeHandler(object sender, EventArgs e)
+        {
+            if (!FinishState.Value().Trim().Equals("已完成"))
+            {
+                FinishMonth.SetValue("");
+                return;
+            }
+            else
+            {
+                string month = DateTime.Now.ToString("yyyy-MM-dd");
+                FinishMonth.SetValue(month);
+            }
+
+            //if (string.IsNullOrWhiteSpace(PlanMonth.Value()))
+            //    return;
+
+        }
+
+        protected override bool FieldVisible(DataField field)
+        {
+            if (!IsAllocateTask)
+                return field.EditorVisible;
+            else
+                return field.EditorVisible && field.Group.Equals("分配试验任务");
+        }
+
+
+        private void ProjectPriceHandler(object sender, EventArgs e)
+        {
+
+           if (!(GetControlByFieldName("ProjectPrice") is TitleCombox ProjectPrice) ||
+              !(GetControlByFieldName("ProjectTotal") is TitleCombox ProjectTotal))
+                return;
+            if (ProjectTotal.Value() == "")
+            {
+                ProjectTotal.SetValue(ProjectPrice.Value().ToString());
+            }
 
 
         }
+
+        private void MileageHandler(object sender, EventArgs e)
+        {
+
+            if (!(GetControlByFieldName("StartMileage") is TitleCombox StartMileage) ||
+                !(GetControlByFieldName("EndMileage") is TitleCombox EndMileage) ||
+                !(GetControlByFieldName("TotalMileage") is TitleCombox TotalMileage))
+                return;
+
+            double.TryParse(StartMileage.Value(), out var start);
+            double.TryParse(EndMileage.Value(), out var end);
+            var total = end > start ? end - start : 0;
+            TotalMileage.SetValue(total.ToString());
+        }
+
+
+        /// <summary>
+        /// 耐久组
+        /// </summary>
+        /// <param name="department"></param>
+        /// <param name="vin"></param>
+        /// <param name="startDate"></param>
+        /// <param name="startMileage"></param>
+        /// <returns></returns>
+        public static bool IsStartMileageRight(string department, string vin, DateTime startDate, double startMileage)
+        {
+            if (string.IsNullOrWhiteSpace(vin) || !department.Equals("耐久组"))
+                return true;
+            var strsql = $" select * from TaskTable where  carvin='{vin}' " + $" and ISNUMERIC(EndMileage)=1 and EndMileage>{startMileage} and TestStartDate<@startDate";
+
+            var sql = new DataControl();
+
+            var dt = sql.ExecuteQuery(strsql, new[] {
+                    new SqlParameter("startDate",startDate)
+                });
+            return dt.Tables[0].Rows.Count == 0;
+
+        }
+        /// <summary>
+        /// 其他组
+        /// </summary>
+        /// <param name="department"></param>
+        /// <param name="vin"></param>
+        /// <param name="startDate"></param>
+        /// <param name="startMileage"></param>
+        /// <returns></returns>
+        public static bool OtherMileageRight(string department, string vin, DateTime startDate, double startMileage)
+        {
+            if (string.IsNullOrWhiteSpace(vin))
+                return true;
+            var strsql = $" select * from TaskTable where  carvin='{vin}' " + $" and  startMileage>{startMileage} and TestStartDate<@startDate";
+
+            var sql = new DataControl();
+
+            var dt = sql.ExecuteQuery(strsql, new[] {
+                    new SqlParameter("startDate",startDate)
+                });
+            return dt.Tables[0].Rows.Count == 0;
+
+        }
+
+
+        /// <summary>
+        /// 时间自动计算
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TimeSpanHandler(object sender, EventArgs e)
+        {
+            if (!(GetControlByFieldName("TestStartDate") is DateEdit StartTime) ||
+                !(GetControlByFieldName("TestEndDate") is DateEdit EndTime) ||
+                !(GetControlByFieldName("Testtime") is TitleCombox TimeSpan)) return;
+
+            if (EndTime.Value() == null)
+            {
+                return;
+            }
+            var start = StartTime.Value().Replace("：", ":");
+            var end = EndTime.Value().Replace("：", ":");
+
+            if (!DateTime.TryParse(start, out var startTime) || !DateTime.TryParse(end, out var endTime))
+                return;
+
+            var span = endTime - startTime;
+            TimeSpan.SetValue(span.TotalHours.ToString());
+
+        }
+
+        private void TaskEditDialog_Shown(object sender, EventArgs e)
+        {
+            Log.e("TaskEditDialog_Shown");
+
+        }
+
+
+        private void buildOriTestStatisticEntity()
+        {
+            this.oriTestStatisticEntity = new TestStatisticEntity();
+            this.oriTestStatisticEntity.Id = int.Parse(this.getValue("ID"));
+
+            this.oriTestStatisticEntity.Department = this.getValue("department");
+
+            this.oriTestStatisticEntity.ExperimentalSite = this.getValue("ExperimentalSite");
+            this.oriTestStatisticEntity.LocationNumber = this.getValue("LocationNumber");
+            this.oriTestStatisticEntity.Registrant = this.getValue("Registrant");
+            this.oriTestStatisticEntity.Taskcode = this.getValue("Taskcode");
+            this.oriTestStatisticEntity.Taskcode2 = this.getValue("Taskcode2");
+            this.oriTestStatisticEntity.CarType = this.getValue("CarType");
+            this.oriTestStatisticEntity.ItemType = this.getValue("ItemType");
+            this.oriTestStatisticEntity.ItemBrief = this.getValue("ItemBrief");
+            this.oriTestStatisticEntity.TestStartDate = this.string2DateTime(this.getValue("TestStartDate"));
+            this.oriTestStatisticEntity.TestEndDate = this.string2DateTime(this.getValue("TestEndDate"));
+            this.oriTestStatisticEntity.TestTime = this.getValue("Testtime");
+            this.oriTestStatisticEntity.SampleModel = this.getValue("SampleModel");
+            this.oriTestStatisticEntity.Producer = this.getValue("Producer");
+            this.oriTestStatisticEntity.CarVin = this.getValue("Carvin");
+            this.oriTestStatisticEntity.Confidentiality = this.getValue("Confidentiality");
+            this.oriTestStatisticEntity.YNDirect = this.getValue("YNDirect");
+            this.oriTestStatisticEntity.PowerType = this.getValue("PowerType");
+            this.oriTestStatisticEntity.TransmissionType = this.getValue("TransmissionType");
+            this.oriTestStatisticEntity.EngineModel = this.getValue("EngineModel");
+            this.oriTestStatisticEntity.EngineProduct = this.getValue("EngineProduct");
+            this.oriTestStatisticEntity.DriverType = this.getValue("Drivertype");
+            this.oriTestStatisticEntity.TirePressure = this.getValue("Tirepressure");
+            this.oriTestStatisticEntity.NationalFive = this.getValue("Tirepressure");
+            this.oriTestStatisticEntity.NationalSix = this.getValue("NationalSix");
+            this.oriTestStatisticEntity.StartMileage = this.getValue("StartMileage");
+            this.oriTestStatisticEntity.EndMileage = this.getValue("EndMileage");
+            this.oriTestStatisticEntity.TotalMileage = this.getValue("TotalMileage");
+            this.oriTestStatisticEntity.FuelType = this.getValue("FuelType");
+            this.oriTestStatisticEntity.Oil = this.getValue("Oil");
+            this.oriTestStatisticEntity.FuelLabel = this.getValue("FuelLabel");
+            this.oriTestStatisticEntity.StandardStage = this.getValue("StandardStage");
+            this.oriTestStatisticEntity.YNcountry = this.getValue("YNcountry");
+            this.oriTestStatisticEntity.ProjectPrice = this.string2Double(this.getValue("ProjectPrice"));
+            this.oriTestStatisticEntity.ProjectTotal = this.string2Double(this.getValue("ProjectTotal"));
+            this.oriTestStatisticEntity.PriceDetail = this.getValue("PriceDetail");
+            this.oriTestStatisticEntity.Finishstate = this.getValue("Finishstate");
+            this.oriTestStatisticEntity.QualificationStatus = this.getValue("QualificationStatus");
+            this.oriTestStatisticEntity.LogisticsInformation = this.getValue("LogisticsInformation");
+            this.oriTestStatisticEntity.Remark = this.getValue("Remark");
+            this.oriTestStatisticEntity.Contacts = this.getValue("Contacts");
+            this.oriTestStatisticEntity.PhoneNum = this.getValue("phoneNum");
+            this.oriTestStatisticEntity.Email = this.getValue("Email");
+            this.oriTestStatisticEntity.MoneySure = this.getValue("MoneySure");
+            this.oriTestStatisticEntity.RegistrationDate = this.getValue("RegistrationDate");
+            this.oriTestStatisticEntity.Question = this.getValue("question");
+            this.oriTestStatisticEntity.Equipments = this.getValue("Equipments");
+        }
+
+        private DateTime string2DateTime(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return DateTime.MinValue;
+            }
+
+            return DateTime.Parse(content);
+        }
+
+        private double string2Double(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return -1;
+            }
+
+            return double.Parse(content);
+        }
+
+        private void initData()
+        {
+            this.buildOriTestStatisticEntity();
+            this.testStatisticId = int.Parse(getValue("ID"));
+            UseHolder.Instance.CurrentUser = FormSignIn.CurrentUser;
+            this.vins = this.sampleQueryService.allSampleVins();
+            this.equipmentBreiefViewModels = this.equipmentQueryService.usingEquipments(UseHolder.Instance.CurrentUser.Department);
+            this.equipmentMap = new Dictionary<string, EquipmentBreiefViewModel>();
+            this.equipmentBreiefViewModels.ForEach(item => {
+                if (!equipmentMap.ContainsKey(item.ToString()))
+                {
+                    equipmentMap.Add(item.ToString(), item);
+                }
+            });
+            this.initUserStructureData();
+
+            //查询实验任务的设备信息
+            this.testEquipments = this.equipmentUsageRecordRepository.litesOfTestTask(this.testStatisticId);
+            this.itemEquipments = this.testEquipments.Select(item=>item.toEquipmentLite()).ToList();
+            this.oriTestEquipmentCodes = this.itemEquipments.Select(item => item.Code).ToList();
+            this.itemName = getValue("ItemBrief");
+            if (!string.IsNullOrWhiteSpace(this.itemName) && !Collections.isEmpty(this.itemEquipments))
+            {
+                this.itemOriEquipmentsMap.Add(this.itemName, this.itemEquipments.Select(item => item.copy()).ToList());
+            }
+        }
+
+        private void initUserStructureData()
+        {
+            this.userStructureLites = this.userStructureRepository.selectByUser(FormSignIn.CurrentUser.Name);
+            this.groups = new List<string>();
+            this.experimentSites = new List<string>();
+            this.locationNumbers = new List<string>();
+            this.userStructureLites.ForEach(item =>
+            {
+                if (!this.groups.Contains(item.Group))
+                {
+                    this.groups.Add(item.Group);
+                }
+                if (!this.experimentSites.Contains(item.ExperimentSite))
+                {
+                    this.experimentSites.Add(item.ExperimentSite);
+                }
+                if (!this.locationNumbers.Contains(item.LocationNumber))
+                {
+                    this.locationNumbers.Add(item.LocationNumber);
+                }
+            });
+            Form1.ComboxDictionary["实验地点"].ForEach(item =>
+            {
+                if (!this.experimentSites.Contains(item))
+                {
+                    this.experimentSites.Add(item);
+                }
+            });
+            Form1.ComboxDictionary["定位编号"].ForEach(item =>
+            {
+                if (!this.locationNumbers.Contains(item))
+                {
+                    this.locationNumbers.Add(item);
+                }
+            });
+        }
+
+        private void initView()
+        {
+            this.Text = "编辑试验计划";
+            this.btnAddEquipment.Enabled = false;
+            this.initUsingEquipmentListView();
+            this.initCombox();
+            this.initViewValue();
+        }
+
+        private void initCombox()
+        {
+            titleCombox3.SetItems(this.experimentSites);
+            titleCombox1.SetItems(this.locationNumbers);
+            ((TitleCombox)GetControlByFieldName("Carvin")).SetItems(this.vins);
+            this.initEquipmentCombox();
+            ((TitleCombox)GetControlByFieldName("Carvin")).SetTextChange(VinChangeHandler);
+            ((TitleCombox)GetControlByFieldName("ItemBrief")).SetTextChange(itemChangeHandler);
+            ((TitleCombox)GetControlByFieldName("SampleModel")).SetTextChange(sampleModelChangeHandler);
+             ((TitleCombox)GetControlByFieldName("Taskcode")).SetTextChange(taskCodeChangeHandler);
+            ((TitleCombox)GetControlByFieldName("Confidentiality")).SetTextChange(confidentialityChangeHandler);
+        }
+
+        private void initViewValue()
+        {
+            //更新National信息
+            string vin = ((TitleCombox)GetControlByFieldName("Carvin")).Text;
+            this.updateNationalAfterVinChanged(vin);
+
+            //更新任务单号信息
+            sampleModelChangeEvent();
+
+            //回显设备信息
+            this.updateUsingEquipmentViewAfterInitLoad();
+
+            //获取vin的样本信息
+            this.getSampleOfVin(vin);
+        }
+
+        private void initUsingEquipmentListView()
+        {
+            this.setListViewUsingEquipmentRowHeight();
+            btn.Visible = false;
+            btn.Text = "删除";
+            btn.Click += this.button_Click;
+            this.listViewUsingEquipment.Controls.Add(btn);
+        }
+
+        private void updateUsingEquipmentViewAfterItemChanged()
+        {
+            btn.Visible = false;
+            this.listViewUsingEquipment.Items.Clear();
+            string group = ((TitleCombox)GetControlByFieldName("department")).Text.Trim();
+            if (string.IsNullOrEmpty(this.itemName) || string.IsNullOrWhiteSpace(group))
+            {
+                return;
+            }
+            this.btnAddEquipment.Enabled = true;
+
+            //之前已经加载过
+            if (this.itemOriEquipmentsMap.ContainsKey(this.itemName))
+            {
+                this.itemEquipments = this.itemOriEquipmentsMap[this.itemName];
+            }
+            else
+            {
+                this.itemEquipments = this.equipmentQueryService.equipmentsOfItem(this.itemName, group);
+                this.itemOriEquipmentsMap.Add(this.itemName, this.itemEquipments.Select(item => item.copy()).ToList());
+            }
+
+
+            //当前项目的设备code和设备的字典
+            this.itemEquipmentMap = new Dictionary<string, EquipmentLite>();
+            this.itemEquipments.ForEach(item => itemEquipmentMap.Add(item.Code, item));
+            this.notifyEquipmentListViewChanged();
+        }
+
+        private void updateUsingEquipmentViewAfterInitLoad()
+        {
+            btn.Visible = false;
+            this.listViewUsingEquipment.Items.Clear();
+            if (Collections.isEmpty(this.itemEquipments))
+            {
+                return;
+            }
+            this.btnAddEquipment.Enabled = true;
+
+
+            //当前项目的设备code和设备的字典
+            this.itemEquipmentMap = new Dictionary<string, EquipmentLite>();
+            this.itemEquipments.ForEach(item => itemEquipmentMap.Add(item.Code, item));
+            this.notifyEquipmentListViewChanged();
+        }
+
+        private void notifyEquipmentListViewChanged()
+        {
+            if (Collections.isEmpty(this.itemEquipments))
+            {
+                return;
+            }
+            this.setListViewUsingEquipmentRowHeight();
+
+            //填充数据
+            ListViewItem[] lvs = new ListViewItem[this.itemEquipments.Count];
+            for (int index = 0; index < this.itemEquipments.Count; index++)
+            {
+                EquipmentLite curEquipment = this.itemEquipments[index];
+                lvs[index] = new ListViewItem(new string[] { curEquipment.Code, curEquipment.Name, curEquipment.Type, curEquipment.Group, "" });
+            }
+
+            //更新ui
+            this.listViewUsingEquipment.Items.Clear();
+            this.listViewUsingEquipment.Items.AddRange(lvs);
+
+            //设置删除事件
+            this.setEquipmentListViewItemRemoveButton();
+        }
+
+        private void setListViewUsingEquipmentRowHeight()
+        {
+            ImageList imgList = new ImageList();
+            imgList.ImageSize = new Size(1, 25);
+            this.listViewUsingEquipment.SmallImageList = imgList;
+        }
+
+        private void setEquipmentListViewItemRemoveButton()
+        {
+            //删除按钮         
+            this.btn.Size = new Size(this.listViewUsingEquipment.Items[0].SubItems[4].Bounds.Width,
+            this.listViewUsingEquipment.Items[0].SubItems[4].Bounds.Height);
+        }
+
+        private void addEquipment()
+        {
+            string newEquipmentValue = this.titleComboxEquip.Text;
+            string newEquipmentCode = this.equipmentMap[newEquipmentValue].Code;
+            if (this.itemEquipmentMap.ContainsKey(newEquipmentCode))
+            {
+                return;
+            }
+            EquipmentBreiefViewModel newEquipment = this.equipmentMap[newEquipmentValue];
+            EquipmentLite addedEquipmentLite = newEquipment.toEquipmentLite();
+            this.itemEquipments.Add(addedEquipmentLite);
+            this.itemEquipmentMap.Add(addedEquipmentLite.Code, addedEquipmentLite);
+
+            //填充数据
+            ListViewItem lvItem = new ListViewItem(new string[] { addedEquipmentLite.Code, addedEquipmentLite.Name, addedEquipmentLite.Type, addedEquipmentLite.Group, "" });
+            //更新ui
+            this.listViewUsingEquipment.Items.Add(lvItem);
+            if (this.listViewUsingEquipment.Items.Count == 1)
+            {
+                //设置删除事件
+                this.setEquipmentListViewItemRemoveButton();
+            }
+
+        }
+
+        private void removeEquipment(string removedEquipmentCode)
+        {
+            //数据同步
+            int removedIndex = this.itemEquipments.FindIndex(item => item.Code.Equals(removedEquipmentCode));
+            this.itemEquipments.RemoveAt(removedIndex);
+            this.itemEquipmentMap.Remove(removedEquipmentCode);
+
+
+            //更新ui
+            this.listViewUsingEquipment.Items.RemoveAt(removedIndex);
+            btn.Visible = false;
+        }
+
+        private void initEquipmentCombox()
+        {
+            List<Object> vms = this.equipmentBreiefViewModels.Select(item => (Object)item).ToList();
+            titleComboxEquip.SetViewmModels(vms);
+        }
+
+        private void VinChangeHandler(object sender, EventArgs e)
+        {
+            string vin = ((TitleCombox)GetControlByFieldName("Carvin")).Text;
+
+            //更新nation信息
+            this.updateNationalAfterVinChanged(vin);
+        
+            this.afterVinChanged(vin);
+        }
+
+        private void updateNationalAfterVinChanged(string vin)
+        {
+            if (string.IsNullOrWhiteSpace(vin))
+            {
+                titleCombox25.SetItems(new List<string>());
+                titleCombox26.SetItems(new List<string>());
+
+                return;
+            }
+
+            string sql0 = $"select NationalFive,NationalSix from teststatistic where Carvin ='{vin}'";
+            List<string> list1 = new List<string>();
+            //list1 = null;
+            List<string> list2 = new List<string>();
+            //list2 = null;
+            foreach (DataRow row in SqlHelper.GetList(sql0).Rows)
+            {
+                if (row[0].ToString() != "")
+                {
+                    list1.Add(row[0].ToString());
+                }
+                if (row[1].ToString() != "")
+                {
+                    list2.Add(row[1].ToString());
+                }
+            }
+            if (list1 != null)
+            {
+                titleCombox25.SetItems(list1);
+            }
+            if (list2 != null)
+            {
+                titleCombox26.SetItems(list2);
+            }
+        }
+
+        private void updateTaskCodeAfterSampleModelChanged(string sampleModel)
+        {
+            //更新任务单号列表
+            this.taskBriefs = this.taskRepository.selectBySampleModel(sampleModel);
+            this.taskBriefMap = new Dictionary<string, TaskBrief>();
+            List<string> taskCodes = new List<string>();
+            this.taskBriefs.ForEach(item =>
+            {
+                if (!this.taskBriefMap.ContainsKey(item.TaskCode))
+                {
+                    this.taskBriefMap.Add(item.TaskCode, item);
+                }
+                taskCodes.Add(item.TaskCode);
+            });
+            titleCombox11.SetItems(taskCodes);
+
+            //更新任务单号内容
+            string taskCode = GetControlByFieldName("Taskcode").Value().Trim();
+            if (string.IsNullOrWhiteSpace(taskCode))
+            {
+                return;
+            }
+            if (taskCode.Contains("?"))
+            {
+                string taskCodeHandled = taskCode.Replace("?", "");
+                if (this.taskBriefMap.ContainsKey(taskCodeHandled))
+                {
+                    GetControlByFieldName("Taskcode").SetValue(taskCodeHandled);
+                }
+            }
+            else
+            {
+                if (!this.taskBriefMap.ContainsKey(taskCode))
+                {
+                    GetControlByFieldName("Taskcode").SetValue(taskCode + "?");
+                }
+            }
+        }
+
+        private void afterVinChanged(string vin)
+        {
+            SampleBrief sample = this.getSampleOfVin(vin);
+            if (sample == null)
+            {
+                return;
+            }
+
+            //更新ui
+            //titleComboxSampleType.SetValue(sample.SampleType);
+            this.setComboxValue("CarType", sample.CarType);
+            this.setComboxValue("SampleModel", sample.CarModel);
+            this.setComboxValue("Producer", sample.Producer);
+            this.setComboxValue("PowerType", sample.PowerType);
+            this.setComboxValue("EngineModel", sample.EngineModel);
+            this.setComboxValue("EngineProduct", sample.EngineProducer);
+            this.setComboxValue("YNDirect", sample.YNDirect);
+            this.setComboxValue("TransmissionType", sample.TransType);
+            this.setComboxValue("Drivertype", sample.DriverType);
+            this.setComboxValue("FuelType", sample.FuelType);
+            this.setComboxValue("FuelLabel", sample.Roz);
+
+        }
+
+        private void updateEquipmentUsageRecordrRemark() {
+            List<EquipmentUsageRecordLite> needUpdateRemarkRecords = new List<EquipmentUsageRecordLite>();
+
+            //保密级别由A变为其他的
+            if (StringUtils.isEquals(oriTestStatisticEntity.Confidentiality, "A")
+                && !StringUtils.isEquals(testStatisticEntity.Confidentiality, "A")) {
+                testEquipments.ForEach(item =>
+                {
+                    if (item.Remark.Contains(ConstHolder.SECURITY_LEVEL_A_REAMRK_TEXT)) {
+                        item.Remark.Replace(ConstHolder.SECURITY_LEVEL_A_REAMRK_TEXT, "");
+                        needUpdateRemarkRecords.Add(item);
+                    }
+                });
+            } //保密级别由其他变为A
+            else if (!StringUtils.isEquals(oriTestStatisticEntity.Confidentiality, "A")
+              && StringUtils.isEquals(testStatisticEntity.Confidentiality, "A"))
+            {
+                testEquipments.ForEach(item =>
+                {
+                    if (!item.Remark.Contains(ConstHolder.SECURITY_LEVEL_A_REAMRK_TEXT))
+                    {
+                        item.Remark = $"{ConstHolder.SECURITY_LEVEL_A_REAMRK_TEXT}{item.Remark}";
+                        needUpdateRemarkRecords.Add(item);
+                    }
+                });
+            }
+
+            if (Collections.isEmpty(needUpdateRemarkRecords))
+            {
+                return;
+            }
+            this.equipmentUsageRecordRepository.updateRemark(needUpdateRemarkRecords);
+        }
+
+        private SampleBrief getSampleOfVin(string vin)
+        {
+            if (string.IsNullOrEmpty(vin))
+            {
+                return null;
+            }
+
+            this.sampleOfVin = this.sampleQueryService.samplesOfVin(vin);
+            if (sampleOfVin == null)
+            {
+                return null;
+            }
+            SampleBrief sample = sampleOfVin.FromSampleTable;
+            isVinFromStatistic = false;
+            if (sample == null)
+            {
+                sample = sampleOfVin.FromStatisticTable;
+                isVinFromStatistic = true;
+            }
+
+            return sample;
+        }
+        private void setComboxValue(string filedName, string value)
+        {
+            ((TitleCombox)GetControlByFieldName(filedName)).SetValue(value);
+        }
+
+        private void itemChangeHandler(object sender, EventArgs e)
+        {
+            itemChangeEvent();
+        }
+
+        private void sampleModelChangeHandler(object sender, EventArgs e)
+        {
+            sampleModelChangeEvent();
+        }
+
+
+        private void taskCodeChangeHandler(object sender, EventArgs e)
+        {
+            taskCodeChangeEvent();
+        }
+
+        private void confidentialityChangeHandler(object sender, EventArgs e)
+        {
+
+        }
+
+        private void sampleModelChangeEvent()
+        {
+            this.sampleModel = ((TitleCombox)GetControlByFieldName("SampleModel")).Text.Trim();
+            this.updateTaskCodeAfterSampleModelChanged(this.sampleModel);
+        }
+
+        private void taskCodeChangeEvent()
+        {
+            string taskCode = ((TitleCombox)GetControlByFieldName("Taskcode")).Text.Trim();
+            if (this.taskBriefMap.ContainsKey(taskCode))
+            {
+                string securityLevel = this.taskBriefMap[taskCode].SecurityLevel;
+                ((TitleCombox)GetControlByFieldName("Confidentiality")).SetValue(securityLevel);
+            }
+        }
+
+        private void itemChangeEvent()
+        {
+            //第一次
+            //if (this.isItemNameValueInitial)
+            //{
+            //    this.isItemNameValueInitial = false;
+            //    if (Collections.isEmpty(this.itemEquipments))
+            //    {
+            //        this.itemName = ((TitleCombox)GetControlByFieldName("ItemBrief")).Text.Trim();
+            //        this.updateUsingEquipmentViewAfterItemChanged();
+            //    }
+            //    return;
+            //}
+
+            this.itemName = ((TitleCombox)GetControlByFieldName("ItemBrief")).Text.Trim();
+            this.updateUsingEquipmentViewAfterItemChanged();
+        }
+
+        private void button_Click(object sender, EventArgs e)
+        {
+            //MessageBox.Show(this.listViewUsingEquipment.SelectedItems[0].SubItems[0].Text);
+            if (this.listViewUsingEquipment.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            DialogResult result = MessageBox.Show("确定删除吗？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                string removedEquipmentCode = this.listViewUsingEquipment.SelectedItems[0].SubItems[0].Text.Trim();
+                removeEquipment(removedEquipmentCode);
+            }
+            else
+            {
+                return;
+            }
+        }
+
 
         private void label9_Click(object sender, EventArgs e)
         {
@@ -524,6 +1331,30 @@ namespace TaskManager
             label5.Width = this.Width;
             label6.Width = this.Width;
             label7.Width = this.Width;
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void btnAddEquipment_Click(object sender, EventArgs e)
+        {
+            addEquipment();
+        }
+
+        private void listViewUsingEquipment_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.listViewUsingEquipment.SelectedItems.Count > 0)
+            {
+                this.btn.Location = new Point(this.listViewUsingEquipment.SelectedItems[0].SubItems[4].Bounds.Left, this.listViewUsingEquipment.SelectedItems[0].SubItems[4].Bounds.Top);
+                this.btn.Visible = true;
+            }
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

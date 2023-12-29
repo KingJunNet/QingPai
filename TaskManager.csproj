@@ -144,11 +144,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="application\iservice\IEquipmentCommandService.cs" />
     <Compile Include="application\iservice\ISampleCommandService.cs" />
+    <Compile Include="application\iservice\IEquipmentQueryService.cs" />
     <Compile Include="application\iservice\ISampleQueryService.cs" />
-    <Compile Include="application\service\ISampleCommandService.cs" />
+    <Compile Include="application\service\EquipmentCommandService.cs" />
+    <Compile Include="application\service\EquipmentQueryService.cs" />
+    <Compile Include="application\service\SampleCommandService.cs" />
     <Compile Include="application\service\SampleQueryService.cs" />
+    <Compile Include="application\viewmodel\EquipmentBreiefViewModel.cs" />
     <Compile Include="application\viewmodel\SampleOfVinViewModel.cs" />
+    <Compile Include="common\utils\Collections.cs" />
+    <Compile Include="common\utils\DbHelper.cs" />
+    <Compile Include="common\utils\Report.cs" />
+    <Compile Include="common\utils\StringUtils.cs" />
+    <Compile Include="controller\MaskLayer .cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="controller\UIHelp.cs" />
+    <Compile Include="controller\UserHelper.cs" />
     <Compile Include="Dialogs\AuthorityForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -173,20 +187,59 @@
     <Compile Include="Dialogs\ReplaceSelectRows.Designer.cs">
       <DependentUpon>ReplaceSelectRows.cs</DependentUpon>
     </Compile>
+    <Compile Include="domain\entity\BaseEntity.cs" />
+    <Compile Include="domain\entity\TaskEntity.cs" />
+    <Compile Include="domain\entity\UserEntity.cs" />
+    <Compile Include="domain\entity\UserStructureEntity.cs" />
+    <Compile Include="domain\entity\EquipmentUsageRecordEntity.cs" />
+    <Compile Include="domain\entity\EquipmentEntity.cs" />
+    <Compile Include="domain\entity\ItemEquipmentEntity.cs" />
+    <Compile Include="domain\entity\SampleEntity.cs" />
     <Compile Include="domain\entity\TestStatisticEntity.cs" />
+    <Compile Include="domain\repository\IEquipmentRepository.cs" />
+    <Compile Include="domain\repository\ITaskRepository.cs" />
+    <Compile Include="domain\repository\IUserRepository.cs" />
+    <Compile Include="domain\repository\IUserStructureRepository.cs" />
+    <Compile Include="domain\repository\IEquipmentUsageRecordRepository.cs" />
+    <Compile Include="domain\repository\IItemEquipmentRepository.cs" />
+    <Compile Include="domain\repository\ISampleRepository.cs" />
     <Compile Include="domain\repository\ITestStatisticRepository.cs" />
+    <Compile Include="domain\service\EquipmentUasageRecordExportHanlder.cs" />
+    <Compile Include="domain\service\UseHolder.cs" />
+    <Compile Include="domain\valueobject\ConstHolder.cs" />
+    <Compile Include="domain\valueobject\Enum.cs" />
+    <Compile Include="domain\valueobject\EquipmentUsageRecordLite.cs" />
+    <Compile Include="domain\valueobject\EquipmentLite.cs" />
+    <Compile Include="domain\valueobject\EquipmentBreief.cs" />
+    <Compile Include="domain\valueobject\EquipmentUsageRecordTestPart.cs" />
+    <Compile Include="domain\valueobject\TaskBrief.cs" />
     <Compile Include="domain\valueobject\SampleBrief.cs" />
-    <Compile Include="infrastructure\db\TestStatisticDbRepository.cs" />
+    <Compile Include="domain\valueobject\UserStructureLite.cs" />
+    <Compile Include="infrastructure\db\EquipmentRepository.cs" />
+    <Compile Include="infrastructure\db\TaskRepository.cs" />
+    <Compile Include="infrastructure\db\UserRepository.cs" />
+    <Compile Include="infrastructure\db\UserStructureRepository.cs" />
+    <Compile Include="infrastructure\db\EquipmentUsageRecordRepository.cs" />
+    <Compile Include="infrastructure\db\ItemEquipmentRepository.cs" />
+    <Compile Include="infrastructure\db\SampleRepository.cs" />
+    <Compile Include="infrastructure\db\TestStatisticRepository.cs" />
+    <Compile Include="infrastructure\db\BaseRepository.cs" />
     <Compile Include="MessageFilter.cs" />
     <Compile Include="Model\Copy.cs" />
     <Compile Include="Model\Filter.cs" />
     <Compile Include="Model\MyDelegate.cs" />
     <Compile Include="Model\SqlHelper.cs" />
-    <Compile Include="主界面\CreateTaskForm.cs">
+    <Compile Include="试验统计\CreateTaskForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="主界面\CreateTaskForm.Designer.cs">
+    <Compile Include="试验统计\CreateTaskForm.Designer.cs">
       <DependentUpon>CreateTaskForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="设备管理\EquipmentUsageRecordForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="设备管理\EquipmentUsageRecordForm.Designer.cs">
+      <DependentUpon>EquipmentUsageRecordForm.cs</DependentUpon>
     </Compile>
     <Compile Include="主界面\SampleEditDialog.cs">
       <SubType>Form</SubType>
@@ -281,10 +334,10 @@
     <Compile Include="编辑数据\FileView.Designer.cs">
       <DependentUpon>FileView.cs</DependentUpon>
     </Compile>
-    <Compile Include="主界面\EquipmentForm.cs">
+    <Compile Include="设备管理\EquipmentForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="主界面\EquipmentForm.Designer.cs">
+    <Compile Include="设备管理\EquipmentForm.Designer.cs">
       <DependentUpon>EquipmentForm.cs</DependentUpon>
     </Compile>
     <Compile Include="编辑数据\FileView1.cs">
@@ -402,11 +455,11 @@
     <Compile Include="主界面\TableControl.designer.cs">
       <DependentUpon>TableControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="试验统计\AddTestForm.cs">
+    <Compile Include="设备管理\EditEquipmentUsageRecordDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="试验统计\AddTestForm.Designer.cs">
-      <DependentUpon>AddTestForm.cs</DependentUpon>
+    <Compile Include="设备管理\EditEquipmentUsageRecordDialog.Designer.cs">
+      <DependentUpon>EditEquipmentUsageRecordDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="试验统计\TestEditDialog.cs">
       <SubType>Form</SubType>
@@ -442,8 +495,11 @@
       <DependentUpon>updateVIN.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
-    <EmbeddedResource Include="主界面\CreateTaskForm.resx">
+    <EmbeddedResource Include="试验统计\CreateTaskForm.resx">
       <DependentUpon>CreateTaskForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="设备管理\EquipmentUsageRecordForm.resx">
+      <DependentUpon>EquipmentUsageRecordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="任务管理\EditTemplate.resx">
       <DependentUpon>EditTemplate.cs</DependentUpon>
@@ -463,8 +519,8 @@
     <EmbeddedResource Include="编辑数据\StructureDialog.resx">
       <DependentUpon>StructureDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="试验统计\AddTestForm.resx">
-      <DependentUpon>AddTestForm.cs</DependentUpon>
+    <EmbeddedResource Include="设备管理\EditEquipmentUsageRecordDialog.resx">
+      <DependentUpon>EditEquipmentUsageRecordDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="试验统计\TestEditDialog.resx">
       <DependentUpon>TestEditDialog.cs</DependentUpon>
@@ -484,7 +540,7 @@
     <EmbeddedResource Include="Dialogs\ReplaceSelectRows.resx">
       <DependentUpon>ReplaceSelectRows.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="主界面\EquipmentForm.resx">
+    <EmbeddedResource Include="设备管理\EquipmentForm.resx">
       <DependentUpon>EquipmentForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="主界面\SampleEditDialog.resx">
@@ -628,7 +684,7 @@
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
     <COMReference Include="Microsoft.Office.Interop.Word">
       <Guid>{00020905-0000-0000-C000-000000000046}</Guid>
@@ -637,7 +693,7 @@
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
     <COMReference Include="Office">
       <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>

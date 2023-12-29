@@ -16,6 +16,7 @@ using TaskManager.编辑数据;
 using TaskManager.Properties;
 using IWshRuntimeLibrary;
 using System.Text.RegularExpressions;
+using TaskManager.domain.valueobject;
 
 namespace TaskManager
 {
@@ -359,6 +360,8 @@ namespace TaskManager
 
         private EquipmentForm formEquipmentAll;
 
+        private EquipmentUsageRecordForm EquipmentUsageRecordForm;
+
         private CreateTaskForm CreateTaskForm;
 
         private StatisticForm formStatistic;
@@ -409,6 +412,46 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// 设备使用记录管理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void accordionControlElement39_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Log.e("OpenForm EquipmentUsageRecord");
+                ShowWaitForm();
+
+                if (EquipmentUsageRecordForm == null || EquipmentUsageRecordForm.IsDisposed)
+                {
+                    EquipmentUsageRecordForm = new EquipmentUsageRecordForm(FormType.EquipmentUsageRecord, null)
+                    {
+                        MdiParent = this,
+                        WindowState = FormWindowState.Maximized
+                    };
+                    EquipmentUsageRecordForm.Show();
+                }
+                else
+                {
+                    EquipmentUsageRecordForm.MdiParent = this;
+                    EquipmentUsageRecordForm.WindowState = FormWindowState.Maximized;
+                    EquipmentUsageRecordForm.Show();
+                    EquipmentUsageRecordForm.Activate();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.e($"OpenForm EquipmentUsageRecordForm {ex}");
+            }
+            finally
+            {
+                Log.e("OpenForm EquipmentUsageRecordForm Finish");
+                CloseWaitForm();
+            }
+        }
+
         private void CreateTask_Click(object sender, EventArgs e)
         {
             try
@@ -418,7 +461,7 @@ namespace TaskManager
 
                 if (CreateTaskForm == null || CreateTaskForm.IsDisposed)
                 {
-                    CreateTaskForm = new CreateTaskForm()
+                    CreateTaskForm = new CreateTaskForm(CreateTestTaskFrom.MAIN_FORM)
                     {
                         MdiParent = this,
                         WindowState = FormWindowState.Maximized
@@ -830,7 +873,9 @@ namespace TaskManager
                 "费用确认",
                 "胎压",
                     
-                "检定地点"
+                "检定地点",
+                "设备状态",
+                "设备使用状况"
 
             };
 
@@ -917,11 +962,11 @@ namespace TaskManager
         private void Form1_Load(object sender, EventArgs e)
         {
             DataBind("任务管理", 任务管理); //任务管理
-            DataBind("样品信息", 样品信息);
+            DataBind("样品信息", 样品管理);
             DataBind("试验统计", 试验统计);
             DataBind("项目报价", 项目报价);
 
-            WebsiteBind(系统网址);
+            WebsiteBind(网址链接);
 
         
 
@@ -1476,7 +1521,7 @@ namespace TaskManager
         private void Website_freshwibesite()
         {
 
-            WebsiteBind(系统网址);
+            WebsiteBind(网址链接);
         }
 
         public  void WebsiteBind(AccordionControlElement name)
@@ -1591,7 +1636,7 @@ namespace TaskManager
             
             if (alertnum == 2)
             {
-                judgeEquip();
+                //judgeEquip();
                 alertnum = 0;
             }
         }

@@ -107,7 +107,7 @@
             this.barEditItem2,
             this.barEditItem3,
             this.barButtonItem8});
-            this.ribbonControl1.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.ribbonControl1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.ribbonControl1.MaxItemId = 69;
             this.ribbonControl1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemDateEdit2,
@@ -116,7 +116,7 @@
             this.repositoryItemSearchControl1,
             this.repositoryItemTextEdit6,
             this.repositoryItemButtonEdit1});
-            this.ribbonControl1.Size = new System.Drawing.Size(2024, 230);
+            this.ribbonControl1.Size = new System.Drawing.Size(1572, 190);
             this.ribbonControl1.Click += new System.EventHandler(this.ribbonControl1_Click);
             // 
             // ribbonPage1
@@ -152,9 +152,8 @@
             // 
             // _control
             // 
-            this._control.Location = new System.Drawing.Point(0, 230);
-            this._control.Margin = new System.Windows.Forms.Padding(2, 5, 2, 5);
-            this._control.Size = new System.Drawing.Size(2024, 848);
+            this._control.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
+            this._control.Size = new System.Drawing.Size(1572, 702);
             this._control.Load += new System.EventHandler(this._control_Load);
             // 
             // barButtonItem2
@@ -310,29 +309,25 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 230);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 190);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.gridControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(2024, 848);
-            this.splitContainer1.SplitterDistance = 1199;
-            this.splitContainer1.SplitterWidth = 5;
+            this.splitContainer1.Size = new System.Drawing.Size(1572, 702);
+            this.splitContainer1.SplitterDistance = 929;
             this.splitContainer1.TabIndex = 13;
             this.splitContainer1.Visible = false;
             // 
             // gridControl1
             // 
             this.gridControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gridControl1.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
             this.gridControl1.Location = new System.Drawing.Point(0, 0);
             this.gridControl1.MainView = this.gridView1;
-            this.gridControl1.Margin = new System.Windows.Forms.Padding(4);
             this.gridControl1.MenuManager = this.ribbonControl1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(1199, 848);
+            this.gridControl1.Size = new System.Drawing.Size(929, 702);
             this.gridControl1.TabIndex = 0;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -382,10 +377,10 @@
             // 
             // TestStatistic
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
-            this.ClientSize = new System.Drawing.Size(2024, 1078);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
+            this.ClientSize = new System.Drawing.Size(1572, 892);
             this.Controls.Add(this.splitContainer1);
-            this.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.Name = "TestStatistic";
             this.Activated += new System.EventHandler(this.TestStatistic_Activated);
             this.Load += new System.EventHandler(this.TaskForm_Load);

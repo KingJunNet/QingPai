@@ -5,14 +5,13 @@ using DevExpress.XtraGrid.Views.Grid;
 namespace TaskManager
 {
     public enum FormType
-    {
-       
-
+    {       
         Equipment = 401,        // 设备管理
         EquipmentDepartment = 402,
+        EquipmentUsageRecord = 403,
 
-      
-        Safe=601,
+
+        Safe =601,
 
         NewTask=701,       //任务管理
         Sample =801,       //样品信息
@@ -129,17 +128,29 @@ namespace TaskManager
             
             var sql = new DataControl();
 
-            if ((int)formType < 500 && (int)formType >= 400)
-            {
-                TableName = "EquipmentTable";
-                Category = "设备管理";
-                DateCol = "CheckEndDate";
-                OrderCol = "EquipState";
+            //if ((int)formType < 500 && (int)formType >= 400)
+            //{
+            //    TableName = "EquipmentTable";
+            //    Category = "设备管理";
+            //    DateCol = "CheckEndDate";
+            //    OrderCol = "EquipState";
 
                 
+            //    StateCol = "";
+            //    ReminderCol = "";
+            //    ReadOnlyCols = new List<string> { "CheckEndDate" };
+            //}
+            if ((int)formType < 500 && (int)formType >= 400)
+            {
+                TableName = "NewEquipmentTable";
+                Category = "设备信息";
+                DateCol = "ExpireDate";
+                OrderCol = "GroupName";
+
+
                 StateCol = "";
                 ReminderCol = "";
-                ReadOnlyCols = new List<string> { "CheckEndDate" };
+                ReadOnlyCols = new List<string> { };
             }
             if (formType == FormType.Equipment)
             {
@@ -151,6 +162,37 @@ namespace TaskManager
                 Edit = true;
                 Delete = true;
             }
+
+            if (formType == FormType.EquipmentUsageRecord)
+            {
+                TableName = "EquipmentUsageRecordTable";
+                Category = "设备使用记录";
+                FormTitle = "设备使用记录";
+                Module = "设备使用记录";
+                StateCol = "";
+                ReminderCol = "";
+                DateCol = "UseTime";
+                OrderCol = "UseTime";
+
+                ReadOnlyCols = new List<string> { "EquipmentCode",
+                      "EquipmentName",
+                      "EquipmentType",
+                      "UsePerson",
+                      "UseTime",
+                      "Purpose",                                                     
+                       "Department",
+                      "LocationNumber",                    
+                      "ItemBrief",                    
+                       "SampleModel",
+                       "Producer",
+                       "CarVin"
+                       };
+
+                Add = true;
+                Edit = true;
+                Delete = true;
+            }
+
             //     else if (formType == FormType.EquipmentDepartment)
             //     {
             //         FormTitle = $"{Department}设备管理";
@@ -225,6 +267,8 @@ namespace TaskManager
                 OrderCol = "TestStartDate";
                 //Operate = "全功能";
 
+                ReadOnlyCols = new List<string> { "Carvin", "ItemBrief", "Taskcode", "Equipments"};
+
                 Add = true;
                 Edit = true;
                 Delete = true;
@@ -279,6 +323,8 @@ namespace TaskManager
                 sWhere = ProjectSqlString(year);
             else if (Type == FormType.Equipment)
                 sWhere = EquipmentSqlString(year);
+            else if (Type == FormType.EquipmentUsageRecord)
+                sWhere = EquipmentUsageRecordSqlString(year,department,searchUserName,startdate,enddate);
             else
                 throw new Exception("GetSqlString no form type");
 
@@ -355,6 +401,31 @@ namespace TaskManager
             }
                 
 
+            return sWhere;
+        }
+
+        private List<string> EquipmentUsageRecordSqlString(string year, string department,string user,string startdate, string enddate)
+        {
+            var sWhere = new List<string>();
+
+            sWhere.Add("(TestState='已完成' or TestTaskId is null)");
+
+            if (!string.IsNullOrWhiteSpace(year) && year != "所有项目")
+            {
+                sWhere.Add($"ItemBrief ='{year}'");
+            }
+            if (!string.IsNullOrWhiteSpace(department) && department != "所有组别")
+            {
+                sWhere.Add($"Department ='{department}'");
+            }
+            if (!string.IsNullOrWhiteSpace(user) && user != "所有人")
+            {
+                sWhere.Add($"UsePerson ='{user}'");
+            }
+            if (!string.IsNullOrWhiteSpace(startdate) && !string.IsNullOrWhiteSpace(enddate)) {
+                sWhere.Add($" ({DateCol}>='{startdate}' and {DateCol}<='{enddate}')");
+            }
+                
             return sWhere;
         }
 

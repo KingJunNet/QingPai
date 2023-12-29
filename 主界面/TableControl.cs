@@ -21,6 +21,7 @@ using LabSystem.DAL;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using TaskManager.domain.valueobject;
 
 namespace TaskManager
 {
@@ -54,6 +55,8 @@ namespace TaskManager
 
         public DataTable DataSource;
 
+        private static readonly int UPDATE_DATA_PER_COUNT = 3;
+
         //private readonly List<object> ControlClipboard = new List<object>();
 
         #endregion
@@ -77,6 +80,12 @@ namespace TaskManager
 
         [Description("打开/编辑"), Category("自定义事件")]
         public event EventHandler OpenClick;
+
+        public delegate void CellValueChangedEvent(DataRow changedRow);
+        public delegate DataTable SaveDataSourceEvent(DataTable updateTable );
+
+        public CellValueChangedEvent cellValueChangedEvent;
+        public SaveDataSourceEvent saveDataSourceEvent;
 
         #endregion
 
@@ -261,6 +270,12 @@ namespace TaskManager
 
             repoChecksite.Items.AddRange(Form1.ComboxDictionary["检定地点"]);
 
+            //设备状态
+            repoEquipmentState.Items.AddRange(Form1.ComboxDictionary["设备状态"]);
+            repoEquipmentUsageState.Items.AddRange(Form1.ComboxDictionary["设备使用状况"]);
+            repoEquipmentManageState.Items.AddRange(ConstHolder.EQUIPMENT_STATE_CHN_NAMES);
+            repoEquipmentTraceabilityState.Items.AddRange(ConstHolder.EQUIPMENT_TRACEABILITY_STATE_CHN_NAMES);
+
             foreach (GridColumn col in _view.Columns)
             {
                 var field = DataField.GetFieldByEng(Fields, col.FieldName);
@@ -372,11 +387,15 @@ namespace TaskManager
                     col.ColumnEdit = repoTirepressure;
                 else if (field.Format.Equals("检定地点"))
                     col.ColumnEdit = repoChecksite;
-
-
-
+                else if (field.Format.Equals("设备状态"))
+                    col.ColumnEdit = repoEquipmentState;
+                else if (field.Format.Equals("设备使用状况"))
+                    col.ColumnEdit = repoEquipmentUsageState;
+                else if (field.Format.Equals("设备管理状态"))
+                    col.ColumnEdit = repoEquipmentManageState;
+                else if (field.Format.Equals("设备溯源状态"))
+                    col.ColumnEdit = repoEquipmentTraceabilityState;
             }
-
         }
 
         /// <summary>
@@ -384,7 +403,7 @@ namespace TaskManager
         /// </summary>
         public void LoadSource()
         {
-            var strsql = FormTable.GetSqlString(Year, Department, "", FinishState,startdate,enddate);
+            var strsql = FormTable.GetSqlString(Year, Department, user, FinishState,startdate,enddate);
 
             #region Connection
 
@@ -443,10 +462,7 @@ namespace TaskManager
                 SetSaveStatus(true);
                 return;
             }
-
-           
-
-          
+     
             try
             {
                 Form1.ShowWaitForm();               
@@ -486,19 +502,131 @@ namespace TaskManager
 
             if (DataSource.GetChanges() == null)
                 return;
-            
+
+            //二次处理
+            var updateTable = DataSource.GetChanges();
+            if (saveDataSourceEvent != null) {
+                updateTable=saveDataSourceEvent(updateTable);
+            }
+            if (updateTable == null||updateTable.Rows.Count==0)
+                return;
+
             try
             {
                 if(sqlConnection.State == ConnectionState.Closed)
                     sqlConnection.Open();
                 // ReSharper disable once UnusedVariable
                 var commandBuilder = new SqlCommandBuilder(sqlAdapter);//必须要有这一句
-                var updateTable = DataSource.GetChanges();
-
+              
                 //执行更新
                 sqlAdapter.Update(updateTable ?? throw new InvalidOperationException());
                 //使DataTable保存更新
                 DataSource.AcceptChanges();
+                sqlConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                Log.e(ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// 保存数据
+        /// </summary>
+        public void SaveSourceNew()
+        {
+            _view.FocusedRowHandle = -1;
+            if (!FormTable.Save) return;
+
+            if (sqlAdapter == null || DataSource == null)
+                return;
+
+            if (DataSource.GetChanges() == null)
+                return;
+
+            //二次处理
+            var updateTable = DataSource.GetChanges();
+            if (saveDataSourceEvent != null)
+            {
+                updateTable = saveDataSourceEvent(updateTable);
+            }
+            if (updateTable == null || updateTable.Rows.Count == 0)
+                return;
+
+            try
+            {
+                //执行更新
+                executeUpdate(updateTable);
+            }
+            catch (Exception ex)
+            {
+                Log.e(ex.ToString());
+            }
+        }
+
+        private void executeUpdate(DataTable updateTable) {
+            int totalCount = updateTable.Rows.Count;
+            if (totalCount <= UPDATE_DATA_PER_COUNT)
+            {
+                exeuteUpdateTable(updateTable);
+                return;
+            }
+
+            //记录过多就拆分
+            int startIndex = 0;
+            int number = 1;
+            while (startIndex < totalCount)
+            {
+                int curCount = (totalCount - startIndex) < UPDATE_DATA_PER_COUNT ?
+                    (totalCount - startIndex) :
+                    UPDATE_DATA_PER_COUNT;
+
+                DataRow[] dataRows = new DataRow[curCount];
+                int endIndex = startIndex + curCount;
+                int curRowIndex = 0;
+                for (int index = startIndex; index < endIndex; index++) {
+                    dataRows[curRowIndex] = updateTable.Rows[index];
+                    curRowIndex++;
+                }
+                exeuteUpdateTableRows(dataRows);
+                 startIndex = startIndex + curCount;
+                number++;
+            }
+        }
+
+        private void exeuteUpdateTable(DataTable updateTable) {
+            try
+            {
+                if (sqlConnection.State == ConnectionState.Closed)
+                    sqlConnection.Open();
+                // ReSharper disable once UnusedVariable
+                var commandBuilder = new SqlCommandBuilder(sqlAdapter);//必须要有这一句
+
+                //执行更新
+                sqlAdapter.Update(updateTable ?? throw new InvalidOperationException());
+                //使DataTable保存更新
+                //DataSource.AcceptChanges();
+                sqlConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                Log.e(ex.ToString());
+            }
+        }
+
+        private void exeuteUpdateTableRows(DataRow[] dataRows)
+        {
+            try
+            {
+                if (sqlConnection.State == ConnectionState.Closed)
+                    sqlConnection.Open();
+                // ReSharper disable once UnusedVariable
+                var commandBuilder = new SqlCommandBuilder(sqlAdapter);//必须要有这一句
+
+                //执行更新
+                sqlAdapter.Update(dataRows);
+                //使DataTable保存更新
+                //DataSource.AcceptChanges();
                 sqlConnection.Close();
             }
             catch (Exception ex)
@@ -563,6 +691,8 @@ namespace TaskManager
 
         public string Department = null;
 
+        public string user;
+
         public int FinishState;
 
         public string startdate;
@@ -572,11 +702,12 @@ namespace TaskManager
         /// </summary>
         /// <param name="year"></param>
         /// <param name="finish"></param>
-        public void RefreshClick(string year, string startdate, string enddate, int finish = 1, string group =null)
+        public void RefreshClick(string year, string startdate, string enddate, int finish = 1, string group =null,string user=null)
         {
-            Year = year;
-            FinishState = finish;
-            Department = group;
+            this.Year = year;
+            this.FinishState = finish;
+            this.Department = group;
+            this.user = user;
 
             this.startdate = startdate;
             this.enddate = enddate;
@@ -682,15 +813,11 @@ namespace TaskManager
 
             SetSaveStatus(false);
 
-            
-
             var dr = _view.GetDataRow(e.RowHandle);
 
             if (dr == null || dr.RowState == DataRowState.Deleted) return;
 
             if (!(e.Column.Tag is DataField field)) return;
-
-
 
             #region 日期
 
@@ -700,8 +827,12 @@ namespace TaskManager
                     dr[field.Eng] = time.ToString("yyyy/MM/dd", Form1.DTFormat);
             }
 
-            #endregion
+            //触发更改时间
+            if (this.cellValueChangedEvent != null) {
+                this.cellValueChangedEvent(dr);
+            }
 
+            #endregion
         }
 
         /// <summary>

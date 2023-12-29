@@ -8,6 +8,7 @@ using DevExpress.XtraGrid.Views.Grid;
 using ExpertLib.Controls;
 using ExpertLib.Controls.TitleEditor;
 using LabSystem.DAL;
+using TaskManager.domain.valueobject;
 
 namespace TaskManager
 {
@@ -25,6 +26,10 @@ namespace TaskManager
 
         private FormType type;
 
+        protected OperationType operation;
+
+        protected int recordId;
+
         public BaseEditDialog(bool authorityEdit, GridView theView, int theHand, List<DataField> fields, FormType Type1)
         {
             InitializeComponent();
@@ -36,20 +41,33 @@ namespace TaskManager
             hand = theHand;
             if (hand<0)
             {
+                this.operation = OperationType.ADD;
                 btnUpdate.Text = "新增";
-                this.Text = "新增信息";
             }
             else
             {
-                this.Text = "编辑";
+                this.operation = OperationType.EDIT;
                 btnUpdate.Text = "更新";
             }
+            this.Text = this.buildTitle();
             Fields = fields;
 
             var sql = new DataControl();
             Server = sql.ServerIP;
             if (!Server.EndsWith("\\"))
                 Server += "\\";
+        }
+
+        protected virtual string buildTitle() {
+            string title = "";
+            if (this.operation.Equals(OperationType.ADD)) {
+                title = "新增信息";
+            }
+            else if (this.operation.Equals(OperationType.EDIT)) {
+                title = "编辑信息";
+            }
+
+            return title;
         }
 
         protected virtual void BaseEditDialog_Load(object sender, EventArgs e)
@@ -66,6 +84,8 @@ namespace TaskManager
 
         protected Dictionary<int, TitleControl> controls;
 
+        protected Dictionary<string, TitleControl> fieldControlMap;
+
         protected FlowLayoutPanel Panel;
 
         protected List<DataField> Fields;
@@ -76,11 +96,12 @@ namespace TaskManager
         /// <returns></returns>
         public int InitControls()
         {
+            fieldControlMap = new Dictionary<string, TitleControl>();
+
             if (!controls.Any())
                 return 0;
 
             var count = 0;
-
             foreach (var field in Fields)
             {
                 if (!controls.ContainsKey(field.DisplayIndex))
@@ -88,9 +109,13 @@ namespace TaskManager
 
                 var titleControl = controls[field.DisplayIndex];
                 SetControlField(titleControl, field);
+                fieldControlMap.Add(field.Eng, titleControl);
                 if (titleControl.Visible) 
                     count++;
             }
+
+            var idValue = view.GetRowCellValue(hand, "ID");
+            this.recordId = int.Parse(idValue.ToString());
 
             Panel.GetType().GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance
                                                                      | System.Reflection.BindingFlags.NonPublic)
@@ -108,6 +133,9 @@ namespace TaskManager
 
         protected virtual void BtnUpdateClick(object sender, EventArgs e)
         {
+            if (!this.validateFormParam()) {
+                return;
+            }
 
             if (type == FormType.Equipment)
             {
@@ -138,10 +166,6 @@ namespace TaskManager
                 }
             }
 
-
-
-
-
             foreach (var control in controls)
             {
                 var fieldName = control.Value.Tag?.ToString();
@@ -169,6 +193,10 @@ namespace TaskManager
             DialogResult = DialogResult.OK;
             Close();
 
+        }
+
+        protected virtual bool validateFormParam() {
+            return true;
         }
 
         protected void BtnCancelClick(object sender, EventArgs e)
@@ -216,10 +244,14 @@ namespace TaskManager
 
         protected TitleControl GetControlByFieldName(string fieldName)
         {
-            foreach (var value in controls.Values)
-            {
-                if (value.Tag != null && value.Tag.ToString().Equals(fieldName))
-                    return value;
+            //foreach (var value in controls.Values)
+            //{
+            //    if (value.Tag != null && value.Tag.ToString().Equals(fieldName))
+            //        return value;
+            //}
+
+            if (this.fieldControlMap.ContainsKey(fieldName)) {
+                return this.fieldControlMap[fieldName];
             }
 
             return null;
@@ -279,6 +311,11 @@ namespace TaskManager
                 }
                 titleControl.SetItems(list);
             }
+        }
+
+        protected string getValue(string fieldName) {
+            var value = view.GetRowCellValue(hand, fieldName);
+            return value.ToString();
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskManager.common.utils;
 using TaskManager.domain.valueobject;
 
 namespace TaskManager.domain.entity
@@ -249,6 +250,26 @@ namespace TaskManager.domain.entity
         /// </summary>
         public string Question { get; set; }
 
+        /// <summary>
+        /// 设备信息
+        /// </summary>
+        public string Equipments { get; set; }
+
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        public string CreateUser { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        /// 更新时间
+        /// </summary>
+        public DateTime UpdateTime { get; set; }
+
         public TestStatisticEntity()
         {
         }
@@ -276,19 +297,26 @@ namespace TaskManager.domain.entity
             string itemBrief,
             string standard,
             DateTime beginTime,
-            string itemRemark)
+            string itemRemark,
+            string taskCode,
+            string taskCodeRemark,
+            string securityLevel,
+            string registrationDate,
+            List<EquipmentLite> equipments,
+            string createUser,
+            DateTime nowTime)
         {
             this.Department = group;
             this.ExperimentalSite = area;
             this.LocationNumber = locationNo;
             this.Registrant = uesr;
             this.CarVin = vin;
-            this.CarType = CarType;
+            this.CarType = carType;
             this.SampleModel = carModel;
             this.Producer = producer;
             this.PowerType = engineType;
             this.EngineModel = engineModel;
-            this.EngineModel = engineProducer;
+            this.EngineProduct = engineProducer;
             this.YNDirect = ynDirect;
             this.TransmissionType = transType;
             this.DriverType = driverType;
@@ -299,12 +327,52 @@ namespace TaskManager.domain.entity
             this.StandardStage = standard;
             this.TestStartDate = beginTime;
             this.Remark = itemRemark;
+            this.Taskcode = taskCode;
+            this.Taskcode2 = taskCodeRemark;
+            this.Confidentiality = securityLevel;
+            this.RegistrationDate = registrationDate;
 
             this.ProjectPrice = -1;
             this.ProjectTotal = -1;
-        
+            this.Finishstate = "未完成";
+            this.Equipments = this.buildEquipmentsContent(equipments);
+
+            this.CreateUser = createUser;
+            this.CreateTime = nowTime;
+            this.UpdateTime = nowTime;
 
             return this;
+        }
+
+        public TestStatisticEntity lite(int id, string vin, string itemType, string itemBrief)
+        {
+            this.Id = Id;
+            this.CarVin = vin;
+            this.ItemType = itemType;
+            this.ItemBrief = itemBrief;
+
+            return this;
+        }
+
+        public void setEquipments(List<EquipmentLite> equipments)
+        {
+            this.Equipments = this.buildEquipmentsContent(equipments);
+        }
+
+        private string buildEquipmentsContent(List<EquipmentLite> equipments)
+        {
+            string result = "";
+
+            if (Collections.isEmpty(equipments))
+            {
+                return result;
+            }
+            equipments.ForEach(equipment =>
+            {
+                result = $"{result}{(string.IsNullOrWhiteSpace(result) ? "" : ",")}{equipment.Code}（{equipment.Name}）";
+            });
+
+            return result;
         }
 
         public SqlParameter[] toAllSqlParameters()
@@ -356,6 +424,10 @@ namespace TaskManager.domain.entity
                ,new SqlParameter("MoneySure",ValueOrDBNullIfNull(this.MoneySure))
                ,new SqlParameter("RegistrationDate",ValueOrDBNullIfNull(this.RegistrationDate))
                ,new SqlParameter("question",ValueOrDBNullIfNull(this.Question))
+               ,new SqlParameter("Equipments",ValueOrDBNullIfNull(this.Equipments))
+                 ,new SqlParameter("CreateUser",ValueOrDBNullIfNull(this.CreateUser))
+                   ,new SqlParameter("CreateTime",ValueOrDBNullIfNull(this.CreateTime))
+                     ,new SqlParameter("UpdateTime",ValueOrDBNullIfNull(this.UpdateTime))
                 };
 
             return parameters;
@@ -363,7 +435,7 @@ namespace TaskManager.domain.entity
 
         private object ValueOrDBNullIfNull(String value)
         {
-            if (value==null) return DBNull.Value;
+            if (value == null) return DBNull.Value;
             return value;
         }
 
@@ -379,7 +451,8 @@ namespace TaskManager.domain.entity
             return value;
         }
 
-        public SampleBrief sampleBriefInfo() {
+        public SampleBrief sampleBriefInfo()
+        {
             SampleBrief sampleBrief = new SampleBrief();
 
             sampleBrief.Vin = this.CarVin;
@@ -393,10 +466,52 @@ namespace TaskManager.domain.entity
             sampleBrief.YNDirect = this.YNDirect;
             sampleBrief.TransType = this.TransmissionType;
             sampleBrief.DriverType = this.DriverType;
-            sampleBrief.FuelType = this.FuelType;        
+            sampleBrief.FuelType = this.FuelType;
             sampleBrief.Roz = this.FuelLabel;
 
             return sampleBrief;
+        }
+
+        public string validate()
+        {
+            if (string.IsNullOrWhiteSpace(this.Department))
+            {
+                return "部门为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.ExperimentalSite))
+            {
+                return "部门为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.LocationNumber))
+            {
+                return "定位编号为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.Registrant))
+            {
+                return "登记人为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.CarVin))
+            {
+                return "VIN为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.ItemType))
+            {
+                return "项目类型为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.ItemBrief))
+            {
+                return "项目简称为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.StandardStage))
+            {
+                return "标准阶段为空";
+            }
+            if (this.TestStartDate.Year == 1)
+            {
+                return "实验开始时间为空";
+            }
+
+            return "";
         }
 
     }

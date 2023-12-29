@@ -16,12 +16,23 @@ using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using LabSystem.DAL;
+using TaskManager.common.utils;
+using TaskManager.domain.entity;
+using TaskManager.domain.repository;
+using TaskManager.domain.valueobject;
+using TaskManager.infrastructure.db;
 using Xfrog.Net;
 
 namespace TaskManager
 {
     public partial class TestStatistic : BaseForm
     {
+        private CreateTaskForm createTaskForm;
+
+        private IEquipmentUsageRecordRepository equipmentUsageRecordRepository;
+
+        private List<int> savedIds = new List<int>();
+
         public TestStatistic()
         {
             InitializeComponent();
@@ -30,10 +41,84 @@ namespace TaskManager
         public TestStatistic(FormType formType, string selectedDept) : base(formType, selectedDept)
         {
             InitializeComponent();
+            this.equipmentUsageRecordRepository = new EquipmentUsageRecordRepository();
+            this._control.cellValueChangedEvent = new TableControl.CellValueChangedEvent(afterCellValueChanged);
+            this._control.saveDataSourceEvent = new TableControl.SaveDataSourceEvent(handleBeforeSaveDataSource);
 
         }
 
+        private void afterCellValueChanged(DataRow changedRow) {
+            int id=int.Parse(changedRow["ID"].ToString());
+            if (this.savedIds.Contains(id)) {
+                this.savedIds.Remove(id);
+            }
+        }
 
+        private DataTable handleBeforeSaveDataSource(DataTable updateTable) {
+            DataRowCollection rows = updateTable.Rows;
+
+            List<int> deletedRowIndexs = new List<int>();
+            List<EquipmentUsageRecordTestPart> updatedTestParts = new List<EquipmentUsageRecordTestPart>();
+            for (int index = 0; index < rows.Count; index++)
+            {
+                DataRow row = rows[index];
+                int id = int.Parse(row["ID"].ToString().Trim());
+                if (this.savedIds.Contains(id))
+                {
+                    deletedRowIndexs.Add(index);
+                }
+                else {
+                    EquipmentUsageRecordTestPart testPart = this.dataRow2EquipmentUsageRecordTestPart(row);
+                    updatedTestParts.Add(testPart);
+                }
+            }
+
+            //移除已经更新的数据行
+            deletedRowIndexs.ForEach(index => rows.RemoveAt(index));
+
+            //更新设备记录
+            if (!Collections.isEmpty(updatedTestParts)) {
+                updatedTestParts.ForEach (item => {
+                    this.equipmentUsageRecordRepository.updateTestTaskProperty(item);
+                 }) ;
+              
+            }
+
+            return updateTable;
+        }
+
+        private EquipmentUsageRecordTestPart dataRow2EquipmentUsageRecordTestPart(DataRow row)
+        {
+            EquipmentUsageRecordTestPart result = new EquipmentUsageRecordTestPart();
+
+            result.TestTaskId = int.Parse(row["ID"].ToString().Trim());
+            result.Department = this.dataColumn2String(row["department"]);
+            result.LocationNumber = this.dataColumn2String(row["LocationNumber"]);
+            result.Registrant = this.dataColumn2String(row["Registrant"]);
+            result.ItemBrief = this.dataColumn2String(row["ItemBrief"]);
+            if (!(row["TestStartDate"] is DBNull)) {
+                result.TestStartDate = (DateTime)row["TestStartDate"];
+            }
+            if (!(row["TestEndDate"] is DBNull))
+            {
+                result.TestEndDate = (DateTime)row["TestEndDate"];
+            }
+
+            result.SampleModel = this.dataColumn2String(row["SampleModel"]);
+            result.Producer = this.dataColumn2String(row["Producer"]);
+            result.CarVin = this.dataColumn2String(row["Carvin"]);
+            result.TestState = this.dataColumn2String(row["Finishstate"]);
+            result.SecurityLevel = this.dataColumn2String(row["Confidentiality"]);
+
+            return result;
+        }
+
+        private string dataColumn2String(object dataValue) {
+            if (dataValue is DBNull) {
+                return null;
+            }
+            return dataValue.ToString().Trim();
+        }
 
         protected override void InitUi()
         {
@@ -44,12 +129,19 @@ namespace TaskManager
             startdate.Visibility = BarItemVisibility.Never;
             enddate.Visibility = BarItemVisibility.Never;
 
+            //隐藏复制粘贴
+            btnCopyPaste.Visibility= BarItemVisibility.Never;
+            this.hideCopyMenuItem();
+
+            //隐藏实验再分配
+            this.barButtonItem11.Visibility = BarItemVisibility.Never;
+
 
             textYear.EditValue = year;
             comboxState.EditValue = "所有";
-            
 
-            comGroup.Visibility= BarItemVisibility.Always;
+
+            comGroup.Visibility = BarItemVisibility.Always;
 
             //barButtonItem1.Visibility = BarItemVisibility.Never;
             //蒸发组.Visible = !string.IsNullOrWhiteSpace(Department) && Department.Equals("蒸发组");
@@ -65,11 +157,12 @@ namespace TaskManager
             _control._view.InitNewRow += InitNewRow;
 
             //设置字段只读
- 
+
+            _control._view.Columns["Carvin"].OptionsColumn.ReadOnly = true;
+            _control._view.Columns["ItemBrief"].OptionsColumn.ReadOnly = true;
             _control._view.Columns["Taskcode"].OptionsColumn.ReadOnly = true;
             _control._view.Columns["RegistrationDate"].OptionsColumn.ReadOnly = true;
             _control._view.Columns["question"].OptionsColumn.ReadOnly = true;
-
             _control._view.Columns["MoneySure"].OptionsColumn.ReadOnly = true;
             if (FormSignIn.CurrentUser.Department == "体系组")
             {
@@ -86,10 +179,10 @@ namespace TaskManager
         public string state0;
         private void SelectChanged(object sender, FocusedRowChangedEventArgs e)
         {
-            if (e.FocusedRowHandle >= 0 && Filter.state=="1")
+            if (e.FocusedRowHandle >= 0 && Filter.state == "1")
             {
                 Filter.filterText = _control._view.GetRowCellValue(e.FocusedRowHandle, "ItemBrief")?.ToString().Trim();
-                
+
             }
 
         }
@@ -151,7 +244,7 @@ namespace TaskManager
                             _control._view.SetRowCellValue(e.RowHandle, _control._view.Columns[j], _control._view.GetRowCellValue(e.RowHandle, "ProjectPrice"));
                         }
                     }
-               
+
                 }
 
                 e.Appearance.BackColor = Color.FromArgb(193, 255, 193);
@@ -168,13 +261,13 @@ namespace TaskManager
                         }
                     }
                 }
-                
+
 
                 if (_control._view.GetRowCellValue(e.RowHandle, "Finishstate")?.ToString().Trim() == "未完成")
                 {
                     e.Appearance.BackColor = Color.Orange;
                 }
-               
+
                 if (_control._view.GetRowCellValue(e.RowHandle, "MoneySure")?.ToString().Trim() == "是")
                 {
                     e.Appearance.BackColor = Color.White;
@@ -182,7 +275,7 @@ namespace TaskManager
 
             }
 
-            
+
             //if (e.RowHandle >= 0)
             //{
             //    //校验项目报价
@@ -269,7 +362,7 @@ namespace TaskManager
                 {
                     var ss = (Convert.ToDateTime(RegistrationDate) - Convert.ToDateTime(TestStartDate)).Days;
                     //_control._view.SetRowCellValue(e.RowHandle, "question", "");
-                    if (ss > 3 && question!="超时")
+                    if (ss > 3 && question != "超时")
                     {
                         e.Appearance.BackColor = Color.Red;
                         _control._view.SetRowCellValue(e.RowHandle, "question", "超时");
@@ -278,7 +371,7 @@ namespace TaskManager
                     {
                         _control._view.SetRowCellValue(e.RowHandle, "question", "");
                     }
-                   
+
                 }
             }
 
@@ -362,12 +455,80 @@ namespace TaskManager
 
         }
 
+        /// <summary>
+        /// 打开编辑器
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="hand"></param>
+        protected override void OpenAddFormClick(GridView view, int hand)
+        {
+            try
+            {
+                if (this.createTaskForm == null) {
+                    this.createTaskForm = new CreateTaskForm(CreateTestTaskFrom.TEST_STATISTIC_LIST_FORM);
+                }
+                TestStatisticEntity curTestStatistic = this.extractTestStatisticEntityByRowHand(view, hand);
+                this.createTaskForm.setBaseTestStatistic(curTestStatistic);
+                DialogResult result = createTaskForm.ShowDialog();
+                if (result == DialogResult.OK) {
+                    this.reloadData();
+                    bool isNeedRedirectToEditForm = this.createTaskForm.isNeedRedirectToEditForm;
+                    int curTestStatisticId = this.createTaskForm.testStatisticId;
+                    int rowHandle = this.findRowHandleOfId(curTestStatisticId);
+                    view.MoveBy(rowHandle);
+                    if (isNeedRedirectToEditForm) {
+                        this.OpenEditFormClick(view, rowHandle);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.e(ex.ToString());
+            }
+            finally
+            {
+                //Form1.CloseWaitForm();
+            }
+        }
+
+        private int findRowHandleOfId(int id) {
+            DataRowCollection rows= this._control.DataSource.Rows;
+            for (int index = 0; index < rows.Count; index++) {
+                DataRow row = rows[index];
+                if (row["ID"].ToString().Trim().Equals(id.ToString())) {
+                    return index;
+                }
+            }
+
+            return 0;
+        }
+
+       
+
+        private TestStatisticEntity extractTestStatisticEntityByRowHand(GridView view, int hand) {
+            var id = view.GetRowCellValue(hand, "ID");
+            var vin = view.GetRowCellValue(hand, "Carvin");
+            var itemType = view.GetRowCellValue(hand, "ItemType");
+            var itemBrief = view.GetRowCellValue(hand, "ItemBrief");
+            TestStatisticEntity curTestStatistic = new TestStatisticEntity().lite(int.Parse(id.ToString()), vin.ToString(), itemType.ToString(), itemBrief.ToString());
+
+            return curTestStatistic;
+        }
+
         protected override DialogResult OpenEditForm(GridView view, int hand, List<DataField> fields)
         {
             Log.e("OpenEditForm");
             var isAllocateTask = false;
-            var dialog = new TestEditDialog(FormTable.Edit, view, hand, fields,FormType.Test, isAllocateTask);
-            return dialog.ShowDialog();
+            var dialog = new TestEditDialog(FormTable.Edit, view, hand, fields, FormType.Test, isAllocateTask);
+            DialogResult result= dialog.ShowDialog();
+            if (result == DialogResult.OK) {
+                _control.SetSaveStatus(true);
+                if (!this.savedIds.Contains(dialog.getId())) {
+                    this.savedIds.Add(dialog.getId());
+                }
+            }
+           
+            return result;
         }
         protected override DialogResult OpenReplaceForm(GridView view, int hand, List<DataField> fields)
         {
@@ -401,12 +562,12 @@ namespace TaskManager
         private FormTable FormTable2;
         private void TaskForm_Load(object sender, EventArgs e)
         {
-            
+
             InitColLayout();
             LoadSource();// 加载样品信息
 
-            
-            
+
+
             //ThreadStart childref = new ThreadStart(CallToChildThread);
 
             //childThread = new Thread(childref);
@@ -424,10 +585,10 @@ namespace TaskManager
             //{
             //    _control._view.FocusedColumn = _control._view.Columns[0];
             //}
-            
-            
 
-            if (Templatecolumn.column == null ||  Templatecolumn.name == "默认模板")
+
+
+            if (Templatecolumn.column == null || Templatecolumn.name == "默认模板")
             {
 
                 _control._view.FocusedColumn = _control._view.Columns["ExperimentalSite"];
@@ -440,14 +601,14 @@ namespace TaskManager
         }
         private void barButtonItem4_ItemClick(object sender, ItemClickEventArgs e)
         {
-          
-      
+
+
         }
 
         private void barButtonItem6_ItemClick(object sender, ItemClickEventArgs e)
         {
-           
-            if (Templatecolumn.column == null ||  Templatecolumn.name == "默认模板")
+
+            if (Templatecolumn.column == null || Templatecolumn.name == "默认模板")
             {
 
                 _control._view.FocusedColumn = _control._view.Columns["MoneySure"];
@@ -456,8 +617,8 @@ namespace TaskManager
             {
                 _control._view.FocusedColumn = _control._view.Columns[Templatecolumn.column[Templatecolumn.column.Length - 1]];
             }
-            
-            
+
+
         }
 
 
@@ -491,25 +652,26 @@ namespace TaskManager
                 }
                 else
                 {
-             
+
                     project.Show();
                     project.Activate();
-           
+
                 }
             }
-            else {
+            else
+            {
                 MessageBox.Show("请选择某一行");
             }
-          
-            
+
+
         }
 
-       
+
 
         /// <summary>
         /// 子线程，获取Lims系统数据
         /// </summary>
-        public  void CallToChildThread()
+        public void CallToChildThread()
         {
             while (true)
             {
@@ -528,7 +690,7 @@ namespace TaskManager
         /// <param name="e"></param>
         private void barButtonItem9_ItemClick(object sender, ItemClickEventArgs e)
         {
-            
+
         }
 
         private SelectTemplate selectTemplate;
@@ -539,7 +701,7 @@ namespace TaskManager
         /// <param name="e"></param>
         private void barButtonItem10_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(selectTemplate == null || selectTemplate.IsDisposed)
+            if (selectTemplate == null || selectTemplate.IsDisposed)
             {
                 selectTemplate = new SelectTemplate("试验统计");
                 selectTemplate.freshForm += SelectTemplate_freshForm;
@@ -550,19 +712,19 @@ namespace TaskManager
                 selectTemplate.Show();
                 selectTemplate.Activate();
             }
-           
+
         }
 
         private void SelectTemplate_freshForm()
         {
-            for(int j = 1; j < _control._view.Columns.Count; j++)
+            for (int j = 1; j < _control._view.Columns.Count; j++)
             {
                 _control._view.Columns[j].Visible = false;
             }
-            for (int i = Templatecolumn.column.Length-1; i >=0; i--)
+            for (int i = Templatecolumn.column.Length - 1; i >= 0; i--)
             {
                 _control._view.Columns[Templatecolumn.column[i]].Visible = true;
-               // _control._view.Columns[Templatecolumn.column[i]].VisibleIndex = i;
+                // _control._view.Columns[Templatecolumn.column[i]].VisibleIndex = i;
             }
         }
         /// <summary>
@@ -585,7 +747,7 @@ namespace TaskManager
 
         private void CellValueChanged(object sender, CellValueChangedEventArgs e)
         {
-           
+
 
 
         }
@@ -677,7 +839,7 @@ namespace TaskManager
 
         #endregion
 
-        
+
         /// <summary>
         /// 试验再分配
         /// </summary>
@@ -713,7 +875,7 @@ namespace TaskManager
 
         private void TestStatistic_Shown(object sender, EventArgs e)
         {
-            
+
         }
 
         private void TestStatistic_Activated(object sender, EventArgs e)
@@ -727,7 +889,7 @@ namespace TaskManager
             //{
             //    _control._view.FindFilterText = "";
             //}
-            
+
             Filter.Moudle = "试验统计";
         }
 
@@ -745,7 +907,7 @@ namespace TaskManager
         {
 
         }
-      
+
         /// <summary>
         /// 问题筛选
         /// </summary>
@@ -776,7 +938,7 @@ namespace TaskManager
             //    SqlHelper.ExecuteNonquery(sql0, CommandType.Text);
             //    SqlHelper.ExecuteNonquery(sql1, CommandType.Text);
             //    MessageBox.Show("获取旧系统数据成功");
-            
+
             //}
 
 
@@ -802,17 +964,17 @@ namespace TaskManager
 
         private void barButtonItem8_ItemClick(object sender, ItemClickEventArgs e)
         {
-            
+
         }
 
-   
 
-      
+
+
 
         private void repositoryItemTextEdit6_EditValueChanged(object sender, EventArgs e)
         {
             //repositoryItemTextEdit6_Leave(null, null);
-            
+
             //string sql = $"select count(*) from TestStatistic where taskcode='{}' and MoneySure ='{}'"
 
 
@@ -823,7 +985,7 @@ namespace TaskManager
 
         private void repositoryItemButtonEdit1_ButtonClick(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
         {
-         
+
             //MessageBox.Show(barEditItem3.EditValue?.ToString().Trim());
         }
 
@@ -842,7 +1004,7 @@ namespace TaskManager
             string sql = $"select count(*) from TestStatistic where taskcode='{barEditItem2.EditValue?.ToString().Trim()}' and MoneySure ='是'";
             if (SqlHelper.GetList(sql).Rows[0][0].ToString().ToString() != "0")
             {
-                MessageBox.Show("该任务单号费用已确认", "", MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+                MessageBox.Show("该任务单号费用已确认", "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
