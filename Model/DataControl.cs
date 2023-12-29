@@ -45,7 +45,7 @@ public class DataControl
             ServerIP = server.ToString();
         }
         
-        strCon = $"server={server};database=TaskManager;uid=sa;pwd={pwd};Pooling=true; max pool size=32765;min pool size=0;Asynchronous Processing=true;";
+        strCon = $"server={server};database=NewTaskManager;uid=sa;pwd={pwd};Pooling=true; max pool size=32765;min pool size=0;Asynchronous Processing=true;";
       
 
 
@@ -76,7 +76,7 @@ public class DataControl
             {
                 using (var SqlConn = new SqlConnection())
                 {
-                    var temp = $"server={server};database=TaskManager;uid=sa;pwd={pwd};" +
+                    var temp = $"server={server};database=NewTaskManager;uid=sa;pwd={pwd};" +
                                "Pooling=true; max pool size=1000;min pool size=0;Asynchronous Processing=true;";
                     SqlConn.ConnectionString = temp;
                     SqlConn.Open();

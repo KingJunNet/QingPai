@@ -462,11 +462,10 @@ namespace TaskManager
         /// <param name="hand"></param>
         protected override void OpenAddFormClick(GridView view, int hand)
         {
+            Form1.ShowWaitForm();
             try
             {
-                if (this.createTaskForm == null) {
-                    this.createTaskForm = new CreateTaskForm(CreateTestTaskFrom.TEST_STATISTIC_LIST_FORM);
-                }
+                this.createTaskForm = new CreateTaskForm(CreateTestTaskFrom.TEST_STATISTIC_LIST_FORM);
                 TestStatisticEntity curTestStatistic = this.extractTestStatisticEntityByRowHand(view, hand);
                 this.createTaskForm.setBaseTestStatistic(curTestStatistic);
                 DialogResult result = createTaskForm.ShowDialog();
@@ -487,8 +486,39 @@ namespace TaskManager
             }
             finally
             {
-                //Form1.CloseWaitForm();
+                Form1.CloseWaitForm();
             }
+        }
+
+        protected override DialogResult OpenEditForm(GridView view, int hand, List<DataField> fields)
+        {
+            Form1.ShowWaitForm();
+            DialogResult result= DialogResult.Cancel;
+            try
+            {
+                Log.e("OpenEditForm");
+                var isAllocateTask = false;
+                var dialog = new TestEditDialog(FormTable.Edit, view, hand, fields, FormType.Test, isAllocateTask);
+                result = dialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    _control.SetSaveStatus(true);
+                    if (!this.savedIds.Contains(dialog.getId()))
+                    {
+                        this.savedIds.Add(dialog.getId());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.e(ex.ToString());
+            }
+            finally
+            {
+                Form1.CloseWaitForm();
+            }
+
+            return result;
         }
 
         private int findRowHandleOfId(int id) {
@@ -515,21 +545,6 @@ namespace TaskManager
             return curTestStatistic;
         }
 
-        protected override DialogResult OpenEditForm(GridView view, int hand, List<DataField> fields)
-        {
-            Log.e("OpenEditForm");
-            var isAllocateTask = false;
-            var dialog = new TestEditDialog(FormTable.Edit, view, hand, fields, FormType.Test, isAllocateTask);
-            DialogResult result= dialog.ShowDialog();
-            if (result == DialogResult.OK) {
-                _control.SetSaveStatus(true);
-                if (!this.savedIds.Contains(dialog.getId())) {
-                    this.savedIds.Add(dialog.getId());
-                }
-            }
-           
-            return result;
-        }
         protected override DialogResult OpenReplaceForm(GridView view, int hand, List<DataField> fields)
         {
             var dialog = new Dialogs.ReplaceSelectRows(FormTable.Edit, view, hand, fields, FormTable.Type);

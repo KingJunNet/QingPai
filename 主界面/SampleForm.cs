@@ -54,7 +54,8 @@ namespace TaskManager
             textYear.EditValue = year;
             comboxState.EditValue = "所有";
 
-
+            //隐藏分配试验任务功能
+            btnAssignTestTask.Visibility = BarItemVisibility.Never;
 
             //蒸发组.Visible = !string.IsNullOrWhiteSpace(Department) && Department.Equals("蒸发组");
             barButtonItem2.Enabled = FormTable.Add;

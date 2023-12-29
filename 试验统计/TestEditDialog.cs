@@ -1182,7 +1182,7 @@ namespace TaskManager
                 testEquipments.ForEach(item =>
                 {
                     if (item.Remark.Contains(ConstHolder.SECURITY_LEVEL_A_REAMRK_TEXT)) {
-                        item.Remark.Replace(ConstHolder.SECURITY_LEVEL_A_REAMRK_TEXT, "");
+                        item.Remark=item.Remark.Replace(ConstHolder.SECURITY_LEVEL_A_REAMRK_TEXT, "");
                         needUpdateRemarkRecords.Add(item);
                     }
                 });
