@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using DevExpress.XtraBars;
 using DevExpress.XtraGrid.Views.Grid;
@@ -42,6 +43,7 @@ namespace TaskManager
 
             _control.BeforeAddRowOnImportExcel += BeforeAddRowOnImportExcel;
             _control._view.RowStyle += ViewOnRowStyle;
+            this._control.afterSavedHandle = new TableControl.AfterSavedEvent(handleAfterSaved);
         }
 
         protected override void InitUi()
@@ -61,6 +63,17 @@ namespace TaskManager
 
             //隐藏右键菜单功能
             this.hideAddEtitCopyItem();
+        }
+
+        private void handleAfterSaved()
+        {
+            Thread exportWordThread = new Thread(updateEquipmentCacheData);
+            exportWordThread.IsBackground = true;
+            exportWordThread.Start();
+        }
+
+        private void updateEquipmentCacheData() {
+            CacheDataHandler.Instance.reloadCurUserEquipments();
         }
 
         /// <summary>
