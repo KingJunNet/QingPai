@@ -6,12 +6,14 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TaskManager.application.Iservice;
 using TaskManager.application.service;
 using TaskManager.application.viewmodel;
 using TaskManager.common.utils;
+using TaskManager.controller;
 using TaskManager.domain.entity;
 using TaskManager.domain.repository;
 using TaskManager.domain.service;
@@ -119,6 +121,12 @@ namespace TaskManager
         {
             this.initData();
             this.initView();
+
+            //Action action = () =>
+            //{
+            //    initView();
+            //};
+            //Invoke(action);
         }
 
         private void initView()
@@ -136,11 +144,13 @@ namespace TaskManager
         private void initData()
         {
             UseHolder.Instance.CurrentUser = FormSignIn.CurrentUser;
-            this.vins = this.sampleQueryService.allSampleVins();
-            this.equipmentBreiefViewModels = this.equipmentQueryService.usingEquipments(UseHolder.Instance.CurrentUser.Department);
+            this.vins = CacheDataHandler.Instance.getVins();
+            this.equipmentBreiefViewModels = CacheDataHandler.Instance.getCurUserEquipments();
             this.equipmentMap = new Dictionary<string, EquipmentBreiefViewModel>();
-            this.equipmentBreiefViewModels.ForEach(item => {
-                if (!equipmentMap.ContainsKey(item.ToString())) {
+            this.equipmentBreiefViewModels.ForEach(item =>
+            {
+                if (!equipmentMap.ContainsKey(item.ToString()))
+                {
                     equipmentMap.Add(item.ToString(), item);
                 }
             });
@@ -204,6 +214,10 @@ namespace TaskManager
 
             this.titleComboxStandard.SetValue("");
             this.titleComboxItemRemark.SetValue("");
+
+            //样本vin不可修改  
+            this.titleComboxVin.SetReadOnly(true);
+            this.titleComboxVin.OriginalReadOnly = true;
         }
 
         private void initCombox()
@@ -212,8 +226,14 @@ namespace TaskManager
             titleComboxArea.SetItems(this.experimentSites);
             titleComboxLocationNo.SetItems(this.locationNumbers);
             titleComboxUser.SetItems(FormSignIn.Users);
-
-            titleComboxVin.SetItems(this.vins);
+            //样本vin
+            if (this.baseTestStatistic == null)
+            {
+                titleComboxVin.SetItems(this.vins);
+            }
+            else {
+                titleComboxVin.SetItems(new List<string>());
+            }            
             titleComboxSampleType.SetItems(Form1.ComboxDictionary["样品类型"]);
             titleComboxCarType.SetItems(Form1.ComboxDictionary["车辆类型"]);
             titleComboxCarModel.SetItems(new List<string>());

@@ -13,6 +13,7 @@ using TaskManager.application.Iservice;
 using TaskManager.application.service;
 using TaskManager.application.viewmodel;
 using TaskManager.common.utils;
+using TaskManager.controller;
 using TaskManager.domain.entity;
 using TaskManager.domain.repository;
 using TaskManager.domain.service;
@@ -163,9 +164,13 @@ namespace TaskManager
 
         private void initControlByDepartment()
         {
-            GetControlByFieldName("Carvin").SetReadOnly(false);
-            GetControlByFieldName("ItemBrief").SetReadOnly(false);
-            GetControlByFieldName("Taskcode").SetReadOnly(false);
+            //GetControlByFieldName("Carvin").SetReadOnly(false);
+            //GetControlByFieldName("ItemBrief").SetReadOnly(false);
+            //GetControlByFieldName("Taskcode").SetReadOnly(false);
+            List<string> readOnlyCols = new List<string> { "Carvin", "ItemBrief", "Taskcode",
+                "CarType","SampleModel","Producer","YNDirect","PowerType","TransmissionType",
+                "EngineModel","EngineProduct","Drivertype","FuelType","FuelLabel"};
+            readOnlyCols.ForEach(item => GetControlByFieldName(item).SetReadOnly(false));
 
             if (FormSignIn.CurrentUser.Department == "系统维护")
             {
@@ -830,8 +835,8 @@ namespace TaskManager
             this.buildOriTestStatisticEntity();
             this.testStatisticId = int.Parse(getValue("ID"));
             UseHolder.Instance.CurrentUser = FormSignIn.CurrentUser;
-            this.vins = this.sampleQueryService.allSampleVins();
-            this.equipmentBreiefViewModels = this.equipmentQueryService.usingEquipments(UseHolder.Instance.CurrentUser.Department);
+            this.vins = CacheDataHandler.Instance.getVins();
+            this.equipmentBreiefViewModels = CacheDataHandler.Instance.getCurUserEquipments();
             this.equipmentMap = new Dictionary<string, EquipmentBreiefViewModel>();
             this.equipmentBreiefViewModels.ForEach(item => {
                 if (!equipmentMap.ContainsKey(item.ToString()))
@@ -892,7 +897,7 @@ namespace TaskManager
         private void initView()
         {
             this.Text = "编辑试验计划";
-            this.btnAddEquipment.Enabled = false;
+            this.btnAddEquipment.Enabled =!string.IsNullOrWhiteSpace(((TitleCombox)GetControlByFieldName("ItemBrief")).Text.Trim()) ;
             this.initUsingEquipmentListView();
             this.initCombox();
             this.initViewValue();

@@ -62,6 +62,10 @@ namespace TaskManager
             for (int index = 0; index < rows.Count; index++)
             {
                 DataRow row = rows[index];
+                if (row.RowState == DataRowState.Deleted) {
+                    continue;
+                }
+
                 int id = int.Parse(row["ID"].ToString().Trim());
                 if (this.savedIds.Contains(id))
                 {
@@ -109,6 +113,7 @@ namespace TaskManager
             result.CarVin = this.dataColumn2String(row["Carvin"]);
             result.TestState = this.dataColumn2String(row["Finishstate"]);
             result.SecurityLevel = this.dataColumn2String(row["Confidentiality"]);
+            result.buildPurpose();
 
             return result;
         }
@@ -462,7 +467,7 @@ namespace TaskManager
         /// <param name="hand"></param>
         protected override void OpenAddFormClick(GridView view, int hand)
         {
-            Form1.ShowWaitForm();
+            //Form1.ShowWaitForm();
             try
             {
                 this.createTaskForm = new CreateTaskForm(CreateTestTaskFrom.TEST_STATISTIC_LIST_FORM);
