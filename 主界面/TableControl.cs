@@ -83,9 +83,11 @@ namespace TaskManager
 
         public delegate void CellValueChangedEvent(DataRow changedRow);
         public delegate DataTable SaveDataSourceEvent(DataTable updateTable );
+        public delegate void AfterSavedEvent();
 
         public CellValueChangedEvent cellValueChangedEvent;
         public SaveDataSourceEvent saveDataSourceEvent;
+        public AfterSavedEvent afterSavedHandle;
 
         #endregion
 
@@ -469,6 +471,10 @@ namespace TaskManager
                 SaveSource();
                 LoadSource();
                 SetSaveStatus(true);
+                if (afterSavedHandle != null)
+                {
+                    afterSavedHandle();
+                }
             }
             catch (Exception ex)
             {
