@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using TaskManager.controller;
 
 namespace TaskManager
 {
@@ -51,6 +52,7 @@ namespace TaskManager
         
         private void FormSignIn_Load(object sender, EventArgs e)
         {
+            CacheDataHandler.Instance.asyncLoadVins();
             RememberedUsers = FileCtr.ReadSerializable<string, User>("data.bin");
 
             foreach (var user in RememberedUsers.Values)
