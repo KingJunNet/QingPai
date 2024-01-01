@@ -162,6 +162,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="controller\UIHelp.cs" />
+    <Compile Include="controller\CacheDataHandler.cs" />
     <Compile Include="controller\UserHelper.cs" />
     <Compile Include="Dialogs\AuthorityForm.cs">
       <SubType>Form</SubType>
