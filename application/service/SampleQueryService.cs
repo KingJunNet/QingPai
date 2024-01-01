@@ -41,11 +41,40 @@ namespace TaskManager.application.service
         /// </summary>
         /// <param name="vin">vin</param>
         /// <returns>样本信息</returns>
-        public List<string> allSampleVins()
+        public List<string> allSampleVinsBack()
         {
             //执行数据库查询
             String sql = "SELECT VIN FROM SampleTable WHERE VIN IS NOT NULL " +
                            "union all SELECT Carvin AS VIN FROM TestStatistic WHERE Carvin IS NOT NULL";
+            List<string> vins = this.dbProvider.GetStringList(sql);
+
+            //过滤
+            List<string> notValidVins = new List<string> { "-", "——", "无" };
+            List<string> results = new List<string>();
+            foreach (string vin in vins)
+            {
+                if (results.Contains(vin))
+                {
+                    continue;
+                }
+                if (!string.IsNullOrEmpty(vin) && !notValidVins.Contains(vin))
+                {
+                    results.Add(vin);
+                }
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// 获取所有的win
+        /// </summary>
+        /// <param name="vin">vin</param>
+        /// <returns>样本信息</returns>
+        public List<string> allSampleVins()
+        {
+            //执行数据库查询
+            String sql = "SELECT VIN FROM SampleTable WHERE VIN IS NOT NULL ";
             List<string> vins = this.dbProvider.GetStringList(sql);
 
             //过滤
