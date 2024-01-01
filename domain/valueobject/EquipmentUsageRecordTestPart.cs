@@ -129,7 +129,7 @@ namespace TaskManager.domain.valueobject
             return this;
         }
 
-        private void buildPurpose()
+        public void buildPurpose()
         {
             this.Purpose = $"{this.Producer}{this.CarVin} {this.SampleModel}{this.ItemBrief}";
         }

@@ -267,7 +267,10 @@ namespace TaskManager
                 OrderCol = "TestStartDate";
                 //Operate = "全功能";
 
-                ReadOnlyCols = new List<string> { "Carvin", "ItemBrief", "Taskcode", "Equipments"};
+                //ReadOnlyCols = new List<string> { "Carvin", "ItemBrief", "Taskcode", "Equipments"};
+                ReadOnlyCols = new List<string> { "Carvin", "ItemBrief", "Taskcode", "Equipments",
+                "CarType","SampleModel","Producer","YNDirect","PowerType","TransmissionType",
+                "EngineModel","EngineProduct","Drivertype","FuelType","FuelLabel"};
 
                 Add = true;
                 Edit = true;
