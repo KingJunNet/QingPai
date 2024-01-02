@@ -28,6 +28,9 @@ namespace TaskManager
         public FormTable FormTable;
         public string Department;
         public string user;
+        
+        public delegate void BeforeRemovedHandle();
+        protected BeforeRemovedHandle beforeRemovedHandle;
 
         #endregion
 
@@ -262,8 +265,31 @@ namespace TaskManager
 
         private void 删除toolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            this.removeEvent();
+        }
+
+        protected void removeEvent() {
             if (!FormTable.Delete)
                 return;
+
+            if (FormTable.Category == "设备使用记录")
+            {
+                for (int i = 0; i < _control._view.SelectedRowsCount; i++)
+                {
+                    if (_control._view.GetRowCellValue(_control._view.GetSelectedRows()[i], "UsePerson").ToString() != FormSignIn.CurrentUser.Name)
+                    {
+                        MessageBox.Show("无权限进行删除");
+                        return;
+                    }
+                    string vin = _control._view.GetRowCellValue(_control._view.GetSelectedRows()[i], "CarVin")?.ToString().Trim();
+                    if (!string.IsNullOrWhiteSpace(vin))
+                    {
+                        MessageBox.Show("无法直接删除试验统计关联的设备使用记录");
+                        return;
+                    }
+                }
+            }
+
             //只允许删自己创建的信息
             if (FormTable.Module == "样品信息")
             {
@@ -311,6 +337,15 @@ namespace TaskManager
                 //    }
                 //}
 
+            }
+
+            DialogResult result = MessageBox.Show("确定删除吗？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result != DialogResult.Yes)
+            {
+                return;
+            }
+            if (this.beforeRemovedHandle != null) {
+                this.beforeRemovedHandle();
             }
             _control.DeleteSelectedRows();
         }

@@ -33,6 +33,8 @@ namespace TaskManager
 
         private List<int> savedIds = new List<int>();
 
+        private List<int> removedIds = new List<int>();
+
         public TestStatistic()
         {
             InitializeComponent();
@@ -44,7 +46,7 @@ namespace TaskManager
             this.equipmentUsageRecordRepository = new EquipmentUsageRecordRepository();
             this._control.cellValueChangedEvent = new TableControl.CellValueChangedEvent(afterCellValueChanged);
             this._control.saveDataSourceEvent = new TableControl.SaveDataSourceEvent(handleBeforeSaveDataSource);
-
+            this.beforeRemovedHandle = new BeforeRemovedHandle(beforeRemovedHandler);
         }
 
         private void afterCellValueChanged(DataRow changedRow) {
@@ -85,13 +87,37 @@ namespace TaskManager
                 updatedTestParts.ForEach (item => {
                     this.equipmentUsageRecordRepository.updateTestTaskProperty(item);
                  }) ;
-              
             }
 
-            return updateTable;
+            //删除设备使用记录
+            if (!Collections.isEmpty(this.removedIds))
+            {
+                this.removedIds.ForEach(id =>
+                {
+                    this.equipmentUsageRecordRepository.removeByTestTaskId(id);
+                });
+                this.removedIds.Clear();
+            }
+
+                return updateTable;
         }
 
-        private EquipmentUsageRecordTestPart dataRow2EquipmentUsageRecordTestPart(DataRow row)
+        private void beforeRemovedHandler()
+        {
+            DialogResult result = MessageBox.Show("是否需要一并删除该试验关联的设备使用记录", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result != DialogResult.Yes)
+            {
+                return;
+            }
+
+            for (int i = 0; i < _control._view.SelectedRowsCount; i++)
+            {
+                string id = _control._view.GetRowCellValue(_control._view.GetSelectedRows()[i], "ID")?.ToString().Trim();
+                this.removedIds.Add(int.Parse(id));
+            }
+        }
+
+            private EquipmentUsageRecordTestPart dataRow2EquipmentUsageRecordTestPart(DataRow row)
         {
             EquipmentUsageRecordTestPart result = new EquipmentUsageRecordTestPart();
 
