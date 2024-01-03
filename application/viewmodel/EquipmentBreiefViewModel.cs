@@ -67,7 +67,7 @@ namespace TaskManager.application.viewmodel
             Name = Entity.Name;
             Type = Entity.Type;
             Code = Entity.Code;
-            State = Entity.State;
+            State = string.IsNullOrWhiteSpace(Entity.State) ? "": Entity.State;
 
 
             return this;
@@ -75,9 +75,12 @@ namespace TaskManager.application.viewmodel
 
         public EquipmentBreiefViewModel setViewName(string group)
         {
-            this.ViewName = $"{this.Code}-{this.Name}";
+            this.ViewName = $"{this.State}-{this.Code}-{this.Name}";
             if (!this.Group.Equals(group))
             {
+                this.ViewName = $"{this.ViewName}({this.Group})";
+            }
+            else {
                 this.ViewName = $"{this.ViewName}({this.Group})";
             }
 

@@ -52,6 +52,18 @@ namespace TaskManager.application.Iservice
             //排序
             results.Sort((arg0, arg1) =>
             {
+                //先按照状态排序
+                EquipmentStateChn arg0State = EquipmentStateChn.报废;
+                EquipmentStateChn arg1State = EquipmentStateChn.报废;
+                Enum.TryParse(arg0.State, out arg0State);
+                Enum.TryParse(arg1.State, out arg1State);
+
+                int value = ((int)arg0State).CompareTo((int)arg1State);
+                if (value != 0) {
+                    return value;
+                }
+
+                //按照是否为本组排序
                 int arg0Order = arg0.Group.Equals(group) ? 0 : 1;
                 int arg1Order = arg1.Group.Equals(group) ? 0 : 1;
                 return arg0Order.CompareTo(arg1Order);

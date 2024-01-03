@@ -58,6 +58,9 @@ namespace TaskManager
         private string itemName = "";
 
         private List<EquipmentBreiefViewModel> equipmentBreiefViewModels;
+
+        private List<String> inTimeEquipments = new List<string>();
+
         private Dictionary<string, EquipmentBreiefViewModel> equipmentMap;
 
         private List<EquipmentLite> itemEquipments;
@@ -262,6 +265,7 @@ namespace TaskManager
             titleComboxTaskCode.SetTextChange(taskCodeChangeHandler);
 
             titleComboxVin.SetTextUpdate(VinTextUpdate);
+            titleComboxEquipment.SetTextUpdate(EquipmentTextUpdate);
         }
 
         private void initUsingEquipmentListView()
@@ -367,6 +371,9 @@ namespace TaskManager
         private void addEquipment()
         {
             string newEquipmentValue = this.titleComboxEquipment.Text;
+            if (!this.equipmentMap.ContainsKey(newEquipmentValue)) {
+                return;
+            }
             string newEquipmentCode = this.equipmentMap[newEquipmentValue].Code;
             if (this.itemEquipmentMap.ContainsKey(newEquipmentCode))
             {
@@ -436,6 +443,34 @@ namespace TaskManager
                 this.titleComboxVin.comboBox1.DroppedDown = true;
             }
             catch (Exception ex) {
+                Log.e(ex.ToString());
+            }
+        }
+
+        private void EquipmentTextUpdate(object sender, EventArgs e)
+        {
+            try
+            {
+                this.titleComboxEquipment.comboBox1.Items.Clear();
+                this.inTimeEquipments.Clear();
+                foreach (var item in this.equipmentBreiefViewModels)
+                {
+                    if (item.ToString().Contains(this.titleComboxEquipment.comboBox1.Text))
+                    {
+                        this.inTimeEquipments.Add(item.ToString());
+                    }
+                }
+                if (Collections.isEmpty(this.inTimeEquipments))
+                {
+                    this.inTimeEquipments.Add("无匹配数据");
+                }
+                this.titleComboxEquipment.comboBox1.Items.AddRange(this.inTimeEquipments.ToArray());
+                this.titleComboxEquipment.comboBox1.SelectionStart = this.titleComboxEquipment.comboBox1.Text.Length;
+                Cursor = Cursors.Default;
+                this.titleComboxEquipment.comboBox1.DroppedDown = true;
+            }
+            catch (Exception ex)
+            {
                 Log.e(ex.ToString());
             }
         }

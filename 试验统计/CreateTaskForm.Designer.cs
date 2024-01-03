@@ -525,14 +525,14 @@ namespace TaskManager
             // titleComboxEquipment
             // 
             this.titleComboxEquipment.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.titleComboxEquipment.LabelWidth = 100;
+            this.titleComboxEquipment.LabelWidth = 50;
             this.titleComboxEquipment.Location = new System.Drawing.Point(627, 5);
             this.titleComboxEquipment.Margin = new System.Windows.Forms.Padding(5);
             this.titleComboxEquipment.Name = "titleComboxEquipment";
             this.titleComboxEquipment.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.titleComboxEquipment.Size = new System.Drawing.Size(534, 41);
             this.titleComboxEquipment.TabIndex = 18;
-            this.titleComboxEquipment.Title = "设备清单";
+            this.titleComboxEquipment.Title = "设备";
             this.titleComboxEquipment.ViewModels = null;
             // 
             // listViewUsingEquipment

@@ -51,6 +51,9 @@ namespace TaskManager
         private string itemName = "";
 
         private List<EquipmentBreiefViewModel> equipmentBreiefViewModels;
+
+        private List<String> inTimeEquipments = new List<string>();
+
         private Dictionary<string, EquipmentBreiefViewModel> equipmentMap;
 
         private List<EquipmentUsageRecordLite> testEquipments;
@@ -921,6 +924,7 @@ namespace TaskManager
             ((TitleCombox)GetControlByFieldName("Confidentiality")).SetTextChange(confidentialityChangeHandler);
 
             this.titleComboxVin.SetTextUpdate(VinTextUpdate);
+            titleComboxEquip.SetTextUpdate(EquipmentTextUpdate);
         }
 
         private void initViewValue()
@@ -1035,6 +1039,10 @@ namespace TaskManager
         private void addEquipment()
         {
             string newEquipmentValue = this.titleComboxEquip.Text;
+            if (!this.equipmentMap.ContainsKey(newEquipmentValue))
+            {
+                return;
+            }
             string newEquipmentCode = this.equipmentMap[newEquipmentValue].Code;
             if (this.itemEquipmentMap.ContainsKey(newEquipmentCode))
             {
@@ -1097,6 +1105,34 @@ namespace TaskManager
                 this.titleComboxVin.comboBox1.SelectionStart = this.titleComboxVin.comboBox1.Text.Length;
                 Cursor = Cursors.Default;
                 this.titleComboxVin.comboBox1.DroppedDown = true;
+            }
+            catch (Exception ex)
+            {
+                Log.e(ex.ToString());
+            }
+        }
+
+        private void EquipmentTextUpdate(object sender, EventArgs e)
+        {
+            try
+            {
+                this.titleComboxEquip.comboBox1.Items.Clear();
+                this.inTimeEquipments.Clear();
+                foreach (var item in this.equipmentBreiefViewModels)
+                {
+                    if (item.ToString().Contains(this.titleComboxEquip.comboBox1.Text))
+                    {
+                        this.inTimeEquipments.Add(item.ToString());
+                    }
+                }
+                if (Collections.isEmpty(this.inTimeEquipments))
+                {
+                    this.inTimeEquipments.Add("无匹配数据");
+                }
+                this.titleComboxEquip.comboBox1.Items.AddRange(this.inTimeEquipments.ToArray());
+                this.titleComboxEquip.comboBox1.SelectionStart = this.titleComboxEquip.comboBox1.Text.Length;
+                Cursor = Cursors.Default;
+                this.titleComboxEquip.comboBox1.DroppedDown = true;
             }
             catch (Exception ex)
             {

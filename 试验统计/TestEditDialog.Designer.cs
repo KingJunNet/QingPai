@@ -795,8 +795,8 @@ namespace TaskManager
             this.tableLayoutPanel1.ColumnCount = 4;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 135F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.50835F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 429F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 275F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 568F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 118F));
             this.tableLayoutPanel1.Controls.Add(this.titleComboxEquip, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.listViewUsingEquipment, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.titleComboxEquipment, 0, 0);
@@ -813,14 +813,14 @@ namespace TaskManager
             // titleComboxEquip
             // 
             this.titleComboxEquip.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.titleComboxEquip.LabelWidth = 100;
-            this.titleComboxEquip.Location = new System.Drawing.Point(720, 5);
+            this.titleComboxEquip.LabelWidth = 50;
+            this.titleComboxEquip.Location = new System.Drawing.Point(738, 5);
             this.titleComboxEquip.Margin = new System.Windows.Forms.Padding(5);
             this.titleComboxEquip.Name = "titleComboxEquip";
             this.titleComboxEquip.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
-            this.titleComboxEquip.Size = new System.Drawing.Size(419, 41);
+            this.titleComboxEquip.Size = new System.Drawing.Size(558, 41);
             this.titleComboxEquip.TabIndex = 22;
-            this.titleComboxEquip.Title = "设备清单";
+            this.titleComboxEquip.Title = "设备";
             this.titleComboxEquip.ViewModels = null;
             // 
             // listViewUsingEquipment
@@ -836,7 +836,7 @@ namespace TaskManager
             this.listViewUsingEquipment.HideSelection = false;
             this.listViewUsingEquipment.Location = new System.Drawing.Point(138, 3);
             this.listViewUsingEquipment.Name = "listViewUsingEquipment";
-            this.listViewUsingEquipment.Size = new System.Drawing.Size(574, 149);
+            this.listViewUsingEquipment.Size = new System.Drawing.Size(592, 149);
             this.listViewUsingEquipment.TabIndex = 21;
             this.listViewUsingEquipment.UseCompatibleStateImageBehavior = false;
             this.listViewUsingEquipment.View = System.Windows.Forms.View.Details;
@@ -881,9 +881,9 @@ namespace TaskManager
             // 
             // btnAddEquipment
             // 
-            this.btnAddEquipment.Location = new System.Drawing.Point(1147, 3);
+            this.btnAddEquipment.Location = new System.Drawing.Point(1304, 3);
             this.btnAddEquipment.Name = "btnAddEquipment";
-            this.btnAddEquipment.Size = new System.Drawing.Size(115, 34);
+            this.btnAddEquipment.Size = new System.Drawing.Size(112, 34);
             this.btnAddEquipment.TabIndex = 23;
             this.btnAddEquipment.Text = "添加";
             this.btnAddEquipment.UseVisualStyleBackColor = true;

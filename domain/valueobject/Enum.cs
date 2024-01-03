@@ -32,8 +32,8 @@ namespace TaskManager.domain.valueobject
 
     public enum EquipmentStateChn {
         使用中 = 1,
-        未启用 = 2,
-        待检定 = 4,
+        待检定 = 2,
+        未启用 = 4,
         停用 = 8,
         报废 = 16,
     }
