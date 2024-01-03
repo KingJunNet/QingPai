@@ -410,36 +410,47 @@ namespace TaskManager
 
         private void VinChangeHandler(object sender, EventArgs e)
         {
-            string vin = titleComboxVin.Text;
+         string vin = titleComboxVin.Text;
             this.afterVinChanged(vin);
         }
 
         private void VinTextUpdate(object sender, EventArgs e)
         {
-            this.titleComboxVin.comboBox1.Items.Clear();
-            this.inTimeVins.Clear();
-            foreach (var item in this.vins)
+            try
             {
-                if (item.Contains(this.titleComboxVin.comboBox1.Text))
+                this.titleComboxVin.comboBox1.Items.Clear();
+                this.inTimeVins.Clear();
+                foreach (var item in this.vins)
                 {
-                    this.inTimeVins.Add(item);
+                    if (item.Contains(this.titleComboxVin.comboBox1.Text))
+                    {
+                        this.inTimeVins.Add(item);
+                    }
                 }
+                if (Collections.isEmpty(this.inTimeVins)) {
+                    this.inTimeVins.Add("无匹配数据");
+                }
+                this.titleComboxVin.comboBox1.Items.AddRange(this.inTimeVins.ToArray());
+                this.titleComboxVin.comboBox1.SelectionStart = this.titleComboxVin.comboBox1.Text.Length;
+                Cursor = Cursors.Default;
+                this.titleComboxVin.comboBox1.DroppedDown = true;
             }
-            this.titleComboxVin.comboBox1.Items.AddRange(this.inTimeVins.ToArray());
-            this.titleComboxVin.comboBox1.SelectionStart = this.titleComboxVin.comboBox1.Text.Length;
-            Cursor = Cursors.Default;
-            this.titleComboxVin.comboBox1.DroppedDown = true;      
+            catch (Exception ex) {
+                Log.e(ex.ToString());
+            }
         }
 
         private void afterVinChanged(string vin) {
             if (string.IsNullOrEmpty(vin))
             {
+                notExistVinHnadler();
                 return;
             }
 
             this.sampleOfVin = this.sampleQueryService.samplesOfVin(vin);
             if (sampleOfVin == null)
             {
+                notExistVinHnadler();
                 return;
             }
             SampleBrief sample = sampleOfVin.FromSampleTable;
@@ -464,6 +475,26 @@ namespace TaskManager
             titleComboxRoz.SetValue(sample.Roz);
 
             //
+        }
+
+        private void notExistVinHnadler() {
+            resetSampleTitleComboxs();
+            isVinFromStatistic = false;
+        }
+
+        private void resetSampleTitleComboxs() {
+            titleComboxSampleType.SetValue("");
+            titleComboxCarType.SetValue("");
+            titleComboxCarModel.SetValue("");
+            titleComboxProducer.SetValue("");
+            titleComboxEngineType.SetValue("");
+            titleComboxEngineModel.SetValue("");
+            titleComboxEngineProducer.SetValue("");
+            titleComboxYNDirect.SetValue("");
+            titleComboxTransType.SetValue("");
+            titleComboxDriverType.SetValue("");
+            titleComboxFuelType.SetValue("");
+            titleComboxRoz.SetValue("");
         }
 
         private void itemChangeHandler(object sender, EventArgs e)
@@ -807,6 +838,7 @@ namespace TaskManager
             if (isAddSample)
             {
                 this.sampleCommandService.createByBrief(this.updatedSampleBrief);
+                CacheDataHandler.Instance.addVin(this.updatedSampleBrief.Vin);
             }
             else if (isUpdateSample)
             {

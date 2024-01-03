@@ -154,7 +154,7 @@ namespace TaskManager
             this.titleComboxGroup.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.titleComboxGroup.Size = new System.Drawing.Size(420, 41);
             this.titleComboxGroup.TabIndex = 0;
-            this.titleComboxGroup.Title = "部门";
+            this.titleComboxGroup.Title = "组别";
             this.titleComboxGroup.ViewModels = null;
             // 
             // titleComboxArea

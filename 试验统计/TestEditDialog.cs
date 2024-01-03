@@ -41,6 +41,8 @@ namespace TaskManager
         private int testStatisticId;
         private List<string> vins;
 
+        private List<string> inTimeVins = new List<string>();
+
         private List<UserStructureLite> userStructureLites;
         private List<string> groups;
         private List<string> experimentSites;
@@ -100,7 +102,7 @@ namespace TaskManager
         private List<TaskBrief> taskBriefs;
         private Dictionary<string, TaskBrief> taskBriefMap=new Dictionary<string, TaskBrief>();
 
-       
+        private TitleCombox titleComboxVin;
 
         private TestEditDialog() : base()
         {
@@ -599,6 +601,7 @@ namespace TaskManager
             if (isAddSample)
             {
                 this.sampleCommandService.createByBrief(this.updatedSampleBrief);
+                CacheDataHandler.Instance.addVin(this.updatedSampleBrief.Vin);
             }
             else if (isUpdateSample)
             {
@@ -905,15 +908,19 @@ namespace TaskManager
 
         private void initCombox()
         {
+            this.titleComboxVin = ((TitleCombox)GetControlByFieldName("Carvin"));
+
             titleCombox3.SetItems(this.experimentSites);
             titleCombox1.SetItems(this.locationNumbers);
-            ((TitleCombox)GetControlByFieldName("Carvin")).SetItems(this.vins);
+            this.titleComboxVin.SetItems(this.vins);
             this.initEquipmentCombox();
-            ((TitleCombox)GetControlByFieldName("Carvin")).SetTextChange(VinChangeHandler);
+            this.titleComboxVin.SetTextChange(VinChangeHandler);
             ((TitleCombox)GetControlByFieldName("ItemBrief")).SetTextChange(itemChangeHandler);
             ((TitleCombox)GetControlByFieldName("SampleModel")).SetTextChange(sampleModelChangeHandler);
              ((TitleCombox)GetControlByFieldName("Taskcode")).SetTextChange(taskCodeChangeHandler);
             ((TitleCombox)GetControlByFieldName("Confidentiality")).SetTextChange(confidentialityChangeHandler);
+
+            this.titleComboxVin.SetTextUpdate(VinTextUpdate);
         }
 
         private void initViewValue()
@@ -1069,6 +1076,34 @@ namespace TaskManager
             titleComboxEquip.SetViewmModels(vms);
         }
 
+        private void VinTextUpdate(object sender, EventArgs e)
+        {
+            try
+            {
+                this.titleComboxVin.comboBox1.Items.Clear();
+                this.inTimeVins.Clear();
+                foreach (var item in this.vins)
+                {
+                    if (item.Contains(this.titleComboxVin.comboBox1.Text))
+                    {
+                        this.inTimeVins.Add(item);
+                    }
+                }
+                if (Collections.isEmpty(this.inTimeVins))
+                {
+                    this.inTimeVins.Add("无匹配数据");
+                }
+                this.titleComboxVin.comboBox1.Items.AddRange(this.inTimeVins.ToArray());
+                this.titleComboxVin.comboBox1.SelectionStart = this.titleComboxVin.comboBox1.Text.Length;
+                Cursor = Cursors.Default;
+                this.titleComboxVin.comboBox1.DroppedDown = true;
+            }
+            catch (Exception ex)
+            {
+                Log.e(ex.ToString());
+            }
+        }
+
         private void VinChangeHandler(object sender, EventArgs e)
         {
             string vin = ((TitleCombox)GetControlByFieldName("Carvin")).Text;
@@ -1156,9 +1191,17 @@ namespace TaskManager
 
         private void afterVinChanged(string vin)
         {
+            if (string.IsNullOrEmpty(vin))
+            {
+                notExistVinHnadler();
+                return;
+            }
+
+
             SampleBrief sample = this.getSampleOfVin(vin);
             if (sample == null)
             {
+                notExistVinHnadler();
                 return;
             }
 
@@ -1175,7 +1218,27 @@ namespace TaskManager
             this.setComboxValue("Drivertype", sample.DriverType);
             this.setComboxValue("FuelType", sample.FuelType);
             this.setComboxValue("FuelLabel", sample.Roz);
+        }
 
+        private void notExistVinHnadler()
+        {
+            resetSampleTitleComboxs();
+            isVinFromStatistic = false;
+        }
+
+        private void resetSampleTitleComboxs()
+        {
+            this.setComboxValue("CarType", "");
+            this.setComboxValue("SampleModel", "");
+            this.setComboxValue("Producer", "");
+            this.setComboxValue("PowerType", "");
+            this.setComboxValue("EngineModel", "");
+            this.setComboxValue("EngineProduct", "");
+            this.setComboxValue("YNDirect", "");
+            this.setComboxValue("TransmissionType", "");
+            this.setComboxValue("Drivertype", "");
+            this.setComboxValue("FuelType", "");
+            this.setComboxValue("FuelLabel", "");
         }
 
         private void updateEquipmentUsageRecordrRemark() {

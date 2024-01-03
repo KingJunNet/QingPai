@@ -97,6 +97,9 @@
     <Compile Include="Controls\ControlHelper.cs" />
     <Compile Include="Controls\Enum.cs" />
     <Compile Include="Controls\Field.cs" />
+    <Compile Include="Controls\TitleEditor\ComboBoxMax.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\TitleEditor\DateEdit.cs">
       <SubType>UserControl</SubType>
     </Compile>

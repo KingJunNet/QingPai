@@ -131,7 +131,7 @@ namespace TaskManager.domain.valueobject
 
         public void buildPurpose()
         {
-            this.Purpose = $"{this.Producer}{this.CarVin} {this.SampleModel}{this.ItemBrief}";
+            this.Purpose = $"{this.Producer}-{this.SampleModel}-{this.CarVin}-{this.ItemBrief}";
         }
 
 

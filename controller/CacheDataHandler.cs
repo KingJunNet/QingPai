@@ -81,6 +81,12 @@ namespace TaskManager.controller
             Thread exportWordThread = new Thread(loadVins);
             exportWordThread.IsBackground = true;
             exportWordThread.Start();
-        }        
+        }
+
+        public void addVin(string vin) {
+            if (!this.vins.Contains(vin)) {
+                this.vins.Add(vin);
+            }
+        }
     }
 }

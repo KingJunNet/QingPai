@@ -43,7 +43,7 @@ namespace TaskManager
         protected override void setTimeSpanCondition()
         {
             startdate.EditValue = DateTime.Now.AddMonths(-1).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            enddate.EditValue = DateTime.Now.ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            enddate.EditValue = DateTime.Now.AddDays(1).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
         }
 
         protected override void InitUi()

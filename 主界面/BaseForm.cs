@@ -95,7 +95,7 @@ namespace TaskManager
 
         protected virtual void setTimeSpanCondition() {
             startdate.EditValue = DateTime.Now.AddYears(-1).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            enddate.EditValue = DateTime.Now.ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            enddate.EditValue = DateTime.Now.AddDays(1).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
         }
 
         protected void FormLoad(object sender, EventArgs e)
