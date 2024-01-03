@@ -6,14 +6,14 @@ using System.Windows.Forms;
 
 namespace ExpertLib.Controls
 {
-    public partial class TitleCombox : TitleControl
+    public partial class TitleComboxPlus : TitleControl
     {
         /// <summary>
         /// 视图数据
         /// </summary>
         public List<Object> ViewModels { get; set; }
 
-        public TitleCombox()
+        public TitleComboxPlus()
         {
             InitializeComponent();
             if (comboBox1.Text == "")
@@ -24,14 +24,6 @@ namespace ExpertLib.Controls
             {
                 comboBox1.BackColor = Color.White;
             }
-
-            this.comboBox1.MouseWheel += new MouseEventHandler(ComboBox_MouseWheel);
-        }
-
-        private void ComboBox_MouseWheel(object sender, MouseEventArgs e)
-        {
-            HandledMouseEventArgs e1 = e as HandledMouseEventArgs;//需要强转，否则无法设置handeld
-            e1.Handled = true;
         }
 
         public void SetTextChange(EventHandler handler)
@@ -39,11 +31,6 @@ namespace ExpertLib.Controls
             comboBox1.TextChanged += handler;
         }
 
-        public void SetTextUpdate(EventHandler handler)
-        {
-            this.comboBox1.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.None;
-            comboBox1.TextUpdate += handler;
-        }
 
         public override string Text => comboBox1.Text;
 
@@ -65,27 +52,16 @@ namespace ExpertLib.Controls
 
         public override void SetItems(List<string> only)
         {
-            comboBox1.BeginUpdate();
-            comboBox1.Items.Clear();
-
-            comboBox1.Items.AddRange(only.ToArray());
-            comboBox1.EndUpdate();
         }
 
         public void SetItems(IEnumerable<string> only)
         {
-            comboBox1.BeginUpdate();
-            comboBox1.Items.Clear();
-
-            comboBox1.Items.AddRange(only.ToArray());
-            comboBox1.EndUpdate();
+          
         }
 
         public void SetViewmModels(List<Object> vms)
         {
-            this.ViewModels = vms;
-            List<string> values = vms.Select(item => item.ToString()).ToList();
-            this.SetItems(values);
+           
         }
 
         private void comboBox1_TextChanged(object sender, EventArgs e)
@@ -98,6 +74,11 @@ namespace ExpertLib.Controls
             {
                 comboBox1.BackColor = Color.White;
             }
+        }
+
+        private void TitleComboxPlus_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

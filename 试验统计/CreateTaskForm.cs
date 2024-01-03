@@ -48,6 +48,8 @@ namespace TaskManager
 
         private List<string> vins;
 
+        private List<string> inTimeVins=new List<string>();
+
         private List<UserStructureLite> userStructureLites;
         private List<string> groups;
         private List<string> experimentSites;
@@ -258,6 +260,8 @@ namespace TaskManager
             titleComboxItemBrief.SetTextChange(itemChangeHandler);
             titleComboxCarModel.SetTextChange(sampleModelChangeHandler);
             titleComboxTaskCode.SetTextChange(taskCodeChangeHandler);
+
+            titleComboxVin.SetTextUpdate(VinTextUpdate);
         }
 
         private void initUsingEquipmentListView()
@@ -408,6 +412,23 @@ namespace TaskManager
         {
             string vin = titleComboxVin.Text;
             this.afterVinChanged(vin);
+        }
+
+        private void VinTextUpdate(object sender, EventArgs e)
+        {
+            this.titleComboxVin.comboBox1.Items.Clear();
+            this.inTimeVins.Clear();
+            foreach (var item in this.vins)
+            {
+                if (item.Contains(this.titleComboxVin.comboBox1.Text))
+                {
+                    this.inTimeVins.Add(item);
+                }
+            }
+            this.titleComboxVin.comboBox1.Items.AddRange(this.inTimeVins.ToArray());
+            this.titleComboxVin.comboBox1.SelectionStart = this.titleComboxVin.comboBox1.Text.Length;
+            Cursor = Cursors.Default;
+            this.titleComboxVin.comboBox1.DroppedDown = true;      
         }
 
         private void afterVinChanged(string vin) {

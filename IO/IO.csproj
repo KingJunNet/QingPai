@@ -109,6 +109,12 @@
     <Compile Include="Controls\TitleEditor\TextBoxEx.designer.cs">
       <DependentUpon>TextBoxEx.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TitleEditor\TitleComboxPlus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TitleEditor\TitleComboxPlus.Designer.cs">
+      <DependentUpon>TitleComboxPlus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TitleEditor\TitleCombox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -180,6 +186,9 @@
     <EmbeddedResource Include="Controls\TitleEditor\DateEdit.resx">
       <DependentUpon>DateEdit.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TitleEditor\TitleComboxPlus.resx">
+      <DependentUpon>TitleComboxPlus.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\TitleEditor\TitleCombox.resx">
       <DependentUpon>TitleCombox.cs</DependentUpon>
     </EmbeddedResource>
@@ -193,6 +202,7 @@
     <EmbeddedResource Include="Controls\TitleEditor\TitleTextBox.resx">
       <DependentUpon>TitleTextBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
