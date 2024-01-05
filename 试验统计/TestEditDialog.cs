@@ -90,6 +90,8 @@ namespace TaskManager
 
         private bool isNeedUpdateSample = false;
 
+        private List<FieldChangedState> updateSampleChangedStates;
+
         private bool isUpdateSample = false;
 
         private bool isNeedReplaceTestEquipments = false;
@@ -338,7 +340,8 @@ namespace TaskManager
             //是否需要更新样本
             if (this.isNeedUpdateSample)
             {
-                DialogResult result = MessageBox.Show("检测到该VIN样本信息有变化，需要将该样本信息更新至样本数据表么", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                string msg = $"检测到该VIN样本信息有变化({FieldChangedState.buildChangedDescription(this.updateSampleChangedStates)})，需要将该样本信息更新至样本数据表么";
+                DialogResult result = MessageBox.Show(msg, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
                     this.isUpdateSample = true;
@@ -542,7 +545,7 @@ namespace TaskManager
             }
             this.updatedSampleBrief.Id = this.sampleOfVin.FromSampleTable.Id;
             this.updatedSampleBrief.SampleType = this.sampleOfVin.FromSampleTable.SampleType;
-            this.isNeedUpdateSample = !this.sampleOfVin.FromSampleTable.equals(this.updatedSampleBrief);
+            this.isNeedUpdateSample = !this.sampleOfVin.FromSampleTable.equals(this.updatedSampleBrief,out this.updateSampleChangedStates);
         }
 
         private void syncItemEquipmentStrategy()
@@ -604,11 +607,15 @@ namespace TaskManager
             if (isAddSample)
             {
                 this.sampleCommandService.createByBrief(this.updatedSampleBrief);
+                //更新内存中的样本数据
+                this.updateCurFromSampleTable();
                 CacheDataHandler.Instance.addVin(this.updatedSampleBrief.Vin);
             }
             else if (isUpdateSample)
             {
                 this.sampleCommandService.updateByBrief(this.updatedSampleBrief);
+                //更新内存中的样本数据
+                this.sampleOfVin.FromSampleTable.copyFrom(this.updatedSampleBrief);
             }
 
             //更新项目设备信息
@@ -622,8 +629,26 @@ namespace TaskManager
                 this.equipmentCommandService.updateItemEquipments(this.testStatisticEntity.ItemBrief,
                     this.testStatisticEntity.Department, this.itemNowEquipmentCodes);
             }
-            this.itemOriEquipmentsMap[this.testStatisticEntity.ItemBrief] = this.itemEquipments;
+            //后置处理
+            this.resetAfterSaveData();
+        }
 
+        private void resetAfterSaveData()
+        {
+            this.itemOriEquipmentsMap[this.testStatisticEntity.ItemBrief] = this.itemEquipments;
+            this.isAddSample = false;
+            this.isUpdateSample = false;
+            this.isAddItemEquipments = false;
+            this.isUpdateItemEquipments = false;
+        }
+
+            private void updateCurFromSampleTable()
+        {
+            if (this.sampleOfVin == null)
+            {
+                this.sampleOfVin = new SampleOfVinViewModel();
+            }
+            this.sampleOfVin.FromSampleTable = this.updatedSampleBrief;
         }
 
         private void FinishStateChangeHandler(object sender, EventArgs e)
@@ -1088,6 +1113,7 @@ namespace TaskManager
         {
             try
             {
+                int curSelectionStart = this.titleComboxVin.comboBox1.SelectionStart;
                 this.titleComboxVin.comboBox1.Items.Clear();
                 this.inTimeVins.Clear();
                 foreach (var item in this.vins)
@@ -1102,7 +1128,7 @@ namespace TaskManager
                     this.inTimeVins.Add("无匹配数据");
                 }
                 this.titleComboxVin.comboBox1.Items.AddRange(this.inTimeVins.ToArray());
-                this.titleComboxVin.comboBox1.SelectionStart = this.titleComboxVin.comboBox1.Text.Length;
+                this.titleComboxVin.comboBox1.SelectionStart = curSelectionStart;
                 Cursor = Cursors.Default;
                 this.titleComboxVin.comboBox1.DroppedDown = true;
             }
@@ -1116,6 +1142,7 @@ namespace TaskManager
         {
             try
             {
+                int curSelectionStart = this.titleComboxEquip.comboBox1.SelectionStart;
                 this.titleComboxEquip.comboBox1.Items.Clear();
                 this.inTimeEquipments.Clear();
                 foreach (var item in this.equipmentBreiefViewModels)
@@ -1130,7 +1157,7 @@ namespace TaskManager
                     this.inTimeEquipments.Add("无匹配数据");
                 }
                 this.titleComboxEquip.comboBox1.Items.AddRange(this.inTimeEquipments.ToArray());
-                this.titleComboxEquip.comboBox1.SelectionStart = this.titleComboxEquip.comboBox1.Text.Length;
+                this.titleComboxEquip.comboBox1.SelectionStart = curSelectionStart;
                 Cursor = Cursors.Default;
                 this.titleComboxEquip.comboBox1.DroppedDown = true;
             }
@@ -1233,7 +1260,6 @@ namespace TaskManager
                 return;
             }
 
-
             SampleBrief sample = this.getSampleOfVin(vin);
             if (sample == null)
             {
@@ -1258,7 +1284,7 @@ namespace TaskManager
 
         private void notExistVinHnadler()
         {
-            resetSampleTitleComboxs();
+            //resetSampleTitleComboxs();
             isVinFromStatistic = false;
         }
 
