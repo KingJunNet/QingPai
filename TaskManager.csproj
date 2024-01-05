@@ -213,6 +213,7 @@
     <Compile Include="domain\valueobject\EquipmentLite.cs" />
     <Compile Include="domain\valueobject\EquipmentBreief.cs" />
     <Compile Include="domain\valueobject\EquipmentUsageRecordTestPart.cs" />
+    <Compile Include="domain\valueobject\FieldChangedState.cs" />
     <Compile Include="domain\valueobject\TaskBrief.cs" />
     <Compile Include="domain\valueobject\SampleBrief.cs" />
     <Compile Include="domain\valueobject\UserStructureLite.cs" />
