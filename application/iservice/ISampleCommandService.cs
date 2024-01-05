@@ -18,7 +18,7 @@ namespace TaskManager.application.Iservice
         /// </summary>
         /// <param name="sampleBrief">样本简要信息</param>
         /// <returns>void</returns>
-        void createByBrief(SampleBrief sampleBrief);
+        int createByBrief(SampleBrief sampleBrief);
 
         /// <summary>
         /// 更新样本

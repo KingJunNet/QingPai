@@ -34,12 +34,15 @@ namespace TaskManager.application.service
         /// </summary>
         /// <param name="sampleBrief">样本简要信息</param>
         /// <returns>void</returns>
-        public void createByBrief(SampleBrief sampleBrief) {
+        public int createByBrief(SampleBrief sampleBrief) {
             SampleEntity entity = new SampleEntity()
                 .init(UseHolder.Instance.CurrentUser.Name, DateTime.Now)
                 .fromBrief(sampleBrief);
 
-            this.sampleRepository.save(entity);
+            int id= this.sampleRepository.save(entity);
+            sampleBrief.Id = id;
+
+            return id;
         }
 
         /// <summary>
