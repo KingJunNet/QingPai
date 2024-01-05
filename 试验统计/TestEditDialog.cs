@@ -109,6 +109,9 @@ namespace TaskManager
 
         private TitleCombox titleComboxVin;
 
+        private SampleBrief testTaskSample = null;
+        private int testTaskSampleId = -1;
+
         private TestEditDialog() : base()
         {
             InitializeComponent();
@@ -323,6 +326,9 @@ namespace TaskManager
                     return;
                 }
 
+                //重置保存数据策略
+                this.resetSaveDataState();
+
                 //设备记录更新策略
                 this.updateTestEquipmentStrategy();
 
@@ -336,7 +342,18 @@ namespace TaskManager
                 MessageBox.Show("更新试验计划失败！", "错误信息", MessageBoxButtons.OK);
                 return;
             }
-           
+
+            //是否需要将新增替换为更新
+            if (this.isAddSample&&this.testTaskSampleId>0)
+            {
+                string msg = $"您输入的是一个新的样本vin，您是否仅仅需要修改当前实验项目的样本信息，而不是创建一个新的样本信息";
+                DialogResult result = MessageBox.Show(msg, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    this.sampleAddOperationChangeToUpdate();
+                }
+            }
+
             //是否需要更新样本
             if (this.isNeedUpdateSample)
             {
@@ -371,6 +388,17 @@ namespace TaskManager
             {
                 MessageBox.Show("更新试验计划失败！", "错误信息", MessageBoxButtons.OK);
             }
+        }
+
+        private void sampleAddOperationChangeToUpdate() {
+            this.updatedSampleBrief.Id = this.testTaskSampleId;
+            if (this.sampleOfVin == null)
+            {
+                this.sampleOfVin = new SampleOfVinViewModel();
+            }
+            this.sampleOfVin.FromSampleTable = this.testTaskSample;
+            this.isAddSample = false;
+            this.isUpdateSample = true;
         }
 
         private void afterUpdateSuccess()
@@ -615,6 +643,11 @@ namespace TaskManager
             {
                 this.sampleCommandService.updateByBrief(this.updatedSampleBrief);
                 //更新内存中的样本数据
+                if (!StringUtils.isEquals(this.sampleOfVin.FromSampleTable.Vin, this.updatedSampleBrief.Vin))
+                {
+                    CacheDataHandler.Instance.replaceVin(this.sampleOfVin.FromSampleTable.Vin, this.updatedSampleBrief.Vin);
+                }
+               
                 this.sampleOfVin.FromSampleTable.copyFrom(this.updatedSampleBrief);
             }
 
@@ -642,7 +675,21 @@ namespace TaskManager
             this.isUpdateItemEquipments = false;
         }
 
-            private void updateCurFromSampleTable()
+        private void resetSaveDataState()
+        {
+            this.isAddSample = false;
+            this.isUpdateSample = false;
+            this.isNeedUpdateSample = false;
+
+            this.isAddItemEquipments = false;
+            this.isUpdateItemEquipments = false;
+            this.isNeedUpdateItemEquipments = false;
+
+            this.isNeedReplaceTestEquipments = false;
+            this.isNeedUpdateEquipmentRecordTestProperty = false;
+        }
+
+        private void updateCurFromSampleTable()
         {
             if (this.sampleOfVin == null)
             {
@@ -865,6 +912,7 @@ namespace TaskManager
         {
             this.buildOriTestStatisticEntity();
             this.testStatisticId = int.Parse(getValue("ID"));
+            this.loadTestTaskSampleId();
             UseHolder.Instance.CurrentUser = FormSignIn.CurrentUser;
             this.vins = CacheDataHandler.Instance.getVins();
             this.equipmentBreiefViewModels = CacheDataHandler.Instance.getCurUserEquipments();
@@ -885,6 +933,15 @@ namespace TaskManager
             if (!string.IsNullOrWhiteSpace(this.itemName) && !Collections.isEmpty(this.itemEquipments))
             {
                 this.itemOriEquipmentsMap.Add(this.itemName, this.itemEquipments.Select(item => item.copy()).ToList());
+            }
+        }
+
+        private void loadTestTaskSampleId() {
+            //TODO:并不完全严肃
+            SampleOfVinViewModel curTaskSample = this.sampleQueryService.samplesOfVin(oriTestStatisticEntity.CarVin);
+            if (curTaskSample != null && curTaskSample.FromSampleTable != null) {
+                this.testTaskSample = curTaskSample.FromSampleTable;
+                this.testTaskSampleId = this.testTaskSample.Id;
             }
         }
 

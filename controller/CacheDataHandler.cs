@@ -88,5 +88,19 @@ namespace TaskManager.controller
                 this.vins.Add(vin);
             }
         }
+
+        public void removeVin(string vin)
+        {
+            if (this.vins.Contains(vin))
+            {
+                this.vins.Remove(vin);
+            }
+        }
+
+        public void replaceVin(string oriVin,string newVin)
+        {
+            this.removeVin(oriVin);
+            this.addVin(newVin);
+        }
     }
 }

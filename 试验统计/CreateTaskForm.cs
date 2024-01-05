@@ -689,6 +689,9 @@ namespace TaskManager
                     return;
                 }
 
+                //重置保存数据策略
+                this.resetSaveDataState();
+
                 //样本同步策略
                 this.syncSampleStrategy();
 
@@ -946,6 +949,17 @@ namespace TaskManager
             this.isUpdateSample = false;
             this.isAddItemEquipments = false;
             this.isUpdateItemEquipments = false;
+        }
+
+        private void resetSaveDataState()
+        {
+            this.isAddSample = false;
+            this.isUpdateSample = false;
+            this.isNeedUpdateSample = false;
+
+            this.isAddItemEquipments = false;
+            this.isUpdateItemEquipments = false;
+            this.isNeedUpdateItemEquipments = false;
         }
 
         private void updateCurFromSampleTable() {
