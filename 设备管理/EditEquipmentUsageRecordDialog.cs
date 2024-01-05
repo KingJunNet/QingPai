@@ -13,6 +13,7 @@ using ExpertLib.Controls.TitleEditor;
 using LabSystem.DAL;
 using TaskManager.application.Iservice;
 using TaskManager.application.viewmodel;
+using TaskManager.common.utils;
 using TaskManager.domain.entity;
 using TaskManager.domain.repository;
 using TaskManager.domain.service;
@@ -28,13 +29,18 @@ namespace TaskManager
         private IEquipmentQueryService equipmentQueryService;
         private IEquipmentUsageRecordRepository equipmentUsageRecordRepository;
         private IUserStructureRepository userStructureRepository;
+
+        private EquipmentUsageRecordEntity baseEquipmentUsageRecord;
         private EquipmentUsageRecordEntity updatedEquipmentUsageRecordEntity;
 
         private List<EquipmentBreiefViewModel> equipmentBreiefViewModels;
         private List<EquipmentLite> equipments;
         private List<string> equipmentCodeTexts;
+
+        private List<string> inTimeEquipmentCodeTexts=new List<string>();
         private Dictionary<string, EquipmentLite> equipmentMap;
-        
+        private Dictionary<string, string> equipmenCodeValueMap;
+
         private List<UserStructureLite> userStructureLites;
         private List<string> groups;
         private List<string> experimentSites;
@@ -78,6 +84,11 @@ namespace TaskManager
             Log.e("BaseEditDialog_Load");
         }
 
+        public void setEquipmentUsageRecord(EquipmentUsageRecordEntity baseEquipmentUsageRecord)
+        {
+            this.baseEquipmentUsageRecord = baseEquipmentUsageRecord;
+        }
+
         protected override string buildTitle()
         {
             string title = "";
@@ -112,6 +123,7 @@ namespace TaskManager
             this.equipmentBreiefViewModels = this.equipmentQueryService.usingEquipments(UseHolder.Instance.CurrentUser.Department);
             this.equipments = this.equipmentBreiefViewModels.Select(item => item.toEquipmentLite()).ToList();
             this.equipmentMap = new Dictionary<string, EquipmentLite>();
+            this.equipmenCodeValueMap = new Dictionary<string, string>();
             this.equipmentCodeTexts = new List<string>();
             this.equipments.ForEach(item => {
                 string codeText = item.Group.Equals(UseHolder.Instance.CurrentUser.Department) ? item.Code : $"{item.Code}({item.Group})";
@@ -119,6 +131,10 @@ namespace TaskManager
                     this.equipmentMap.Add(codeText, item);
                     this.equipmentCodeTexts.Add(codeText);
                 }
+                if (!this.equipmenCodeValueMap.ContainsKey(item.Code)) {
+                    this.equipmenCodeValueMap.Add(item.Code, codeText);
+                }
+
             });
             this.initUserStructureData();
         }
@@ -147,6 +163,8 @@ namespace TaskManager
             titleComboxLocationNo.SetItems(this.locationNumbers);
             titleComboxItem.SetItems(new List<string>());
             titleComboxEquipmentCode.SetTextChange(equipmentCodeChangeHandler);
+
+            titleComboxEquipmentCode.SetTextUpdate(equipmentCodeTextUpdate);
         }
 
         private void titleComboxLocationNo_Load(object sender, EventArgs e)
@@ -199,6 +217,36 @@ namespace TaskManager
             titleComboxPreUseState.SetValue("正常");
             titleComboxUseState.SetValue("良好");
             titleComboxPostUseState.SetValue("正常");
+            string nowTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            titleComboxUseTime.SetValue(nowTime);
+
+            reshowBaseEquipmentUsageRecord();
+        }
+
+        private void reshowBaseEquipmentUsageRecord()
+        {
+            if (this.baseEquipmentUsageRecord == null)
+            {
+                return;
+            }
+          
+            //回显设备信息
+            this.titleComboxEquipmentCode.SetValue(this.baseEquipmentUsageRecord.EquipmentCode);
+            this.titleComboxEquipmentName.SetValue(this.baseEquipmentUsageRecord.EquipmentName);
+            this.titleComboxEquipmentType.SetValue(this.baseEquipmentUsageRecord.EquipmentType);
+
+            //回显使用情况
+            this.titleComboxPurpose.SetValue(this.baseEquipmentUsageRecord.Purpose);
+
+            //回显项目信息
+            this.titleComboxItem.SetValue(this.baseEquipmentUsageRecord.ItemBrief);
+
+            //设备编码内容处理
+            string curCode = this.titleComboxEquipmentCode.Text.Trim();
+            if (!string.IsNullOrWhiteSpace(curCode) && this.equipmenCodeValueMap.ContainsKey(curCode))
+            {
+                titleComboxEquipmentCode.SetValue(this.equipmenCodeValueMap[curCode]);
+            }
         }
 
         protected override void BtnUpdateClick(object sender, EventArgs e)
@@ -263,6 +311,35 @@ namespace TaskManager
             else {
                 titleComboxEquipmentName.SetValue("");
                 titleComboxEquipmentType.SetValue("");
+            }
+        }
+
+        private void equipmentCodeTextUpdate(object sender, EventArgs e)
+        {
+            try
+            {
+                int curSelectionStart = this.titleComboxEquipmentCode.comboBox1.SelectionStart;
+                this.titleComboxEquipmentCode.comboBox1.Items.Clear();
+                this.inTimeEquipmentCodeTexts.Clear();
+                foreach (var item in this.equipmentCodeTexts)
+                {
+                    if (item.Contains(this.titleComboxEquipmentCode.comboBox1.Text))
+                    {
+                        this.inTimeEquipmentCodeTexts.Add(item);
+                    }
+                }
+                if (Collections.isEmpty(this.inTimeEquipmentCodeTexts))
+                {
+                    this.inTimeEquipmentCodeTexts.Add("无匹配数据");
+                }
+                this.titleComboxEquipmentCode.comboBox1.Items.AddRange(this.inTimeEquipmentCodeTexts.ToArray());
+                this.titleComboxEquipmentCode.comboBox1.SelectionStart = curSelectionStart;
+                Cursor = Cursors.Default;
+                this.titleComboxEquipmentCode.comboBox1.DroppedDown = true;
+            }
+            catch (Exception ex)
+            {
+                Log.e(ex.ToString());
             }
         }
 

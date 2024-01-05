@@ -35,7 +35,7 @@ namespace TaskManager
             InitializeComponent();
             if (DesignMode)
                 return;
-
+            this.isNewCopyFromCurItem = true;
             _control._view.RowStyle += ViewOnRowStyle;
             this.Controls.Add(maskLayer);
         }
@@ -246,6 +246,34 @@ namespace TaskManager
             var isAllocateTask = false;
             var dialog = new EditEquipmentUsageRecordDialog(FormTable.Edit, view, hand, fields, FormType.EquipmentUsageRecord, isAllocateTask);
             return dialog.ShowDialog();
+        }
+
+        /// <summary>
+        /// 打开具体的编辑器
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="hand"></param>
+        /// <param name="fields"></param>
+        protected override DialogResult OpenAddForm(GridView view, int hand, List<DataField> fields)
+        {
+            Log.e("OpenEditForm");
+            var isAllocateTask = false;
+            var dialog = new EditEquipmentUsageRecordDialog(FormTable.Edit, view, hand, fields, FormType.EquipmentUsageRecord, isAllocateTask);
+            EquipmentUsageRecordEntity curEquipmentUsageRecord = this.extractEquipmentUsageRecordEntityByRowHand(view, this.selectedRowHand);
+            dialog.setEquipmentUsageRecord(curEquipmentUsageRecord);
+            return dialog.ShowDialog();
+        }
+
+        private EquipmentUsageRecordEntity extractEquipmentUsageRecordEntityByRowHand(GridView view, int hand)
+        {
+            EquipmentUsageRecordEntity entity = new EquipmentUsageRecordEntity();
+            entity.EquipmentCode = view.GetRowCellValue(hand, "EquipmentCode").ToString();
+            entity.EquipmentName = view.GetRowCellValue(hand, "EquipmentName").ToString();
+            entity.EquipmentType = view.GetRowCellValue(hand, "EquipmentType").ToString();
+            entity.Purpose = view.GetRowCellValue(hand, "Purpose").ToString();
+            entity.ItemBrief = view.GetRowCellValue(hand, "ItemBrief").ToString();
+
+            return entity;
         }
     }
 }

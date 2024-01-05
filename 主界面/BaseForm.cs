@@ -32,6 +32,10 @@ namespace TaskManager
         public delegate void BeforeRemovedHandle();
         protected BeforeRemovedHandle beforeRemovedHandle;
 
+        protected bool isNewCopyFromCurItem = false;
+
+        protected int selectedRowHand = -1;
+
         #endregion
 
         #region 构造函数
@@ -452,6 +456,7 @@ namespace TaskManager
         {
             try
             {
+                this.selectedRowHand = hand;
                 hand = -1;
                 var oldSaveStatus = _control.SAVE_EDIT;
 
@@ -459,7 +464,47 @@ namespace TaskManager
                 if (newRow)//新数据
                     view.AddNewRow();
 
-                var result = OpenEditForm(view, view.FocusedRowHandle, _control.Fields);
+                var result = OpenAddForm(view, view.FocusedRowHandle, _control.Fields);
+                if (newRow)
+                {
+                    if (result != DialogResult.OK)
+                        view.DeleteRow(view.FocusedRowHandle);
+                    else
+                        view.MoveLast();
+                }
+
+                if (result == DialogResult.Cancel && oldSaveStatus)
+                    _control.SetSaveStatus(true);
+            }
+            catch (Exception ex)
+            {
+                Log.e(ex.ToString());
+            }
+            finally
+            {
+                //Form1.CloseWaitForm();
+            }
+        }
+
+        /// <summary>
+        /// 打开新建表单
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="hand"></param>
+        protected virtual void OpenAddFormClickBack(GridView view, int hand)
+        {
+            try
+            {
+                int curHand = hand;
+                hand = -1;
+                var oldSaveStatus = _control.SAVE_EDIT;
+
+                var newRow = hand < 0;
+                if (newRow)//新数据
+                    view.AddNewRow();
+
+                int handValue = this.isNewCopyFromCurItem ? curHand : view.FocusedRowHandle;
+                var result = OpenAddForm(view, handValue, _control.Fields);
                 if (newRow)
                 {
                     if (result != DialogResult.OK)
@@ -504,6 +549,17 @@ namespace TaskManager
         {
             MessageBox.Show("没有重载OpenEditForm");
             return DialogResult.Cancel;
+        }
+
+        /// <summary>
+        /// 打开具体的编辑器
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="hand"></param>
+        /// <param name="fields"></param>
+        protected virtual DialogResult OpenAddForm(GridView view, int hand, List<DataField> fields)
+        {
+            return OpenEditForm(view,hand, fields);
         }
 
         #endregion
