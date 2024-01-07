@@ -14,6 +14,7 @@ using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using LabSystem.DAL;
+using TaskManager.controller;
 using TaskManager.主界面;
 using Xfrog.Net;
 using Word = Microsoft.Office.Interop.Word;
@@ -39,8 +40,9 @@ namespace TaskManager
             Server = sql.ServerIP;
             if (!Server.EndsWith("\\"))
                 Server += "\\";
-        }
 
+            this._control.afterSavedHandle = new TableControl.AfterSavedEvent(handleAfterSaved);
+        }
 
 
         protected override void InitUi()
@@ -112,6 +114,11 @@ namespace TaskManager
 
             _control._view.InitNewRow += InitNewRow;
             _control._view.CellValueChanged += CellValueChanged;
+        }
+
+        private void handleAfterSaved()
+        {
+            CacheDataHandler.Instance.asyncLoadVins();
         }
 
         private void _view_InitNewRow(object sender, InitNewRowEventArgs e)

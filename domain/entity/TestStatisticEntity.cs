@@ -476,11 +476,11 @@ namespace TaskManager.domain.entity
         {
             if (string.IsNullOrWhiteSpace(this.Department))
             {
-                return "部门为空";
+                return "组别为空";
             }
             if (string.IsNullOrWhiteSpace(this.ExperimentalSite))
             {
-                return "部门为空";
+                return "实验地点为空";
             }
             if (string.IsNullOrWhiteSpace(this.LocationNumber))
             {
@@ -514,5 +514,42 @@ namespace TaskManager.domain.entity
             return "";
         }
 
+        public string validateCreated()
+        {
+            if (string.IsNullOrWhiteSpace(this.Department))
+            {
+                return "组别为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.ExperimentalSite))
+            {
+                return "实验地点为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.LocationNumber))
+            {
+                return "定位编号为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.Registrant))
+            {
+                return "登记人为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.CarVin))
+            {
+                return "VIN为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.ItemType))
+            {
+                return "项目类型为空";
+            }
+            if (string.IsNullOrWhiteSpace(this.ItemBrief))
+            {
+                return "项目简称为空";
+            }
+            if (this.TestStartDate.Year == 1)
+            {
+                return "实验开始时间为空";
+            }
+
+            return "";
+        }
     }
 }

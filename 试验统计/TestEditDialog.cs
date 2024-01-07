@@ -542,6 +542,10 @@ namespace TaskManager
         private void buildTestEquipmentRecords()
         {
             this.equipmentUsageRecordEntities = new List<EquipmentUsageRecordEntity>();
+            if (Collections.isEmpty(this.itemEquipments))
+            {
+                return;
+            }
 
             this.itemEquipments.ForEach(equipment =>
             {

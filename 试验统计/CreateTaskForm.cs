@@ -642,6 +642,7 @@ namespace TaskManager
             titleComboxUser.SetValue(FormSignIn.CurrentUser.Name);
             titleComboxArea.SetValue(this.experimentSites[0]);
             titleComboxLocationNo.SetValue(this.locationNumbers[0]);
+            titleComboxSampleType.SetValue("整车");
             this.initComboxBeginTime();
         }
 
@@ -853,6 +854,9 @@ namespace TaskManager
 
         private void buildTestEquipmentRecords() {
             this.equipmentUsageRecordEntities = new List<EquipmentUsageRecordEntity>();
+            if (Collections.isEmpty(this.itemEquipments)) {
+                return;
+            }
 
             this.itemEquipments.ForEach(equipment =>
             {
@@ -867,7 +871,7 @@ namespace TaskManager
 
         private bool validateTestStatisticParam(out string errorInfo)
         {
-            errorInfo = this.testStatisticEntity.validate();
+            errorInfo = this.testStatisticEntity.validateCreated();
 
             return string.IsNullOrWhiteSpace(errorInfo);
         }
