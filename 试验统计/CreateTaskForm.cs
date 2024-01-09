@@ -329,7 +329,11 @@ namespace TaskManager
           
             //当前项目的设备code和设备的字典
             this.itemEquipmentMap = new Dictionary<string, EquipmentLite>();
-            this.itemEquipments.ForEach(item => itemEquipmentMap.Add(item.Code, item));
+            this.itemEquipments.ForEach(item => {
+                if (!itemEquipmentMap.ContainsKey(item.Code)) {
+                    itemEquipmentMap.Add(item.Code, item);
+                }
+            });
             this.notifyEquipmentListViewChanged();
         }
 

@@ -32,7 +32,7 @@ namespace TaskManager.infrastructure.db
         /// <returns>设备简要信息</returns>
         public List<EquipmentLite> equipmentsOfItem(string itemName, string group)
         {
-            string sql = $"select E.EquipCode,E.EquipName,E.EquipType,E.GroupName as GroupName " +
+            string sql = $"select DISTINCT E.EquipCode,E.EquipName,E.EquipType,E.GroupName as GroupName " +
                 $"from ItemEquipmentTable IE " +
                 $"INNER JOIN NewEquipmentTable E " +
                 $"ON IE.EquipmentCode=E.EquipCode " +
