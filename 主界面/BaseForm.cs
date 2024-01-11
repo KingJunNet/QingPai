@@ -720,7 +720,11 @@ namespace TaskManager
                 if (comGroup.EditValue.ToString() != FormSignIn.CurrentUser.Department.ToString())
                 {
                     //btnSave.Enabled = false;
-                    FormTable.Add = false;
+                    //FormTable.Add = false;
+                    //FormTable.Edit = false;
+                    //FormTable.Delete = false;
+
+                    FormTable.Add = true;
                     FormTable.Edit = false;
                     FormTable.Delete = false;
                 }
