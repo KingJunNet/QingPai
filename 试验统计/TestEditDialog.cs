@@ -934,7 +934,7 @@ namespace TaskManager
             this.itemEquipments = this.testEquipments.Select(item=>item.toEquipmentLite()).ToList();
             this.oriTestEquipmentCodes = this.itemEquipments.Select(item => item.Code).ToList();
             this.itemName = getValue("ItemBrief");
-            if (!string.IsNullOrWhiteSpace(this.itemName) && !Collections.isEmpty(this.itemEquipments))
+            if (!string.IsNullOrWhiteSpace(this.itemName))
             {
                 this.itemOriEquipmentsMap.Add(this.itemName, this.itemEquipments.Select(item => item.copy()).ToList());
             }
@@ -1045,6 +1045,7 @@ namespace TaskManager
             string group = ((TitleCombox)GetControlByFieldName("department")).Text.Trim();
             if (string.IsNullOrEmpty(this.itemName) || string.IsNullOrWhiteSpace(group))
             {
+                this.btnAddEquipment.Enabled = false;
                 return;
             }
             this.btnAddEquipment.Enabled = true;
@@ -1073,6 +1074,7 @@ namespace TaskManager
             this.listViewUsingEquipment.Items.Clear();
             if (Collections.isEmpty(this.itemEquipments))
             {
+                this.itemEquipmentMap = new Dictionary<string, EquipmentLite>();
                 return;
             }
             this.btnAddEquipment.Enabled = true;
@@ -1080,7 +1082,11 @@ namespace TaskManager
 
             //当前项目的设备code和设备的字典
             this.itemEquipmentMap = new Dictionary<string, EquipmentLite>();
-            this.itemEquipments.ForEach(item => itemEquipmentMap.Add(item.Code, item));
+            this.itemEquipments.ForEach(item => {
+                if (!itemEquipmentMap.ContainsKey(item.Code)) {
+                    itemEquipmentMap.Add(item.Code, item);
+                }
+            });
             this.notifyEquipmentListViewChanged();
         }
 

@@ -310,8 +310,10 @@ namespace TaskManager
         {
             btn.Visible = false;
             this.listViewUsingEquipment.Items.Clear();
-            if (string.IsNullOrEmpty(this.itemName))
+            string group = this.titleComboxGroup.Text.Trim();
+            if (string.IsNullOrEmpty(this.itemName) || string.IsNullOrWhiteSpace(group))
             {
+                this.btnAddEquipment.Enabled = false;
                 return;
             }
             this.btnAddEquipment.Enabled = true;
@@ -322,7 +324,7 @@ namespace TaskManager
                 this.itemEquipments = this.itemOriEquipmentsMap[this.itemName];
             }
             else {
-                this.itemEquipments = this.equipmentQueryService.equipmentsOfItem(this.itemName, this.titleComboxGroup.Text.Trim());
+                this.itemEquipments = this.equipmentQueryService.equipmentsOfItem(this.itemName, group);
                 this.itemOriEquipmentsMap.Add(this.itemName, this.itemEquipments.Select(item => item.copy() ).ToList());
             }
 
