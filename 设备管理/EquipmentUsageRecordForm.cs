@@ -74,7 +74,32 @@ namespace TaskManager
           
         }
 
-        protected  void exportEventBack()
+        public void reInitForm() {
+            //初始化筛选条件
+            textYear.EditValue = "所有项目";
+            _control.Year = "所有项目";
+            comboxState.EditValue = FormSignIn.CurrentUser.Name;
+            comGroup.EditValue = FormSignIn.CurrentUser.Department.ToString();
+            startdate.EditValue = DateTime.Now.AddMonths(-1).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            enddate.EditValue = DateTime.Now.AddDays(1).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+
+            //丢弃未保存更新
+            _control.SetSaveStatus(true);
+
+            //加载数据
+            this.reloadData();
+        }
+
+        public void refreshForm()
+        {
+            //丢弃未保存更新
+            _control.SetSaveStatus(true);
+
+            //加载数据
+            this.reloadData();
+        }
+
+            protected  void exportEventBack()
         {
             this.exportEquipmentUasageRecords();
 

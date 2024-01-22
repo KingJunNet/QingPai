@@ -36,6 +36,8 @@ namespace TaskManager
 
         private TestStatisticEntity baseTestStatistic;
 
+        private bool isNeedPopRedirectToEditDialog=false;
+
         private ISampleQueryService sampleQueryService;
         private ISampleCommandService sampleCommandService;
         private IEquipmentQueryService equipmentQueryService;
@@ -99,7 +101,7 @@ namespace TaskManager
 
         private Button btn = new Button();
 
-        public bool isNeedRedirectToEditForm;
+        public bool isNeedRedirectToEditForm=false;
 
         private string sampleModel;
 
@@ -120,8 +122,9 @@ namespace TaskManager
             this.taskRepository = new TaskRepository();
         }
 
-        public void setBaseTestStatistic(TestStatisticEntity testStatistic) {
+        public void setDialogParam(TestStatisticEntity testStatistic,bool isNeedPopRedirectToEditDialog) {
             this.baseTestStatistic = testStatistic;
+            this.isNeedPopRedirectToEditDialog = isNeedPopRedirectToEditDialog;
         }
 
         private void initPage()
@@ -743,18 +746,23 @@ namespace TaskManager
 
                     }
                     else if (this.from.Equals(CreateTestTaskFrom.TEST_STATISTIC_LIST_FORM)) {
+                        if (!this.isNeedPopRedirectToEditDialog) {
+                            this.isNeedRedirectToEditForm = false;
+                            DialogResult = DialogResult.OK;
+                            Close();
+                            return;
+                        }
+
                         DialogResult redirectToEditResult = MessageBox.Show("是否需要进入编辑界面以补充其他信息", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (redirectToEditResult == DialogResult.Yes)
                         {
                             this.isNeedRedirectToEditForm = true;
-                            DialogResult = DialogResult.OK;
-                            Close();
                         }
                         else {
                             this.isNeedRedirectToEditForm = false;
-                            DialogResult = DialogResult.OK;
-                            Close();
                         }
+                        DialogResult = DialogResult.OK;
+                        Close();
                     }
                 }
             }

@@ -17,6 +17,7 @@ using TaskManager.Properties;
 using IWshRuntimeLibrary;
 using System.Text.RegularExpressions;
 using TaskManager.domain.valueobject;
+using TaskManager.controller;
 
 namespace TaskManager
 {
@@ -27,7 +28,7 @@ namespace TaskManager
     public partial class Form1 : DevExpress.XtraBars.Ribbon.RibbonForm
     {
         //public static double VERSION = 20230202.01;
-        public static double VERSION = 20230101.01;
+        public static double VERSION = 20240122.01;
         public static double NEWEST_Version = 202004028.01;
 
 
@@ -1018,7 +1019,7 @@ namespace TaskManager
                     case "任务管理":
                         name.Elements[i].Click += 任务管理_ElementClick;
                         break;
-                    case "样品信息":
+                    case "样品管理":
                         name.Elements[i].Click += 样品信息_ElementClick;
                         break;
                     case "试验统计":

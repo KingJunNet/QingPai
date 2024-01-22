@@ -282,6 +282,14 @@ namespace TaskManager
 
         #endregion
 
+        /// <summary>
+        /// 是否为编辑功能的超管
+        /// </summary>
+        /// <returns>是或者否</returns>
+        public static bool isEditAdmin() {
+            return (CurrentUser.Department.ToString() == "系统维护") || (CurrentUser.Department.ToString() == "体系组");
+           
+        }
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 

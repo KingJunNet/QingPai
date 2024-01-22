@@ -261,8 +261,8 @@
             // 
             this.btnAssignTestTask.Caption = "分配试验任务";
             this.btnAssignTestTask.Id = 61;
-            this.btnAssignTestTask.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItem13.ImageOptions.Image")));
-            this.btnAssignTestTask.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItem13.ImageOptions.LargeImage")));
+            this.btnAssignTestTask.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnAssignTestTask.ImageOptions.Image")));
+            this.btnAssignTestTask.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnAssignTestTask.ImageOptions.LargeImage")));
             this.btnAssignTestTask.Name = "btnAssignTestTask";
             this.btnAssignTestTask.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem13_ItemClick_1);
             // 

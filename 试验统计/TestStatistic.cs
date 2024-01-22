@@ -35,6 +35,11 @@ namespace TaskManager
 
         private List<int> removedIds = new List<int>();
 
+        private static readonly List<string> READ_ONLY_COLUMNS = new List<string> { "Carvin", "ItemBrief", "Taskcode", "Equipments",
+                "CarType","SampleModel","Producer","YNDirect","PowerType","TransmissionType",
+                "EngineModel","EngineProduct","Drivertype","FuelType","FuelLabel",
+              "RegistrationDate","question", "MoneySure"};
+
         public TestStatistic()
         {
             InitializeComponent();
@@ -167,11 +172,8 @@ namespace TaskManager
             //隐藏实验再分配
             this.barButtonItem11.Visibility = BarItemVisibility.Never;
 
-
             textYear.EditValue = year;
-            comboxState.EditValue = "所有";
-
-
+            comboxState.EditValue = "所有";       
             comGroup.Visibility = BarItemVisibility.Always;
 
             //barButtonItem1.Visibility = BarItemVisibility.Never;
@@ -188,25 +190,22 @@ namespace TaskManager
             _control._view.InitNewRow += InitNewRow;
 
             //设置字段只读
+            //this.initFormColumnsReadOnly();
+        }
 
-            _control._view.Columns["Carvin"].OptionsColumn.ReadOnly = true;
-            _control._view.Columns["ItemBrief"].OptionsColumn.ReadOnly = true;
-            _control._view.Columns["Taskcode"].OptionsColumn.ReadOnly = true;
-            _control._view.Columns["RegistrationDate"].OptionsColumn.ReadOnly = true;
-            _control._view.Columns["question"].OptionsColumn.ReadOnly = true;
-            _control._view.Columns["MoneySure"].OptionsColumn.ReadOnly = true;
+        protected override void initFormColumnsReadOnly() {
+            READ_ONLY_COLUMNS.ForEach(item => this.setColumnReadOnly(item));
+
+            //体系组特殊处理
             if (FormSignIn.CurrentUser.Department == "体系组")
             {
                 btnNew.Visibility = BarItemVisibility.Never;
                 //新建ToolStripMenuItem.Visibility = BarItemVisibility.Never;
-                for (int i = 0; i < _control._view.Columns.Count; i++)
-                {
-                    _control._view.Columns[i].OptionsColumn.ReadOnly = true;
-                }
+                this.setFormReadOnly();
                 _control._view.Columns["MoneySure"].OptionsColumn.ReadOnly = false;
             }
-
         }
+
         public string state0;
         private void SelectChanged(object sender, FocusedRowChangedEventArgs e)
         {
@@ -253,7 +252,6 @@ namespace TaskManager
             _control._view.SetRowCellValue(e.RowHandle, _control._view.Columns["RegistrationDate"], $"{DateTime.Now:yyyy/MM/dd HH:mm}");
 
         }
-
 
         /// <summary>
         /// 改变行颜色
@@ -498,7 +496,7 @@ namespace TaskManager
             {
                 this.createTaskForm = new CreateTaskForm(CreateTestTaskFrom.TEST_STATISTIC_LIST_FORM);
                 TestStatisticEntity curTestStatistic = this.extractTestStatisticEntityByRowHand(view, hand);
-                this.createTaskForm.setBaseTestStatistic(curTestStatistic);
+                this.createTaskForm.setDialogParam(curTestStatistic, this.isPopRedirectToEditDialog());
                 DialogResult result = createTaskForm.ShowDialog();
                 if (result == DialogResult.OK) {
                     this.reloadData();
@@ -519,6 +517,16 @@ namespace TaskManager
             {
                 Form1.CloseWaitForm();
             }
+        }
+
+        private bool isPopRedirectToEditDialog()
+        {
+            if (FormSignIn.isEditAdmin())
+            {
+                return true;
+            }
+
+            return StringUtils.isEquals(FormSignIn.CurrentUser.Department, comGroup.EditValue.ToString());
         }
 
         protected override DialogResult OpenEditForm(GridView view, int hand, List<DataField> fields)

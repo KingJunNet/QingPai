@@ -195,12 +195,18 @@ namespace TaskManager
                 btnEdit.Caption = "详细信息";
                 btnDetail.Caption = "详细信息";
                 打开ToolStripMenuItem.Text = "查看详细信息";
+
+                //整个表单都都只读
+                this.setFormReadOnly();
             }
             else
             {
                 btnEdit.Caption = "编辑数据";
                 btnDetail.Caption = "编辑数据";
                 打开ToolStripMenuItem.Text = "编辑";
+
+                //恢复表单只读属性
+                this.recoveryFormRead();
             }
 
             //右键菜单
@@ -216,6 +222,10 @@ namespace TaskManager
             //    barButtonItem3.Enabled = false;
             //if (FormTable.Type == FormType.RegReport)
             //    barButtonItem3.Enabled = true;
+
+            if (FormTable.Category == "试验统计") {
+                btnSave.Enabled = FormTable.Edit;
+            }
         }
 
         protected virtual void AfterFormLoad()
@@ -577,6 +587,40 @@ namespace TaskManager
             新建ToolStripMenuItem_Click(sender, e);
         }
 
+        protected void setColumnReadOnly(string columnName)
+        {
+            _control._view.Columns[columnName].OptionsColumn.ReadOnly = true;
+        }
+
+        protected void setFormReadOnly() {
+            for (int i = 0; i < _control._view.Columns.Count; i++)
+            {
+                _control._view.Columns[i].OptionsColumn.ReadOnly = true;
+            }
+        }
+
+        protected void setFormWritable()
+        {
+            for (int i = 0; i < _control._view.Columns.Count; i++)
+            {
+                _control._view.Columns[i].OptionsColumn.ReadOnly = false;
+            }
+        }
+
+        protected void recoveryFormRead()
+        {
+            //先全部设置为可写
+            this.setFormWritable();
+
+            //重新初始化只读字段
+            this.initFormColumnsReadOnly();
+
+        }
+
+        protected virtual void initFormColumnsReadOnly() {
+            
+        }
+
         private void btnRefresh_ItemClick(object sender, ItemClickEventArgs e)
         {
             this.reloadData();
@@ -715,6 +759,12 @@ namespace TaskManager
 
         private void comGroup_EditValueChanged(object sender, EventArgs e)
         {
+            this.groupChangedEvent();
+        }
+
+        protected void groupChangedEvent() {
+            bool isCurrentDepartment = false;
+            bool isEditAdmin = false;
             if (FormTable.Category == "试验统计")
             {
                 if (comGroup.EditValue.ToString() != FormSignIn.CurrentUser.Department.ToString())
@@ -733,6 +783,7 @@ namespace TaskManager
                     FormTable.Add = true;
                     FormTable.Edit = true;
                     FormTable.Delete = true;
+                    isCurrentDepartment = true;
                 }
 
                 if (FormSignIn.CurrentUser.Department.ToString() == "系统维护" || FormSignIn.CurrentUser.Department.ToString() == "体系组")
@@ -740,11 +791,25 @@ namespace TaskManager
                     FormTable.Add = true;
                     FormTable.Edit = true;
                     FormTable.Delete = true;
+                    isEditAdmin = true;
                 }
             }
 
             InitUiByAuthority();
 
+            //修复试验统计列表页面由其他组切换成本组后，数据修改可被保存的漏洞
+            //编辑超管权限可在任何情况下修改数据
+            if (isEditAdmin) {
+                return;
+            }
+            //if (_control.SAVE_EDIT) {
+            //    return;
+            //}
+            if (isCurrentDepartment) {
+                //强制刷新页面
+                _control.SetSaveStatus(true);
+                this.reloadData();
+            }
         }
 
         private void comGroup_ItemClick(object sender, ItemClickEventArgs e)

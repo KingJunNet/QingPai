@@ -161,6 +161,7 @@
     <Compile Include="controller\MaskLayer .cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="controller\ActivedPageManager.cs" />
     <Compile Include="controller\UIHelp.cs" />
     <Compile Include="controller\CacheDataHandler.cs" />
     <Compile Include="controller\UserHelper.cs" />
