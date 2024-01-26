@@ -29,17 +29,19 @@ namespace TaskManager.infrastructure.db
         /// </summary>
         /// <param name="itemName">项目名称</param>
         /// <param name="group">组别</param>
-        /// <returns>设备简要信息</returns>
-        public List<EquipmentLite> equipmentsOfItem(string itemName, string group)
+        /// <param name="locationNumber">定位编号</param> 
+        /// <returns>设备简要信息集合</returns>
+        public List<EquipmentLite> equipmentsOfItem(string itemName, string group, string locationNumber)
         {
             string sql = $"select DISTINCT E.EquipCode,E.EquipName,E.EquipType,E.GroupName as GroupName " +
                 $"from ItemEquipmentTable IE " +
                 $"INNER JOIN NewEquipmentTable E " +
                 $"ON IE.EquipmentCode=E.EquipCode " +
-                $"WHERE IE.ItemName=@ItemName and IE.GroupName=@GroupName";
+                $"WHERE IE.ItemName=@ItemName and IE.GroupName=@GroupName and IE.LocationNumber=@LocationNumber";
             SqlParameter[] sqlParameters = new[] {
                     new SqlParameter("ItemName",itemName),
-                    new SqlParameter("GroupName",group)
+                    new SqlParameter("GroupName",group),
+                    new SqlParameter("LocationNumber",locationNumber)
                 };
 
             List<EquipmentLite> results = selectList<EquipmentLite>(sql, sqlParameters, (row) =>
@@ -76,14 +78,17 @@ namespace TaskManager.infrastructure.db
         /// </summary>
         /// <param name="itemName">项目名称</param>
         /// <param name="group">组别</param>
+        /// <param name="locationNumber">定位编号</param>
         /// <returns>void</returns>
-        public void removeEquipmentsOfItem(string itemName, string group) {
+        public void removeEquipmentsOfItem(string itemName, string group, string locationNumber)
+        {
             string sql = $"delete  " +
                $"from ItemEquipmentTable " +            
-               $"WHERE ItemName=@ItemName and GroupName=@GroupName";
+               $"WHERE ItemName=@ItemName and GroupName=@GroupName and LocationNumber=@LocationNumber";
             SqlParameter[] sqlParameters = new[] {
                     new SqlParameter("ItemName",itemName),
-                    new SqlParameter("GroupName",group)
+                    new SqlParameter("GroupName",group),
+                    new SqlParameter("LocationNumber",locationNumber)
                 };
 
             this.executeWrite(sql,sqlParameters);

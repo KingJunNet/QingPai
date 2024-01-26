@@ -77,14 +77,15 @@ namespace TaskManager.application.Iservice
         /// </summary>
         /// <param name="itemName">项目名称</param>
         /// <param name="group">组别</param>
-        /// <returns>设备简要信息</returns>
-        public List<EquipmentLite> equipmentsOfItem(string itemName, string group)
+        /// <param name="locationNumber">定位编号</param> 
+        /// <returns>设备简要信息集合</returns>
+        public List<EquipmentLite> equipmentsOfItem(string itemName, string group, string locationNumber)
         {
             if (string.IsNullOrEmpty(itemName))
             {
                 return new List<EquipmentLite>();
             }
-            return this.itemEquipmentRepository.equipmentsOfItem(itemName,group);
+            return this.itemEquipmentRepository.equipmentsOfItem(itemName,group,locationNumber);
         }
 
         /// <summary>

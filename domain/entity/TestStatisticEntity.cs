@@ -31,7 +31,7 @@ namespace TaskManager.domain.entity
         public string ExperimentalSite { get; set; }
 
         /// <summary>
-        /// Id
+        /// 定位编号
         /// </summary>
         public string LocationNumber { get; set; }
 

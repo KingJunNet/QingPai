@@ -25,8 +25,9 @@ namespace TaskManager.application.Iservice
         /// </summary>
         /// <param name="itemName">项目名称</param>
         /// <param name="group">组别</param>
+        /// <param name="locationNumber">定位编号</param> 
         /// <returns>设备简要信息集合</returns>
-        List<EquipmentLite> equipmentsOfItem(string itemName,string group);
+        List<EquipmentLite> equipmentsOfItem(string itemName,string group,string locationNumber);
 
         /// <summary>
         /// 查询指定实验任务的设备信息

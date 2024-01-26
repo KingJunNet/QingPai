@@ -19,6 +19,7 @@ namespace TaskManager.domain.entity
         private static readonly List<string> COLUMNS = new List<string> {
             "ItemName",
             "GroupName",
+            "LocationNumber",
             "EquipmentCode",
             "CreateUser",
             "CreateTime"
@@ -28,16 +29,16 @@ namespace TaskManager.domain.entity
 
         }
 
-        public ItemEquipmentEntity(string itemName, string group, string equipmentCode, string createUser, DateTime createTime)
+        public ItemEquipmentEntity(string itemName, string group, string locationNumber,
+            string equipmentCode, string createUser, DateTime createTime)
         {
             ItemName = itemName;
             Group = group;
+            LocationNumber = locationNumber;
             EquipmentCode = equipmentCode;
             CreateUser = createUser;
             CreateTime = createTime;
         }
-
-
 
         /// <summary>
         /// 应用Id
@@ -45,14 +46,19 @@ namespace TaskManager.domain.entity
         public int Id { get; set; }
 
         /// <summary>
-        /// 应用Id
+        /// 项目名称
         /// </summary>
         public string ItemName { get; set; }
 
         /// <summary>
-        /// 应用Id
+        /// 组别
         /// </summary>
         public string Group { get; set; }
+
+        /// <summary>
+        /// 定位编号
+        /// </summary>
+        public string LocationNumber { get; set; }
 
         /// <summary>
         /// 应用Id
@@ -85,6 +91,7 @@ namespace TaskManager.domain.entity
               {
                   new SqlParameter("ItemName",DbHelper.ValueOrDBNullIfNull(this.ItemName)),
                   new SqlParameter("GroupName",DbHelper.ValueOrDBNullIfNull(this.Group)),
+                   new SqlParameter("LocationNumber",DbHelper.ValueOrDBNullIfNull(this.LocationNumber)),
                   new SqlParameter("EquipmentCode",DbHelper.ValueOrDBNullIfNull(this.EquipmentCode)),
                   new SqlParameter("CreateUser",DbHelper.ValueOrDBNullIfNull(this.CreateUser)),
                   new SqlParameter("CreateTime",DbHelper.ValueOrDBNullIfNull(this.CreateTime))

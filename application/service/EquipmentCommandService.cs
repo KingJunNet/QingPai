@@ -39,11 +39,12 @@ namespace TaskManager.application.Iservice
         /// </summary>
         /// <param name="itemName">项目名称</param>
         /// <param name="group">组别信息</param>
+        /// <param name="locationNumber">定位编号</param>
         /// <param name="equipmentCodes">设备编号集合</param>
         /// <returns>void</returns>
-        public void createItemEquipments(string itemName, string group, List<string> equipmentCodes)
+        public void createItemEquipments(string itemName, string group, string locationNumber, List<string> equipmentCodes)
         {
-            this.updateItemEquipments(itemName, group, equipmentCodes);
+            this.updateItemEquipments(itemName, group,locationNumber, equipmentCodes);
         }
 
         /// <summary>
@@ -51,15 +52,16 @@ namespace TaskManager.application.Iservice
         /// </summary>
         /// <param name="itemName">项目名称</param>
         /// <param name="group">组别信息</param>
+        /// <param name="locationNumber">定位编号</param>
         /// <param name="equipmentCodes">设备编号集合</param>
         /// <returns>void</returns>
-        public void updateItemEquipments(string itemName, string group, List<string> equipmentCodes)
+        public void updateItemEquipments(string itemName, string group, string locationNumber, List<string> equipmentCodes)
         {
-            this.itemEquipmentRepository.removeEquipmentsOfItem(itemName, group);
+            this.itemEquipmentRepository.removeEquipmentsOfItem(itemName, group,locationNumber);
             DateTime nowTime = DateTime.Now;
             equipmentCodes.ForEach(item =>
             {
-                ItemEquipmentEntity entity = new ItemEquipmentEntity(itemName,group,item,UseHolder.Instance.CurrentUser.Name,nowTime);
+                ItemEquipmentEntity entity = new ItemEquipmentEntity(itemName,group,locationNumber,item,UseHolder.Instance.CurrentUser.Name,nowTime);
                 itemEquipmentRepository.save(entity);
             });
         }

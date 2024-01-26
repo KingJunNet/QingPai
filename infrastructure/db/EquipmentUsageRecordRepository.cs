@@ -48,7 +48,7 @@ namespace TaskManager.infrastructure.db
         /// <returns>设备使用记录简要信息集合</returns>
         public List<EquipmentUsageRecordLite> litesOfTestTask(int testTaskId)
         {
-            string sql = $"select IE.ID, E.EquipCode,E.EquipName,E.EquipType,E.GroupName as GroupName,IE.SecurityLevel,IE.Remark " +
+            string sql = $"select DISTINCT IE.ID, E.EquipCode,E.EquipName,E.EquipType,E.GroupName as GroupName,IE.SecurityLevel,IE.Remark " +
                $"from EquipmentUsageRecordTable IE " +
                $"INNER JOIN NewEquipmentTable E " +
                $"ON IE.EquipmentCode=E.EquipCode " +

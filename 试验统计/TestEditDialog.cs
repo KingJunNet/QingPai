@@ -50,6 +50,10 @@ namespace TaskManager
 
         private string itemName = "";
 
+        private string itemGroupLocationKey = "";
+
+        private string oriItemGroupLocationKey = "";
+
         private List<EquipmentBreiefViewModel> equipmentBreiefViewModels;
 
         private List<String> inTimeEquipments = new List<string>();
@@ -58,6 +62,7 @@ namespace TaskManager
 
         private List<EquipmentUsageRecordLite> testEquipments;
         private List<EquipmentLite> itemEquipments;
+        private List<EquipmentLite> oriItemEquipments;
 
         private List<string> itemNowEquipmentCodes;
 
@@ -580,11 +585,11 @@ namespace TaskManager
             this.isNeedUpdateSample = !this.sampleOfVin.FromSampleTable.equals(this.updatedSampleBrief,out this.updateSampleChangedStates);
         }
 
-        private void syncItemEquipmentStrategy()
+        private void syncItemEquipmentStrategyOld()
         {
             //新添加则直接保存
             this.itemNowEquipmentCodes = this.itemEquipments.Select(item => item.Code).ToList();
-            List<string> itemOriEquipmentCodes = this.itemOriEquipmentsMap[this.itemName].Select(item => item.Code).ToList();
+            List<string> itemOriEquipmentCodes = this.itemOriEquipmentsMap[this.itemGroupLocationKey].Select(item => item.Code).ToList();
             if (Collections.isEmpty(itemOriEquipmentCodes))
             {
                 this.isAddItemEquipments = true;
@@ -593,6 +598,26 @@ namespace TaskManager
 
             this.isNeedUpdateItemEquipments = !Collections.equals(itemOriEquipmentCodes, itemNowEquipmentCodes);
         }
+
+        private void syncItemEquipmentStrategy()
+        {
+            //新添加则直接保存
+            this.itemNowEquipmentCodes = this.itemEquipments.Select(item => item.Code).ToList();
+            List<string> itemOriEquipmentCodes = this.itemOriEquipmentsMap[this.itemGroupLocationKey].Select(item => item.Code).ToList();
+
+            //原始记录的项目，组别，定位编号
+            if (StringUtils.isEquals(this.itemGroupLocationKey, this.oriItemGroupLocationKey)) {
+                itemOriEquipmentCodes =this.oriItemEquipments.Select(item => item.Code).ToList();
+            }
+            if (Collections.isEmpty(itemOriEquipmentCodes))
+            {
+                this.isAddItemEquipments = true;
+                return;
+            }
+
+            this.isNeedUpdateItemEquipments = false;
+        }
+
 
         private void updateTestEquipmentStrategy()
         {
@@ -659,12 +684,12 @@ namespace TaskManager
             if (isAddItemEquipments)
             {
                 this.equipmentCommandService.createItemEquipments(this.testStatisticEntity.ItemBrief,
-                    this.testStatisticEntity.Department, this.itemNowEquipmentCodes);
+                    this.testStatisticEntity.Department, this.testStatisticEntity.LocationNumber, this.itemNowEquipmentCodes);
             }
             else if (isUpdateItemEquipments)
             {
                 this.equipmentCommandService.updateItemEquipments(this.testStatisticEntity.ItemBrief,
-                    this.testStatisticEntity.Department, this.itemNowEquipmentCodes);
+                    this.testStatisticEntity.Department, this.testStatisticEntity.LocationNumber, this.itemNowEquipmentCodes);
             }
             //后置处理
             this.resetAfterSaveData();
@@ -672,7 +697,10 @@ namespace TaskManager
 
         private void resetAfterSaveData()
         {
-            this.itemOriEquipmentsMap[this.testStatisticEntity.ItemBrief] = this.itemEquipments;
+            if (isAddItemEquipments || isUpdateItemEquipments)
+            {
+                this.itemOriEquipmentsMap[this.itemGroupLocationKey] = this.itemEquipments.Select(item => item.copy()).ToList();
+            }
             this.isAddSample = false;
             this.isUpdateSample = false;
             this.isAddItemEquipments = false;
@@ -936,7 +964,15 @@ namespace TaskManager
             this.itemName = getValue("ItemBrief");
             if (!string.IsNullOrWhiteSpace(this.itemName))
             {
-                this.itemOriEquipmentsMap.Add(this.itemName, this.itemEquipments.Select(item => item.copy()).ToList());
+                string group = getValue("department");
+                string locationNumber = getValue("LocationNumber");
+                //构造主键
+                this.itemGroupLocationKey = $"{this.itemName}&{group}&{locationNumber}";
+                this.itemOriEquipmentsMap.Add(this.itemGroupLocationKey, this.itemEquipments.Select(item => item.copy()).ToList());
+
+                //记住原始数据
+                this.oriItemGroupLocationKey = $"{this.itemName}&{group}&{locationNumber}";
+                this.oriItemEquipments = this.equipmentQueryService.equipmentsOfItem(this.itemName, group, locationNumber);    
             }
         }
 
@@ -977,13 +1013,14 @@ namespace TaskManager
                     this.experimentSites.Add(item);
                 }
             });
-            Form1.ComboxDictionary["定位编号"].ForEach(item =>
-            {
-                if (!this.locationNumbers.Contains(item))
-                {
-                    this.locationNumbers.Add(item);
-                }
-            });
+            //2024-01-25注释掉
+            //Form1.ComboxDictionary["定位编号"].ForEach(item =>
+            //{
+            //    if (!this.locationNumbers.Contains(item))
+            //    {
+            //        this.locationNumbers.Add(item);
+            //    }
+            //});
         }
 
         private void initView()
@@ -999,12 +1036,14 @@ namespace TaskManager
         {
             this.titleComboxVin = ((TitleCombox)GetControlByFieldName("Carvin"));
 
-            titleCombox3.SetItems(this.experimentSites);
+            titleCombox3.SetItems(FormSignIn.UserDic.Keys);
             titleCombox1.SetItems(this.locationNumbers);
             this.titleComboxVin.SetItems(this.vins);
             this.initEquipmentCombox();
             this.titleComboxVin.SetTextChange(VinChangeHandler);
             ((TitleCombox)GetControlByFieldName("ItemBrief")).SetTextChange(itemChangeHandler);
+            ((TitleCombox)GetControlByFieldName("department")).SetTextChange(itemChangeHandler);
+            ((TitleCombox)GetControlByFieldName("LocationNumber")).SetTextChange(itemChangeHandler);
             ((TitleCombox)GetControlByFieldName("SampleModel")).SetTextChange(sampleModelChangeHandler);
              ((TitleCombox)GetControlByFieldName("Taskcode")).SetTextChange(taskCodeChangeHandler);
             ((TitleCombox)GetControlByFieldName("Confidentiality")).SetTextChange(confidentialityChangeHandler);
@@ -1043,22 +1082,26 @@ namespace TaskManager
             btn.Visible = false;
             this.listViewUsingEquipment.Items.Clear();
             string group = ((TitleCombox)GetControlByFieldName("department")).Text.Trim();
-            if (string.IsNullOrEmpty(this.itemName) || string.IsNullOrWhiteSpace(group))
+            string locationNumber = ((TitleCombox)GetControlByFieldName("LocationNumber")).Text.Trim();
+            if (string.IsNullOrEmpty(this.itemName) || string.IsNullOrWhiteSpace(group) || string.IsNullOrWhiteSpace(locationNumber))
             {
                 this.btnAddEquipment.Enabled = false;
                 return;
             }
             this.btnAddEquipment.Enabled = true;
 
+            //构造主键
+            this.itemGroupLocationKey = $"{this.itemName}&{group}&{locationNumber}";
+
             //之前已经加载过
-            if (this.itemOriEquipmentsMap.ContainsKey(this.itemName))
+            if (this.itemOriEquipmentsMap.ContainsKey(this.itemGroupLocationKey))
             {
-                this.itemEquipments = this.itemOriEquipmentsMap[this.itemName];
+                this.itemEquipments = this.itemOriEquipmentsMap[this.itemGroupLocationKey].Select(item => item.copy()).ToList();
             }
             else
             {
-                this.itemEquipments = this.equipmentQueryService.equipmentsOfItem(this.itemName, group);
-                this.itemOriEquipmentsMap.Add(this.itemName, this.itemEquipments.Select(item => item.copy()).ToList());
+                this.itemEquipments = this.equipmentQueryService.equipmentsOfItem(this.itemName, group,locationNumber);
+                this.itemOriEquipmentsMap.Add(this.itemGroupLocationKey, this.itemEquipments.Select(item => item.copy()).ToList());
             }
 
 
