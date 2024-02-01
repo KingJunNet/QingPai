@@ -180,8 +180,8 @@ namespace TaskManager
                 btnBatchReplace.Visibility = BarItemVisibility.Never;
                 btnEditCfgItems.Visibility = BarItemVisibility.Never;
                 btnImport.Visibility = BarItemVisibility.Never;
-                btnExport.Visibility = BarItemVisibility.Never;
-                btnExportEmptyTpl.Visibility = BarItemVisibility.Never;
+                //btnExport.Visibility = BarItemVisibility.Never;
+                //btnExportEmptyTpl.Visibility = BarItemVisibility.Never;
             }
         }
 
