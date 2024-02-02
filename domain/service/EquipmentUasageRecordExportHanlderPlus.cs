@@ -168,7 +168,7 @@ namespace TaskManager.domain.service
                
             //添加使用记录行
             int count = equipmentUsageRecords.Count;
-            tableReport.AddRow(5, count-1);
+            //tableReport.AddRowEx(5, count-1);
             for (int index = 0; index < equipmentUsageRecords.Count; index++)
             {
                 int rowIndex = 5 + index;
@@ -176,6 +176,11 @@ namespace TaskManager.domain.service
                 tableReport.InsertCell(rowIndex, values);
             }
 
+            //删除多余行
+            if (count < WORD_PER_PAGE_USAGERECORD_COUNT) {
+                tableReport.RemoveRow(5 + count, 10);
+            }
+           
             //保存文档
             report.SaveDocument(filePath);
         }

@@ -71,12 +71,31 @@ namespace TaskManager.common.utils
             }
         }
 
+        public void AddRowEx(int startIndex, int count)
+        {
+            if (count <= 0)
+            {
+                return;
+            }
+            for (int index = 0; index < count; index++)
+            {
+                table.InsertNewTableRow(startIndex + index);
+            }
+        }
+
         public void InsertCell(int rowIndex, string[] values)
         {
             XWPFTableRow row = table.GetRow(rowIndex);
             for (int index = 0; index < values.Length; index++)
             {
                 row.GetCell(index).SetParagraph(this.buildParagraph(values[index]));
+                //row.GetCell(index).SetText(values[index]);
+            }
+        }
+
+        public void RemoveRow(int startIndex,int endIndex) {
+            for (int index = endIndex; index >= startIndex; index--) {
+                table.RemoveRow(index);
             }
         }
     }
