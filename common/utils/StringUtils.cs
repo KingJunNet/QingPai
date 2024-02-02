@@ -19,5 +19,9 @@ namespace TaskManager.common.utils
 
             return arg0.Equals(arg1);
         }
+
+        public static string null2Empty(string value) {
+            return String.IsNullOrWhiteSpace(value) ? "" : value;
+        }
     }
 }

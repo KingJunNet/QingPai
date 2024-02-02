@@ -168,7 +168,7 @@ namespace TaskManager
                 }
                
                 maskLayer.ShowMask();
-                EquipmentUasageRecordExportHanlder hanlder = new EquipmentUasageRecordExportHanlder(equipmentUsageRecords, maskLayer);
+                EquipmentUasageRecordExportHanlderPlus hanlder = new EquipmentUasageRecordExportHanlderPlus(equipmentUsageRecords, maskLayer);
                 hanlder.work();
                 maskLayer.HideMask();
                 maskLayer.SetProgressBarValue(0);
@@ -190,7 +190,8 @@ namespace TaskManager
                 this.isExportingWord = false;
                 this.btnExportWord.Caption = "导出Word\r\n";
                 UIHelp.Instance.AbortEquipmentUasageRecordExportWork = false;
-                MessageBox.Show("导出设备使用记录失败！", "错误信息", MessageBoxButtons.OK);
+                string error = $"导出设备使用记录失败,失败原因：{ex.Message}-{ex.StackTrace}";
+                MessageBox.Show(error, "错误信息", MessageBoxButtons.OK);
             }
         }
 

@@ -8,17 +8,19 @@ using System.Threading.Tasks;
 using TaskManager.common.utils;
 using TaskManager.controller;
 using TaskManager.domain.entity;
+using NPOI.XWPF.UserModel;
+using NPOI.OpenXmlFormats.Wordprocessing;
 
 namespace TaskManager.domain.service
 {
-    class EquipmentUasageRecordExportHanlder
+    class EquipmentUasageRecordExportHanlderPlus
     {
         private MaskLayer maskLayer;
         private List<EquipmentUsageRecordEntity> equipmentUsageRecords;
 
         private string equipmentUasageRecordWordTplFilePath;
 
-        public static string EQUIPMENT_USAGE_RECORD_WORD_TPL_RELAITIVE_PATH = @"template\equipment_usage_record_tpl.docx";
+        public static string EQUIPMENT_USAGE_RECORD_WORD_TPL_RELAITIVE_PATH = @"template\equipment_usage_record_tpl_a.docx";
 
         private static readonly string BASE_DIRECTORY_NAME = "设备使用记录";
 
@@ -33,7 +35,7 @@ namespace TaskManager.domain.service
         /// </summary>
         public string FileBasePath { get; set; }
 
-        public EquipmentUasageRecordExportHanlder(List<EquipmentUsageRecordEntity> equipmentUsageRecords, MaskLayer lMaskLayer1)
+        public EquipmentUasageRecordExportHanlderPlus(List<EquipmentUsageRecordEntity> equipmentUsageRecords, MaskLayer lMaskLayer1)
         {
             this.equipmentUsageRecords = equipmentUsageRecords;
             this.maskLayer = lMaskLayer1;
@@ -146,29 +148,32 @@ namespace TaskManager.domain.service
                 number++;
             }
         }
-
+    
         private void saveUsageRecordWordFile(string filePath,
-                                   string equipmentCode,
-                                   string equipmentName,
-                                   string equipmentType,
-                                   List<EquipmentUsageRecordEntity> equipmentUsageRecords)
+                                  string equipmentCode,
+                                  string equipmentName,
+                                  string equipmentType,
+                                  List<EquipmentUsageRecordEntity> equipmentUsageRecords)
         {
-            Report report = new Report();
-            report.CreateNewDocument(this.equipmentUasageRecordWordTplFilePath); //模板路径
+            ReportPlus report = new ReportPlus();
+            report.CreateNewDocument(this.equipmentUasageRecordWordTplFilePath);
 
-            //2,插入设备信息
-            report.InsertValue("code", equipmentCode);
-            report.InsertValue("name", equipmentName);
-            report.InsertValue("type", equipmentType);
+            //操作表格
+            TableReport tableReport = report.createTableReport(0);
 
+            //插入设备信息
+            tableReport.InsertValue(2,1, StringUtils.null2Empty(equipmentName));
+            tableReport.InsertValue(2, 3, StringUtils.null2Empty(equipmentType));
+            tableReport.InsertValue(2, 5, StringUtils.null2Empty(equipmentCode));
+               
             //添加使用记录行
             int count = equipmentUsageRecords.Count;
-            report.AddRow(1, count);
+            tableReport.AddRow(5, count-1);
             for (int index = 0; index < equipmentUsageRecords.Count; index++)
             {
-                int rowIndex = 6 + index;
+                int rowIndex = 5 + index;
                 string[] values = this.equipmentUsageRecordToCellValues(equipmentUsageRecords[index]);
-                report.InsertCell(1, rowIndex, 9, values); //给模板中第一个表格的第二行的5列分别插入数据
+                tableReport.InsertCell(rowIndex, values);
             }
 
             //保存文档
@@ -190,8 +195,8 @@ namespace TaskManager.domain.service
                 values[1] = "";
                 values[2] = "√";
             }
-            values[3] = equipmentUsageRecord.Purpose;
-            values[4] = equipmentUsageRecord.UseState;
+            values[3] =StringUtils.null2Empty(equipmentUsageRecord.Purpose);
+            values[4] = StringUtils.null2Empty(equipmentUsageRecord.UseState);
             if (equipmentUsageRecord.PostUseState.Equals("正常"))
             {
                 values[5] = "√";
@@ -200,9 +205,9 @@ namespace TaskManager.domain.service
             {
                 values[5] = "";
             }
-            values[6] = equipmentUsageRecord.PostUseProblem;
-            values[7] = equipmentUsageRecord.UsePerson;
-            values[8] = equipmentUsageRecord.Remark;
+            values[6] = StringUtils.null2Empty(equipmentUsageRecord.PostUseProblem);
+            values[7] = StringUtils.null2Empty(equipmentUsageRecord.UsePerson);
+            values[8] = StringUtils.null2Empty(equipmentUsageRecord.Remark);
 
             return values;
         }
@@ -261,4 +266,6 @@ namespace TaskManager.domain.service
         }
     }
 
+   
+    
 }
