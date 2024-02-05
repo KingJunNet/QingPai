@@ -67,7 +67,7 @@ namespace TaskManager
 
         public delegate void BoolEventsHandle(object sender, bool value);
 
-        public delegate void BeforeDataSourceAddRowHandler(DataRow targetRow, DataRow sourceRow);
+        public delegate bool BeforeDataSourceAddRowHandler(DataRow targetRow, DataRow sourceRow);
 
         [Description("在设置保存状态后触发"), Category("自定义事件")]
         public event BoolEventsHandle AfterSetSaveStatus;
@@ -84,10 +84,14 @@ namespace TaskManager
         public delegate void CellValueChangedEvent(DataRow changedRow);
         public delegate DataTable SaveDataSourceEvent(DataTable updateTable );
         public delegate void AfterSavedEvent();
+        public delegate void ImportExcelPreHandler();
 
         public CellValueChangedEvent cellValueChangedEvent;
         public SaveDataSourceEvent saveDataSourceEvent;
         public AfterSavedEvent afterSavedHandle;
+
+        [Description("导入Excel预处理"), Category("自定义事件")]
+        public ImportExcelPreHandler importExcelPreHandler;
 
         #endregion
 
@@ -992,6 +996,8 @@ namespace TaskManager
 
                 #endregion
 
+                importExcelPreHandler?.Invoke();
+
                 #region 增加到DataSource
 
                 DataSource.BeginLoadData();
@@ -1008,9 +1014,14 @@ namespace TaskManager
                             row["RegistrationDate"] = $"{DateTime.Now:yyyy/MM/dd HH:mm}";
                         }
                     }
-                   
-                    BeforeAddRowOnImportExcel?.Invoke(row, sDr);
-                    DataSource.Rows.Add(row);
+
+                    bool isAdd = true;
+                    if (BeforeAddRowOnImportExcel != null) {
+                        isAdd= BeforeAddRowOnImportExcel(row, sDr);
+                    }
+                    if (isAdd) {
+                        DataSource.Rows.Add(row);
+                    }
                 }
 
                 DataSource.EndLoadData();

@@ -502,10 +502,6 @@ namespace TaskManager.domain.entity
             {
                 return "项目简称为空";
             }
-            if (string.IsNullOrWhiteSpace(this.StandardStage))
-            {
-                return "标准阶段为空";
-            }
             if (this.TestStartDate.Year == 1)
             {
                 return "实验开始时间为空";

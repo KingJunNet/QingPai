@@ -576,6 +576,9 @@ namespace TaskManager
 
         private TestStatisticEntity extractTestStatisticEntityByRowHand(GridView view, int hand) {
             var id = view.GetRowCellValue(hand, "ID");
+            if (id == null) {
+                return null;
+            }
             var vin = view.GetRowCellValue(hand, "Carvin");
             var itemType = view.GetRowCellValue(hand, "ItemType");
             var itemBrief = view.GetRowCellValue(hand, "ItemBrief");

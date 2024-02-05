@@ -36,6 +36,8 @@ namespace TaskManager
 
         protected int selectedRowHand = -1;
 
+
+
         #endregion
 
         #region 构造函数
@@ -422,12 +424,11 @@ namespace TaskManager
             try
             {
                 //Form1.ShowWaitForm();
-                //if (FormTable.Category == "试验统计" && hand < 0)
-                //{
-                //    MessageBox.Show("请在样品板块新增试验统计");
-                //    return;
-                //}
-
+                if (FormTable.Category == "试验统计" && hand < 0)
+                {
+                    MessageBox.Show("请先选中需要编辑的数据记录！", "提示", MessageBoxButtons.OK);
+                    return;
+                }
 
                 var oldSaveStatus = _control.SAVE_EDIT;
 

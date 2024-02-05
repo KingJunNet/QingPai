@@ -23,6 +23,8 @@ namespace TaskManager
         public readonly string Server;
         private const string RootFolder = "轻排参数表服务器";
         private const string Category = "设备管理";
+        private Dictionary<string, DataRow> nowEquipmentCodeTableRowMap;
+        private List<string> newImportEquipmentCodes;
 
         protected EquipmentForm()
         {
@@ -42,6 +44,7 @@ namespace TaskManager
 
 
             _control.BeforeAddRowOnImportExcel += BeforeAddRowOnImportExcel;
+            _control.importExcelPreHandler += preHandlerOnImportExcel;
             _control._view.RowStyle += ViewOnRowStyle;
             this._control.afterSavedHandle = new TableControl.AfterSavedEvent(handleAfterSaved);
         }
@@ -96,30 +99,58 @@ namespace TaskManager
         /// </summary>
         /// <param name="targetRow"></param>
         /// <param name="sourceRow"></param>
-        private static void BeforeAddRowOnImportExcel(DataRow targetRow, DataRow sourceRow)
+        private bool BeforeAddRowOnImportExcel(DataRow targetRow, DataRow sourceRow)
         {
-            //处置有效期
+            //1.替换现有行，不添加重复行
+            string equipCode = DbHelper.dataColumn2String(targetRow["EquipCode"]);
+            if (this.newImportEquipmentCodes.Contains(equipCode)) {
+                return false;
+            }
+            this.newImportEquipmentCodes.Add(equipCode);
+            if (this.nowEquipmentCodeTableRowMap.ContainsKey(equipCode))
+            {
+                //_control.DataSource.Rows.Remove(this.equipmentCodeTableRowIndexMap[equipCode]);
+                //删除原有数据
+                this.nowEquipmentCodeTableRowMap[equipCode].Delete();
+            }
+
+            //2.处置有效期
             double period = targetRow.CorrectValue("CalibrationCycle", 12.0);
             var months = (int)(period * 1);
             DateTime calibratingDate = targetRow.CorrectValue("CalibrationDate", DateTime.Now.Date);
             DateTime expireDate = targetRow.CorrectValue("ExpireDate", calibratingDate.AddMonths(months).AddDays(-1));
 
-            //处置组别
+            //3.处置组别
             string owner = DbHelper.dataColumn2String(targetRow["Owner"]);
             if (string.IsNullOrWhiteSpace(owner))
             {
-                return;
+                return true;
             }
-
             //反推组别信息
             UserHelper.Instance.loadUsers();
             if (UserHelper.Instance.UserMap.ContainsKey(owner)) {
                 targetRow["GroupName"] = UserHelper.Instance.UserMap[owner].Department;
             }
+
+            return true;
         }
 
-       
+        private void preHandlerOnImportExcel() {
+            this.newImportEquipmentCodes = new List<string>();
+            this.nowEquipmentCodeTableRowMap = new Dictionary<string, DataRow>();
+            DataRowCollection rows = _control.DataSource.Rows;
+            for (int index = 0; index < rows.Count; index++)
+            {
+                DataRow row = rows[index];
+                string equipCode = DbHelper.dataColumn2String(row["EquipCode"]);
+                if (!this.nowEquipmentCodeTableRowMap.ContainsKey(equipCode))
+                {
+                    this.nowEquipmentCodeTableRowMap.Add(equipCode,row);
+                }
+            }         
+        }
 
+           
         /// <summary>
         /// 行标色
         /// </summary>
