@@ -24,7 +24,7 @@ namespace TaskManager.domain.service
 
         private static readonly int WORD_PER_PAGE_USAGERECORD_COUNT = 6;
 
-        private List<GenerateWordFileUnit> generateWordFileUnits;
+        private List<GenerateWordFileUnitOri> generateWordFileUnits;
 
         public bool isAbort = false;
 
@@ -41,7 +41,7 @@ namespace TaskManager.domain.service
 
         public void work()
         {
-            this.generateWordFileUnits = new List<GenerateWordFileUnit>();
+            this.generateWordFileUnits = new List<GenerateWordFileUnitOri>();
             string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
             this.FileBasePath = Path.Combine(appDirectory, BASE_DIRECTORY_NAME);
             this.equipmentUasageRecordWordTplFilePath = Path.Combine(appDirectory, EQUIPMENT_USAGE_RECORD_WORD_TPL_RELAITIVE_PATH);
@@ -97,11 +97,11 @@ namespace TaskManager.domain.service
             string equipmentType = groupByEquipment.Key.EquipmentType;
 
             //生成word文件
-            GenerateWordFileUnit unit = new GenerateWordFileUnit(personDirectory, day, equipmentCode, equipmentName, equipmentType, groupByEquipment.ToList());
+            GenerateWordFileUnitOri unit = new GenerateWordFileUnitOri(personDirectory, day, equipmentCode, equipmentName, equipmentType, groupByEquipment.ToList());
             this.generateWordFileUnits.Add(unit);
         }
 
-        private void generateUsageRecordWordFiles(GenerateWordFileUnit unit)
+        private void generateUsageRecordWordFiles(GenerateWordFileUnitOri unit)
         {
             this.generateUsageRecordWordFiles(unit.personDirectory,
                 unit.day,

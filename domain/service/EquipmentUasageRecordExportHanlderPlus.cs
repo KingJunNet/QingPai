@@ -52,69 +52,74 @@ namespace TaskManager.domain.service
             this.executeGenerate();
         }
 
-        private void executeGenerate() {
+        private void executeGenerate()
+        {
             maskLayer.progressBar.Maximum = this.generateWordFileUnits.Count;
-            for (   int i = 0; i < this.generateWordFileUnits.Count; i++)
+            for (int i = 0; i < this.generateWordFileUnits.Count; i++)
             {
-                if (UIHelp.Instance.AbortEquipmentUasageRecordExportWork) {
+                if (UIHelp.Instance.AbortEquipmentUasageRecordExportWork)
+                {
                     isAbort = true;
                     return;
                 }
                 this.generateUsageRecordWordFiles(this.generateWordFileUnits[i]);
-                maskLayer.SetProgressBarValue(i+1);
+                maskLayer.SetProgressBarValue(i + 1);
             }
         }
 
         private void generateWordFiles()
         {
-            //按照日期-部门-人分组
-            var groupByDayDepPersonResults = this.equipmentUsageRecords.GroupBy(p => p, new EquipmentUasageRecordByDayDepPersonComparer());
-            foreach (var groupByDayDepPerson in groupByDayDepPersonResults)
+            //按照组别-设备编码分组
+            var groupByDepEquipCodeResults = this.equipmentUsageRecords.GroupBy(p => p, new EquipmentUasageRecordByDepEquipCodeComparer());
+            foreach (var groupByDepEquipCode in groupByDepEquipCodeResults)
             {
-                this.handleGroupByDayDepPerson(groupByDayDepPerson);
+                this.handleGroupByDepEquipCode(groupByDepEquipCode);
             }
         }
 
-        private void handleGroupByDayDepPerson(IGrouping<EquipmentUsageRecordEntity, EquipmentUsageRecordEntity> groupByDayDepPerson)
+        private void handleGroupByDepEquipCode(IGrouping<EquipmentUsageRecordEntity, EquipmentUsageRecordEntity> groupByDepEquipCode)
         {
-            string day = groupByDayDepPerson.Key.UseTime.ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            string department = groupByDayDepPerson.Key.Department;
-            string person = groupByDayDepPerson.Key.UsePerson;
+            string department = groupByDepEquipCode.Key.Department;
+            string equipmentCode = groupByDepEquipCode.Key.EquipmentCode;
 
             //创建目录
-            string personDirectory = this.createExportFileDirectory(day, department, person);
+            string equipmentCodeDirectory = this.createExportFileDirectory(department, equipmentCode);
 
-            //按照设备分组，生成记录
-            var groupByEquipmentResults = groupByDayDepPerson.ToList().GroupBy(p => p, new EquipmentUasageRecordByEquipmentComparer());
-            foreach (var groupByEquipment in groupByEquipmentResults)
+            //按照设备-人-时间天分组，生成记录
+            var groupByEquipmentPersonDayResults = groupByDepEquipCode.ToList().GroupBy(p => p, new EquipmentUasageRecordByEquipmentPersonDayComparer());
+            foreach (var groupByEquipmentPersonDay in groupByEquipmentPersonDayResults)
             {
-                this.handleGroupByEquipment(groupByEquipment, personDirectory, day);
+                this.handleGroupByEquipmentPersonDay(groupByEquipmentPersonDay, equipmentCodeDirectory);
             }
         }
 
-        private void handleGroupByEquipment(IGrouping<EquipmentUsageRecordEntity, EquipmentUsageRecordEntity> groupByEquipment, string personDirectory, string day)
+        private void handleGroupByEquipmentPersonDay(IGrouping<EquipmentUsageRecordEntity, EquipmentUsageRecordEntity> groupByEquipmentPersonDay, string equipmentCodeDirectory)
         {
-            string equipmentCode = groupByEquipment.Key.EquipmentCode;
-            string equipmentName = groupByEquipment.Key.EquipmentName;
-            string equipmentType = groupByEquipment.Key.EquipmentType;
+            string person = groupByEquipmentPersonDay.Key.UsePerson;
+            string day = groupByEquipmentPersonDay.Key.UseTime.ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            string equipmentCode = groupByEquipmentPersonDay.Key.EquipmentCode;
+            string equipmentName = groupByEquipmentPersonDay.Key.EquipmentName;
+            string equipmentType = groupByEquipmentPersonDay.Key.EquipmentType;
+
 
             //生成word文件
-            GenerateWordFileUnit unit = new GenerateWordFileUnit(personDirectory, day, equipmentCode, equipmentName, equipmentType, groupByEquipment.ToList());
+            GenerateWordFileUnit unit = new GenerateWordFileUnit(equipmentCodeDirectory, person, day, equipmentCode, equipmentName, equipmentType, groupByEquipmentPersonDay.ToList());
             this.generateWordFileUnits.Add(unit);
         }
 
         private void generateUsageRecordWordFiles(GenerateWordFileUnit unit)
         {
-            this.generateUsageRecordWordFiles(unit.personDirectory,
+            this.generateUsageRecordWordFiles(unit.equipmentCodeDirectory,
+                unit.person,
                 unit.day,
-                unit.equipmentCode, 
+                unit.equipmentCode,
                 unit.equipmentName,
                 unit.equipmentType,
                 unit.equipmentUsageRecords);
         }
 
-        private void generateUsageRecordWordFiles(string personDirectory,
-            string day,
+        private void generateUsageRecordWordFilesBack(string personDirectory,
+                                    string day,
                                     string equipmentCode,
                                     string equipmentName,
                                     string equipmentType,
@@ -148,7 +153,44 @@ namespace TaskManager.domain.service
                 number++;
             }
         }
-    
+
+        private void generateUsageRecordWordFiles(string fileDirectory,
+                                    string person,
+                                    string day,
+                                    string equipmentCode,
+                                    string equipmentName,
+                                    string equipmentType,
+                                    List<EquipmentUsageRecordEntity> equipmentUsageRecords)
+        {
+            //排序
+            equipmentUsageRecords.Sort((arg0, arg1) => arg0.UseTime.Ticks.CompareTo(arg1.UseTime.Ticks));
+
+            int totalCount = equipmentUsageRecords.Count;
+            if (totalCount <= WORD_PER_PAGE_USAGERECORD_COUNT)
+            {
+                string fileName = $"{equipmentName}({equipmentCode})-{person}-{day}.doc";
+                string filePath = Path.Combine(fileDirectory, fileName);
+                saveUsageRecordWordFile(filePath, equipmentCode, equipmentName, equipmentType, equipmentUsageRecords);
+                return;
+            }
+
+            //记录过多就拆分
+            int startIndex = 0;
+            int number = 1;
+            while (startIndex < totalCount)
+            {
+                int curCount = (totalCount - startIndex) < WORD_PER_PAGE_USAGERECORD_COUNT ?
+                    (totalCount - startIndex) :
+                    WORD_PER_PAGE_USAGERECORD_COUNT;
+                List<EquipmentUsageRecordEntity> subEquipmentUsageRecords = equipmentUsageRecords.GetRange(startIndex, curCount);
+                string fileName = $"{equipmentName}({equipmentCode})-{person}-{day}-{number}.doc";
+                string filePath = Path.Combine(fileDirectory, fileName);
+                saveUsageRecordWordFile(filePath, equipmentCode, equipmentName, equipmentType, subEquipmentUsageRecords);
+                startIndex = startIndex + curCount;
+                number++;
+            }
+        }
+
         private void saveUsageRecordWordFile(string filePath,
                                   string equipmentCode,
                                   string equipmentName,
@@ -162,10 +204,10 @@ namespace TaskManager.domain.service
             TableReport tableReport = report.createTableReport(0);
 
             //插入设备信息
-            tableReport.InsertValue(2,1, StringUtils.null2Empty(equipmentName));
+            tableReport.InsertValue(2, 1, StringUtils.null2Empty(equipmentName));
             tableReport.InsertValue(2, 3, StringUtils.null2Empty(equipmentType));
             tableReport.InsertValue(2, 5, StringUtils.null2Empty(equipmentCode));
-               
+
             //添加使用记录行
             int count = equipmentUsageRecords.Count;
             //tableReport.AddRowEx(5, count-1);
@@ -177,10 +219,11 @@ namespace TaskManager.domain.service
             }
 
             //删除多余行
-            if (count < WORD_PER_PAGE_USAGERECORD_COUNT) {
+            if (count < WORD_PER_PAGE_USAGERECORD_COUNT)
+            {
                 tableReport.RemoveRow(5 + count, 10);
             }
-           
+
             //保存文档
             report.SaveDocument(filePath);
         }
@@ -200,7 +243,7 @@ namespace TaskManager.domain.service
                 values[1] = "";
                 values[2] = "√";
             }
-            values[3] =StringUtils.null2Empty(equipmentUsageRecord.Purpose);
+            values[3] = StringUtils.null2Empty(equipmentUsageRecord.Purpose);
             values[4] = StringUtils.null2Empty(equipmentUsageRecord.UseState);
             if (equipmentUsageRecord.PostUseState.Equals("正常"))
             {
@@ -232,6 +275,19 @@ namespace TaskManager.domain.service
             return personDirectory;
         }
 
+        private string createExportFileDirectory(string department, string equipmentCode)
+        {
+            //构造目录
+            string departmentDirectory = Path.Combine(this.FileBasePath, department);
+            string equipmentCodeDirectory = Path.Combine(departmentDirectory, equipmentCode);
+
+            //创建目录
+            this.createDirectory(departmentDirectory);
+            this.createDirectory(equipmentCodeDirectory);
+
+            return equipmentCodeDirectory;
+        }
+
         private void createDirectory(string directoryPath)
         {
             if (Directory.Exists(directoryPath))
@@ -241,36 +297,39 @@ namespace TaskManager.domain.service
             Directory.CreateDirectory(directoryPath);
         }
 
-        class EquipmentUasageRecordByDayDepPersonComparer : IEqualityComparer<EquipmentUsageRecordEntity>
+
+
+        class EquipmentUasageRecordByDepEquipCodeComparer : IEqualityComparer<EquipmentUsageRecordEntity>
         {
             public bool Equals(EquipmentUsageRecordEntity x, EquipmentUsageRecordEntity y)
             {
-                string xDate = x.UseTime.ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                string yDate = y.UseTime.ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-
-                return StringUtils.isEquals(xDate, yDate)
-                    && StringUtils.isEquals(x.Department, y.Department)
-                    && StringUtils.isEquals(x.UsePerson, y.UsePerson);
+                return StringUtils.isEquals(x.Department, y.Department)
+                    && StringUtils.isEquals(x.EquipmentCode, y.EquipmentCode);
             }
 
 
             public int GetHashCode(EquipmentUsageRecordEntity obj) => obj.Department.GetHashCode();
         }
 
-        class EquipmentUasageRecordByEquipmentComparer : IEqualityComparer<EquipmentUsageRecordEntity>
+        class EquipmentUasageRecordByEquipmentPersonDayComparer : IEqualityComparer<EquipmentUsageRecordEntity>
         {
             public bool Equals(EquipmentUsageRecordEntity x, EquipmentUsageRecordEntity y)
             {
+                string xDate = x.UseTime.ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                string yDate = y.UseTime.ToString("yyyy-MM-dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+
                 return StringUtils.isEquals(x.EquipmentCode, y.EquipmentCode)
                     && StringUtils.isEquals(x.EquipmentName, y.EquipmentName)
-                    && StringUtils.isEquals(x.EquipmentType, y.EquipmentType);
+                    && StringUtils.isEquals(x.EquipmentType, y.EquipmentType)
+                    && StringUtils.isEquals(x.UsePerson, y.UsePerson)
+                    && StringUtils.isEquals(xDate, yDate);
             }
 
 
             public int GetHashCode(EquipmentUsageRecordEntity obj) => obj.EquipmentCode.GetHashCode();
         }
-    }
 
-   
+
+    }
     
 }
