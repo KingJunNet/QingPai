@@ -83,7 +83,6 @@
             // 
             // _control
             // 
-            this._control.Location = new System.Drawing.Point(0, 190);
             this._control.Size = new System.Drawing.Size(1142, 737);
             // 
             // EquipmentUsageRecordForm
