@@ -112,6 +112,7 @@ namespace TaskManager
                 
                 Fields = sql.InitDataFields(FormTable);
 
+           
                 InitColLayout();
                 InitRepoCombox();
 

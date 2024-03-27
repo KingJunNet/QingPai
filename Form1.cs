@@ -28,14 +28,17 @@ namespace TaskManager
     public partial class Form1 : DevExpress.XtraBars.Ribbon.RibbonForm
     {
         //public static double VERSION = 20230202.01;
-        public static double VERSION = 20240122.01;
+        public static double VERSION = 20240122.02;
         public static double NEWEST_Version = 202004028.01;
 
 
         public const string RootFolder = "轻排参数表服务器";
         public readonly string Server;
 
-        public string Folder => $"\\\\{Server}{RootFolder}\\轻排更新包.exe";
+        //public string Folder => $"\\\\{Server}{RootFolder}\\轻排更新包.exe";
+
+        public string Folder => @"D:\code\TaskMangerSetup\Debug\setup.exe";
+
         public static DateTimeFormatInfo DTFormat
         {
             get
@@ -89,7 +92,7 @@ namespace TaskManager
         private void Form1_Shown(object sender, EventArgs e)
         {
             ShowUserInfo();
-            //ShowInstallPath();
+            ShowInstallPath();
 
             InitReminder();
 
@@ -646,7 +649,7 @@ namespace TaskManager
         /// <summary>
         /// 判定并下载更新
         /// </summary>
-        private void ShowInstallPath()
+        private void ShowInstallPathBack()
         {
             var exePath = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -721,6 +724,91 @@ namespace TaskManager
             //{
             //    Form1.CloseWaitForm();
             //}
+        }
+
+        /// <summary>
+        /// 判定并下载更新
+        /// </summary>
+        private void ShowInstallPath()
+        {
+            var exePath = AppDomain.CurrentDomain.BaseDirectory;
+
+            //DirectoryInfo info0 = new DirectoryInfo(Application.StartupPath);
+            //string debugpath = info0.Parent.FullName;
+
+            var info = new FileInfo(exePath);
+
+            NEWEST_Version = Sql.GetExpr1("select top 1 version as Expr1 from Version", 1000.00);
+            var count = Sql.GetExpr1("select count(*) as Expr1 from FileTable where category='安装包'", 0);
+            if (!(NEWEST_Version > VERSION) || count <= 0) return;
+            //if (!(NEWEST_Version > VERSION)) return;
+            YNinstall = true;
+            //if (MessageBox.Show("更新方法：点击确定进行更新" +
+            //                    "\n版本号：" + NEWEST_Version +               
+            //                    "\n点击取消忽略本次更新",
+            //        "有新版本请更新", MessageBoxButtons.OKCancel) != DialogResult.OK) {                
+            //    YNinstall = false;
+            //    return;
+            //}
+            //else
+            //{
+            //    YNinstall = false;
+            //}
+            MessageBox.Show("更新方法：点击确定进行更新" +
+                                "\n版本号：" + NEWEST_Version, "有新版本请更新");
+            YNinstall = false;
+            
+
+
+
+            //try
+            //{
+            //    Process.Start(Folder);
+            //}
+            //catch
+            //{
+            //    MessageBox.Show("无法访问安装文件，请确认此电脑是否正常访问服务器共享文件夹！");
+            //}
+            //finally
+            //{
+
+            //    System.Environment.Exit(0);
+            //}
+
+
+            try
+            {
+                var dialog = new FolderBrowserDialog { Description = "请选择下载目标文件夹" };
+                if (dialog.ShowDialog() != DialogResult.OK) return;
+                ShowWaitForm();
+
+                var strsql = "select top 1 [file] as Expr1,name as Expr2 from FileTable where category='安装包'";
+                var dt = Sql.ExecuteQuery(strsql).Tables[0];
+                if (dt.Rows.Count == 0) return;
+
+                var picBytes = (byte[])dt.Rows[0]["Expr1"];
+                //var stream0 = new FileStream(fileDialog.FileName, FileMode.Open);
+                //var picBytes = stream0.StreamToBytes();
+
+                string appFilePath = dialog.SelectedPath + "\\TaskMangerSetup.msi";
+                using (var stream = new FileStream(appFilePath, FileMode.Create))
+                {
+                    stream.Write(picBytes, 0, picBytes.Length);
+                }
+
+                DialogResult downResult= MessageBox.Show("更新包已下载,开始安装");
+                if (downResult == DialogResult.OK) {
+                    Process.Start(appFilePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "下载失败");
+            }
+            finally
+            {
+                System.Environment.Exit(0);
+            }
         }
 
         /// <summary>
