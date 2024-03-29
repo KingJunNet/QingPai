@@ -224,6 +224,7 @@ namespace TaskManager
                 foreach (Control c in control.Controls)
                 {
                     if (c.GetType() != typeof(TitleCombox) &&
+                        c.GetType() != typeof(RequiredTitleCombox)&&
                         c.GetType() != typeof(TitleDate) &&
                         c.GetType() !=  typeof(TitleTextBox)&&
                         c.GetType() != typeof(DateEdit))

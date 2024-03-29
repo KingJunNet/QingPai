@@ -32,7 +32,7 @@ namespace TaskManager
         }
         public EquipmentForm(FormType formType, string selectedDept) : base(formType, selectedDept)
         {
-           
+
             InitializeComponent();
             if (DesignMode)
                 return;
@@ -75,7 +75,8 @@ namespace TaskManager
             exportWordThread.Start();
         }
 
-        private void updateEquipmentCacheData() {
+        private void updateEquipmentCacheData()
+        {
             CacheDataHandler.Instance.reloadCurUserEquipments();
         }
 
@@ -103,7 +104,8 @@ namespace TaskManager
         {
             //1.替换现有行，不添加重复行
             string equipCode = DbHelper.dataColumn2String(targetRow["EquipCode"]);
-            if (this.newImportEquipmentCodes.Contains(equipCode)) {
+            if (this.newImportEquipmentCodes.Contains(equipCode))
+            {
                 return false;
             }
             this.newImportEquipmentCodes.Add(equipCode);
@@ -128,14 +130,16 @@ namespace TaskManager
             }
             //反推组别信息
             UserHelper.Instance.loadUsers();
-            if (UserHelper.Instance.UserMap.ContainsKey(owner)) {
+            if (UserHelper.Instance.UserMap.ContainsKey(owner))
+            {
                 targetRow["GroupName"] = UserHelper.Instance.UserMap[owner].Department;
             }
 
             return true;
         }
 
-        private void preHandlerOnImportExcel() {
+        private void preHandlerOnImportExcel()
+        {
             this.newImportEquipmentCodes = new List<string>();
             this.nowEquipmentCodeTableRowMap = new Dictionary<string, DataRow>();
             DataRowCollection rows = _control.DataSource.Rows;
@@ -145,12 +149,12 @@ namespace TaskManager
                 string equipCode = DbHelper.dataColumn2String(row["EquipCode"]);
                 if (!this.nowEquipmentCodeTableRowMap.ContainsKey(equipCode))
                 {
-                    this.nowEquipmentCodeTableRowMap.Add(equipCode,row);
+                    this.nowEquipmentCodeTableRowMap.Add(equipCode, row);
                 }
-            }         
+            }
         }
 
-           
+
         /// <summary>
         /// 行标色
         /// </summary>
@@ -314,6 +318,11 @@ namespace TaskManager
         {
             if (e.RowHandle >= 0)
             {
+                string groupName = _control._view.GetRowCellValue(e.RowHandle, "GroupName")?.ToString().Trim();
+                if (!StringUtils.isEquals(groupName, FormSignIn.CurrentUser.Department.ToString()))
+                {
+                    e.Appearance.BackColor = Color.LightGreen;
+                }              
                 string state = _control._view.GetRowCellValue(e.RowHandle, "State")?.ToString().Trim();
                 if (StringUtils.isEquals(state, EquipmentStateChn.使用中.ToString()))
                 {

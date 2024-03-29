@@ -54,7 +54,7 @@
             // 
             this.ribbonControl1.ExpandCollapseItem.Id = 0;
             this.ribbonControl1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.ribbonControl1.Size = new System.Drawing.Size(1142, 190);
+            this.ribbonControl1.Size = new System.Drawing.Size(1162, 190);
             // 
             // repositoryItemFontEdit1
             // 
@@ -83,13 +83,14 @@
             // 
             // _control
             // 
-            this._control.Size = new System.Drawing.Size(1142, 737);
+            this._control.Location = new System.Drawing.Point(0, 190);
+            this._control.Size = new System.Drawing.Size(1162, 747);
             // 
             // EquipmentUsageRecordForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1142, 927);
+            this.ClientSize = new System.Drawing.Size(1162, 937);
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.Name = "EquipmentUsageRecordForm";
             this.Text = "EquipmentRecordForm";

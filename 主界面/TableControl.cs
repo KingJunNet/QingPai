@@ -112,7 +112,13 @@ namespace TaskManager
                 
                 Fields = sql.InitDataFields(FormTable);
 
-           
+                //设备信息增加序号显示           
+                if (FormTable.Category.Equals("设备信息"))
+                {
+                    DataField orderField = new DataField("Order");
+                    Fields.Insert(0,orderField);
+                }
+
                 InitColLayout();
                 InitRepoCombox();
 

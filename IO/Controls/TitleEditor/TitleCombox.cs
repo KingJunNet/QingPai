@@ -13,12 +13,24 @@ namespace ExpertLib.Controls
         /// </summary>
         public List<Object> ViewModels { get; set; }
 
+        protected Color notContentBackColor= Color.LightYellow;
+
         public TitleCombox()
         {
+            this.init();
+        }
+
+        public TitleCombox(Color color)
+        {
+            this.SetNotContentBackColor(color);
+            this.init();
+        }
+
+        protected void init() {
             InitializeComponent();
             if (comboBox1.Text == "")
             {
-                comboBox1.BackColor = Color.LightYellow;
+                comboBox1.BackColor = notContentBackColor;
             }
             else
             {
@@ -28,7 +40,7 @@ namespace ExpertLib.Controls
             this.comboBox1.MouseWheel += new MouseEventHandler(ComboBox_MouseWheel);
         }
 
-        private void ComboBox_MouseWheel(object sender, MouseEventArgs e)
+        protected void ComboBox_MouseWheel(object sender, MouseEventArgs e)
         {
             HandledMouseEventArgs e1 = e as HandledMouseEventArgs;//需要强转，否则无法设置handeld
             e1.Handled = true;
@@ -43,6 +55,10 @@ namespace ExpertLib.Controls
         {
             this.comboBox1.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.None;
             comboBox1.TextUpdate += handler;
+        }
+
+        public void SetNotContentBackColor(Color color) {
+            this.notContentBackColor = color;
         }
 
         public override string Text => comboBox1.Text;
@@ -88,11 +104,11 @@ namespace ExpertLib.Controls
             this.SetItems(values);
         }
 
-        private void comboBox1_TextChanged(object sender, EventArgs e)
+        protected void comboBox1_TextChanged(object sender, EventArgs e)
         {
             if (comboBox1.Text == "")
             {
-                comboBox1.BackColor = Color.LightYellow;
+                comboBox1.BackColor = notContentBackColor;
             }
             else
             {

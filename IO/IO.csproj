@@ -106,6 +106,9 @@
     <Compile Include="Controls\TitleEditor\DateEdit.Designer.cs">
       <DependentUpon>DateEdit.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TitleEditor\RequiredTitleCombox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\TitleEditor\TextBoxEx.cs">
       <SubType>Component</SubType>
     </Compile>

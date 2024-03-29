@@ -313,19 +313,20 @@ namespace TaskManager
         {
             var strsql = "select * from " + TableName;
             List<string> sWhere;
-         
-           
-         
+
             if (Type == FormType.NewTask)
                 sWhere = NewTaskSqlString(year, finishState, startdate, enddate);
             else if (Type == FormType.Sample)
                 sWhere = SampleSqlString(year);
             else if (Type == FormType.Test)
-                sWhere = TestSqlString(year,department);
+                sWhere = TestSqlString(year, department);
             else if (Type == FormType.Project)
                 sWhere = ProjectSqlString(year);
             else if (Type == FormType.Equipment)
+            {
+                strsql = "select ROW_NUMBER() OVER(ORDER BY GroupName ASC) as [Order],* from NewEquipmentTable";
                 sWhere = EquipmentSqlString(year);
+            }
             else if (Type == FormType.EquipmentUsageRecord)
                 sWhere = EquipmentUsageRecordSqlString(year,department,searchUserName,startdate,enddate);
             else

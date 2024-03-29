@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using ExpertLib.Controls;
+using TaskManager.common.utils;
 
 namespace TaskManager
 {
@@ -46,6 +47,36 @@ namespace TaskManager
         public bool EditorVisible;
 
         public readonly bool AllowEdit;
+
+        public DataField() {
+
+        }
+
+     
+        public DataField(string keyName) {
+            if (!StringUtils.Equals("Order",keyName)) {
+                throw new Exception("字段不支持");
+            }
+            Chs = "序号";
+            Eng = "Order";
+            Category = "样品信息";
+            Group = "";
+            Format = "";      
+            Remark = "";
+
+            DisplayLevel = 1;
+            DisplayIndex = 40;
+            X = 1;
+            Y = 1;
+            VehicleMap = null;
+            CanisterMap = null;
+
+            IncludeDepts = new List<string>() {"1" };
+            ExcludeDepts = new List<string>();
+            ColumnVisible = true;
+            EditorVisible = false;
+            AllowEdit = false;
+        }
 
         public DataField(DataRow dr, FormTable table)
         {

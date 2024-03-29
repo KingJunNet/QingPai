@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSignIn));
             this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
             this.comboBoxEdit1 = new DevExpress.XtraEditors.ComboBoxEdit();
@@ -40,7 +41,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.checkEdit1 = new DevExpress.XtraEditors.CheckEdit();
             this.label1 = new System.Windows.Forms.Label();
-            this.toolTip1 = new System.Windows.Forms.ToolTip();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxEdit1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.textEdit1.Properties)).BeginInit();
