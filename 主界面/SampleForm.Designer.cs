@@ -39,11 +39,11 @@
             this.barButtonItem6 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPageGroup4 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-            this.barButtonItem14 = new DevExpress.XtraBars.BarButtonItem();
+            this.btnValidate = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem9 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem7 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem10 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem15 = new DevExpress.XtraBars.BarButtonItem();
+            this.btnUploadFiles = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem11 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem12 = new DevExpress.XtraBars.BarButtonItem();
             this.btnAssignTestTask = new DevExpress.XtraBars.BarButtonItem();
@@ -86,13 +86,13 @@
             this.barButtonItem11,
             this.barButtonItem12,
             this.btnAssignTestTask,
-            this.barButtonItem14,
+            this.btnValidate,
             this.barButtonleft,
             this.barButtonItemleft,
-            this.barButtonItem15});
+            this.btnUploadFiles});
             this.ribbonControl1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.ribbonControl1.MaxItemId = 68;
-            this.ribbonControl1.Size = new System.Drawing.Size(1572, 190);
+            this.ribbonControl1.Size = new System.Drawing.Size(1572, 184);
             this.ribbonControl1.Click += new System.EventHandler(this.ribbonControl1_Click);
             // 
             // ribbonPage1
@@ -128,9 +128,8 @@
             // 
             // _control
             // 
-            this._control.Location = new System.Drawing.Point(0, 190);
             this._control.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
-            this._control.Size = new System.Drawing.Size(1572, 586);
+            this._control.Size = new System.Drawing.Size(1572, 592);
             this._control.Load += new System.EventHandler(this._control_Load);
             // 
             // barButtonItem2
@@ -183,25 +182,25 @@
             // 
             // ribbonPageGroup4
             // 
-            this.ribbonPageGroup4.ItemLinks.Add(this.barButtonItem14);
+            this.ribbonPageGroup4.ItemLinks.Add(this.btnValidate);
             this.ribbonPageGroup4.ItemLinks.Add(this.barButtonItem9);
             this.ribbonPageGroup4.ItemLinks.Add(this.barButtonItem7);
             this.ribbonPageGroup4.ItemLinks.Add(this.barButtonItem10);
-            this.ribbonPageGroup4.ItemLinks.Add(this.barButtonItem15);
+            this.ribbonPageGroup4.ItemLinks.Add(this.btnUploadFiles);
             this.ribbonPageGroup4.ItemLinks.Add(this.barButtonItem11);
             this.ribbonPageGroup4.ItemLinks.Add(this.barButtonItem12);
             this.ribbonPageGroup4.ItemLinks.Add(this.btnAssignTestTask);
             this.ribbonPageGroup4.Name = "ribbonPageGroup4";
             this.ribbonPageGroup4.Text = "操作";
             // 
-            // barButtonItem14
+            // btnValidate
             // 
-            this.barButtonItem14.Caption = "样品信息校验";
-            this.barButtonItem14.Id = 62;
-            this.barButtonItem14.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItem14.ImageOptions.Image")));
-            this.barButtonItem14.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItem14.ImageOptions.LargeImage")));
-            this.barButtonItem14.Name = "barButtonItem14";
-            this.barButtonItem14.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem14_ItemClick);
+            this.btnValidate.Caption = "样品信息校验";
+            this.btnValidate.Id = 62;
+            this.btnValidate.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnValidate.ImageOptions.Image")));
+            this.btnValidate.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnValidate.ImageOptions.LargeImage")));
+            this.btnValidate.Name = "btnValidate";
+            this.btnValidate.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnValidate_ItemClick);
             // 
             // barButtonItem9
             // 
@@ -230,14 +229,14 @@
             this.barButtonItem10.Name = "barButtonItem10";
             this.barButtonItem10.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem10_ItemClick);
             // 
-            // barButtonItem15
+            // btnUploadFiles
             // 
-            this.barButtonItem15.Caption = "上传附件";
-            this.barButtonItem15.Id = 67;
-            this.barButtonItem15.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItem15.ImageOptions.Image")));
-            this.barButtonItem15.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItem15.ImageOptions.LargeImage")));
-            this.barButtonItem15.Name = "barButtonItem15";
-            this.barButtonItem15.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem15_ItemClick);
+            this.btnUploadFiles.Caption = "上传附件";
+            this.btnUploadFiles.Id = 67;
+            this.btnUploadFiles.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItem15.ImageOptions.Image")));
+            this.btnUploadFiles.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItem15.ImageOptions.LargeImage")));
+            this.btnUploadFiles.Name = "btnUploadFiles";
+            this.btnUploadFiles.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnUploadFiles_ItemClick);
             // 
             // barButtonItem11
             // 
@@ -339,9 +338,9 @@
         private DevExpress.XtraBars.BarButtonItem barButtonItem11;
         private DevExpress.XtraBars.BarButtonItem barButtonItem12;
         private DevExpress.XtraBars.BarButtonItem btnAssignTestTask;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem14;
+        private DevExpress.XtraBars.BarButtonItem btnValidate;
         private DevExpress.XtraBars.BarButtonItem barButtonleft;
         private DevExpress.XtraBars.BarButtonItem barButtonItemleft;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem15;
+        private DevExpress.XtraBars.BarButtonItem btnUploadFiles;
     }
 }

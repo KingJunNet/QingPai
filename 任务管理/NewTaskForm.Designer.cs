@@ -125,7 +125,7 @@
             this.ribbonControl1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemDateEdit2,
             this.repositoryItemDateEdit3});
-            this.ribbonControl1.Size = new System.Drawing.Size(1562, 190);
+            this.ribbonControl1.Size = new System.Drawing.Size(1572, 190);
             this.ribbonControl1.Click += new System.EventHandler(this.ribbonControl1_Click);
             // 
             // ribbonPage1
@@ -163,7 +163,7 @@
             // 
             this._control.Dock = System.Windows.Forms.DockStyle.Top;
             this._control.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
-            this._control.Size = new System.Drawing.Size(1562, 444);
+            this._control.Size = new System.Drawing.Size(1572, 444);
             this._control.Load += new System.EventHandler(this._control_Load);
             this._control.TabIndexChanged += new System.EventHandler(this._control_TabIndexChanged);
             this._control.Click += new System.EventHandler(this._control_Click);
@@ -391,7 +391,7 @@
             this.gridControl1.Location = new System.Drawing.Point(0, 634);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(1562, 272);
+            this.gridControl1.Size = new System.Drawing.Size(1572, 277);
             this.gridControl1.TabIndex = 2;
             this.gridControl1.UseEmbeddedNavigator = true;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -501,7 +501,7 @@
             // NewTaskForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
-            this.ClientSize = new System.Drawing.Size(1562, 906);
+            this.ClientSize = new System.Drawing.Size(1572, 911);
             this.Controls.Add(this.gridControl1);
             this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.Name = "NewTaskForm";
