@@ -557,7 +557,8 @@ namespace TaskManager
                 EquipmentUsageRecordEntity entity = new EquipmentUsageRecordEntity()
                 .defaultParam()
                 .equipmentInfo(equipment)
-                .fromTest(this.testStatisticEntity);
+                .fromTest(this.testStatisticEntity)
+                .fixFromTestUpdated(this.testStatisticEntity);
 
                 this.equipmentUsageRecordEntities.Add(entity);
             });

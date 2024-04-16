@@ -19,6 +19,7 @@ using LabSystem.DAL;
 using TaskManager.common.utils;
 using TaskManager.domain.entity;
 using TaskManager.domain.repository;
+using TaskManager.domain.service;
 using TaskManager.domain.valueobject;
 using TaskManager.infrastructure.db;
 using Xfrog.Net;
@@ -30,6 +31,8 @@ namespace TaskManager
         private CreateTaskForm createTaskForm;
 
         private IEquipmentUsageRecordRepository equipmentUsageRecordRepository;
+
+        private ITestStatisticRepository testStatisticRepository;
 
         private List<int> savedIds = new List<int>();
 
@@ -49,6 +52,7 @@ namespace TaskManager
         {
             InitializeComponent();
             this.equipmentUsageRecordRepository = new EquipmentUsageRecordRepository();
+            this.testStatisticRepository = new TestStatisticRepository();
             this._control.cellValueChangedEvent = new TableControl.CellValueChangedEvent(afterCellValueChanged);
             this._control.saveDataSourceEvent = new TableControl.SaveDataSourceEvent(handleBeforeSaveDataSource);
             this.beforeRemovedHandle = new BeforeRemovedHandle(beforeRemovedHandler);
@@ -64,6 +68,7 @@ namespace TaskManager
         private DataTable handleBeforeSaveDataSource(DataTable updateTable) {
             DataRowCollection rows = updateTable.Rows;
 
+            DateTime nowTime = DateTime.Now;
             List<int> deletedRowIndexs = new List<int>();
             List<EquipmentUsageRecordTestPart> updatedTestParts = new List<EquipmentUsageRecordTestPart>();
             for (int index = 0; index < rows.Count; index++)
@@ -79,7 +84,8 @@ namespace TaskManager
                     deletedRowIndexs.Add(index);
                 }
                 else {
-                    EquipmentUsageRecordTestPart testPart = this.dataRow2EquipmentUsageRecordTestPart(row);
+                    EquipmentUsageRecordTestPart testPart = DataTranslator.dataRow2EquipmentUsageRecordTestPart(row);
+                    testPart.UpdateTime = nowTime;
                     updatedTestParts.Add(testPart);
                 }
             }
@@ -87,12 +93,8 @@ namespace TaskManager
             //移除已经更新的数据行
             deletedRowIndexs.ForEach(index => rows.RemoveAt(index));
 
-            //更新设备记录
-            if (!Collections.isEmpty(updatedTestParts)) {
-                updatedTestParts.ForEach (item => {
-                    this.equipmentUsageRecordRepository.updateTestTaskProperty(item);
-                 }) ;
-            }
+            //更新设备设备使用记录
+            this.updateEquipmentUsageRecordsByTestChanged(updatedTestParts);
 
             //删除设备使用记录
             if (!Collections.isEmpty(this.removedIds))
@@ -105,6 +107,29 @@ namespace TaskManager
             }
 
                 return updateTable;
+        }
+
+        private void updateEquipmentUsageRecordsByTestChanged(List<EquipmentUsageRecordTestPart> updatedTestParts) {
+            if (Collections.isEmpty(updatedTestParts)) {
+                return;
+            }
+
+            //获取试验现有属性
+            List<int> ids= updatedTestParts.Select(item => item.TestTaskId).ToList();
+            List <EquipmentUsageRecordTestPart> oriUpdatedTestParts =this.testStatisticRepository.selectPartsByIds(ids);
+            Dictionary<int, EquipmentUsageRecordTestPart> oriUpdatedTestPartMap = new Dictionary<int, EquipmentUsageRecordTestPart>();
+            oriUpdatedTestParts.ForEach(item => oriUpdatedTestPartMap.Add(item.TestTaskId, item));
+
+            //可以优化
+            updatedTestParts.ForEach(item => {
+                if (!oriUpdatedTestPartMap.ContainsKey(item.TestTaskId))
+                {
+                    this.equipmentUsageRecordRepository.updateTestTaskProperty(item);
+                    return;
+                }
+                if(!item.equals(oriUpdatedTestPartMap[item.TestTaskId]))
+                    this.equipmentUsageRecordRepository.updateTestTaskProperty(item);
+            });         
         }
 
         private void beforeRemovedHandler()
@@ -122,7 +147,7 @@ namespace TaskManager
             }
         }
 
-            private EquipmentUsageRecordTestPart dataRow2EquipmentUsageRecordTestPart(DataRow row)
+            private EquipmentUsageRecordTestPart dataRow2EquipmentUsageRecordTestPartBack(DataRow row)
         {
             EquipmentUsageRecordTestPart result = new EquipmentUsageRecordTestPart();
 
@@ -149,6 +174,7 @@ namespace TaskManager
             return result;
         }
 
+       
         private string dataColumn2String(object dataValue) {
             if (dataValue is DBNull) {
                 return null;
@@ -191,6 +217,8 @@ namespace TaskManager
 
             //设置字段只读
             //this.initFormColumnsReadOnly();
+
+            this.btnNew.Caption = "新增记录";
         }
 
         protected override void initFormColumnsReadOnly() {

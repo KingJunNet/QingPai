@@ -76,6 +76,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox55)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemButtonEdit1)).BeginInit();
@@ -116,7 +117,7 @@
             this.repositoryItemSearchControl1,
             this.repositoryItemTextEdit6,
             this.repositoryItemButtonEdit1});
-            this.ribbonControl1.Size = new System.Drawing.Size(1572, 190);
+            this.ribbonControl1.Size = new System.Drawing.Size(1582, 190);
             this.ribbonControl1.Click += new System.EventHandler(this.ribbonControl1_Click);
             // 
             // ribbonPage1
@@ -153,7 +154,7 @@
             // _control
             // 
             this._control.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
-            this._control.Size = new System.Drawing.Size(1572, 702);
+            this._control.Size = new System.Drawing.Size(1582, 707);
             this._control.Load += new System.EventHandler(this._control_Load);
             // 
             // barButtonItem2
@@ -315,8 +316,8 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.gridControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(1572, 702);
-            this.splitContainer1.SplitterDistance = 929;
+            this.splitContainer1.Size = new System.Drawing.Size(1582, 707);
+            this.splitContainer1.SplitterDistance = 934;
             this.splitContainer1.TabIndex = 13;
             this.splitContainer1.Visible = false;
             // 
@@ -327,7 +328,7 @@
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.MenuManager = this.ribbonControl1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(929, 702);
+            this.gridControl1.Size = new System.Drawing.Size(934, 707);
             this.gridControl1.TabIndex = 0;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -378,7 +379,7 @@
             // TestStatistic
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
-            this.ClientSize = new System.Drawing.Size(1572, 892);
+            this.ClientSize = new System.Drawing.Size(1582, 897);
             this.Controls.Add(this.splitContainer1);
             this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.Name = "TestStatistic";
@@ -408,6 +409,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox55)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemButtonEdit1)).EndInit();

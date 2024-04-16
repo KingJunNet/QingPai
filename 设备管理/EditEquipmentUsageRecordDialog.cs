@@ -22,7 +22,7 @@ using TaskManager.infrastructure.db;
 
 namespace TaskManager
 {
-    public partial class EditEquipmentUsageRecordDialog :  BaseEditDialog
+    public partial class EditEquipmentUsageRecordDialog : BaseEditDialog
     {
         private readonly bool IsAllocateTask;
 
@@ -37,7 +37,7 @@ namespace TaskManager
         private List<EquipmentLite> equipments;
         private List<string> equipmentCodeTexts;
 
-        private List<string> inTimeEquipmentCodeTexts=new List<string>();
+        private List<string> inTimeEquipmentCodeTexts = new List<string>();
         private Dictionary<string, EquipmentLite> equipmentMap;
         private Dictionary<string, string> equipmenCodeValueMap;
 
@@ -58,7 +58,7 @@ namespace TaskManager
             InitializeComponent();
             IsAllocateTask = isAllocateTask;
 
-          
+
             this.equipmentQueryService = new EquipmentQueryService();
             this.equipmentUsageRecordRepository = new EquipmentUsageRecordRepository();
             this.userStructureRepository = new UserStructureRepository();
@@ -76,7 +76,7 @@ namespace TaskManager
             #endregion
 
             #region 事件注册
-          
+
             #endregion
 
             flowLayoutPanel1.ResumeLayout(true);
@@ -106,15 +106,34 @@ namespace TaskManager
 
         private void EditEquipmentUsageRecordDialog_Load(object sender, EventArgs e)
         {
-            if (this.operation.Equals(OperationType.EDIT)) {
+            if (this.operation.Equals(OperationType.EDIT))
+            {
+                this.initEditOperationPage();
                 return;
             }
-            this.inittAddOperationPage();
+            this.initAddOperationPage();
         }
 
-        private void inittAddOperationPage() {
+        private void initAddOperationPage()
+        {
             this.initData();
             this.initAddOperationView();
+        }
+
+        private void initEditOperationPage() {
+            this.initHandledUsageRecordEditOperationPage();
+        }
+
+        private void initHandledUsageRecordEditOperationPage() {
+            if (!this.isHandledUsageRecord()) {
+                return;
+            }
+            this.setAllControlsCanEdit();
+        }
+
+        private bool isHandledUsageRecord() {
+            string vin = this.getValue("CarVin");
+            return string.IsNullOrWhiteSpace(vin);
         }
 
         private void initData()
@@ -127,11 +146,13 @@ namespace TaskManager
             this.equipmentCodeTexts = new List<string>();
             this.equipments.ForEach(item => {
                 string codeText = item.Group.Equals(UseHolder.Instance.CurrentUser.Department) ? item.Code : $"{item.Code}({item.Group})";
-                if (!this.equipmentMap.ContainsKey(codeText)) {
+                if (!this.equipmentMap.ContainsKey(codeText))
+                {
                     this.equipmentMap.Add(codeText, item);
                     this.equipmentCodeTexts.Add(codeText);
                 }
-                if (!this.equipmenCodeValueMap.ContainsKey(item.Code)) {
+                if (!this.equipmenCodeValueMap.ContainsKey(item.Code))
+                {
                     this.equipmenCodeValueMap.Add(item.Code, codeText);
                 }
 
@@ -139,20 +160,26 @@ namespace TaskManager
             this.initUserStructureData();
         }
 
-        private void initAddOperationView() {
-           //控件修改为可修改
-           foreach(var titleControl in fieldControlMap.Values) {
-                titleControl.SetReadOnly(false);
-                titleControl.OriginalReadOnly = false;
-            }
+        private void initAddOperationView()
+        {
+            //控件修改为可修改
+            this.setAllControlsCanEdit();
 
-           //隐藏样本信息
+            //隐藏样本信息
             this.titleComboxItemCarVin.Visible = false;
             this.titleComboxSampleModel.Visible = false;
             this.titleComboxProducer.Visible = false;
 
             this.initCombox();
             this.initViewValue();
+        }
+
+        private void setAllControlsCanEdit() {
+            foreach (var titleControl in fieldControlMap.Values)
+            {
+                titleControl.SetReadOnly(false);
+                titleControl.OriginalReadOnly = false;
+            }
         }
 
         private void initCombox()
@@ -229,7 +256,7 @@ namespace TaskManager
             {
                 return;
             }
-          
+
             //回显设备信息
             this.titleComboxEquipmentCode.SetValue(this.baseEquipmentUsageRecord.EquipmentCode);
             this.titleComboxEquipmentName.SetValue(this.baseEquipmentUsageRecord.EquipmentName);
@@ -265,7 +292,8 @@ namespace TaskManager
                     continue;
 
                 var value = control.Value.Value();
-                if (this.operation.Equals(OperationType.ADD) && fieldName.Equals("EquipmentCode")) {
+                if (this.operation.Equals(OperationType.ADD) && fieldName.Equals("EquipmentCode"))
+                {
                     value = this.equipmentMap[value].Code;
                 }
                 view.SetRowCellValue(hand, fieldName, value);
@@ -308,7 +336,8 @@ namespace TaskManager
                 titleComboxEquipmentName.SetValue(equipment.Name);
                 titleComboxEquipmentType.SetValue(equipment.Type);
             }
-            else {
+            else
+            {
                 titleComboxEquipmentName.SetValue("");
                 titleComboxEquipmentType.SetValue("");
             }
@@ -343,9 +372,11 @@ namespace TaskManager
             }
         }
 
-        private bool validateParam(out string errorMsg) {
+        private bool validateParam(out string errorMsg)
+        {
             errorMsg = "";
-            if (string.IsNullOrWhiteSpace(this.titleComboxEquipmentCode.Text)) {
+            if (string.IsNullOrWhiteSpace(this.titleComboxEquipmentCode.Text))
+            {
                 errorMsg = "输入参数有误：设备编码为空！";
                 return false;
             }
@@ -364,7 +395,7 @@ namespace TaskManager
                 errorMsg = "输入参数有误：使用人为空！";
                 return false;
             }
-            if (this.titleComboxUseTime.Date.Year==1)
+            if (this.titleComboxUseTime.Date.Year == 1)
             {
                 errorMsg = "输入参数有误：使用时间为空！";
                 return false;
@@ -394,11 +425,13 @@ namespace TaskManager
                 errorMsg = "输入参数有误：项目为空！";
                 return false;
             }
-            if (this.operation.Equals(OperationType.ADD) && !this.equipmentMap.ContainsKey(this.titleComboxEquipmentCode.Text)) {
+            if (this.operation.Equals(OperationType.ADD) && !this.equipmentMap.ContainsKey(this.titleComboxEquipmentCode.Text))
+            {
                 errorMsg = "输入参数有误：该设备编码不存在，请先在设备管理中添加该设备！";
                 return false;
             }
-            if (!this.titleComboxPostUseState.Text.Equals("正常")&& string.IsNullOrWhiteSpace(this.titleComboxPostUseProblem.Text)) {
+            if (!this.titleComboxPostUseState.Text.Equals("正常") && string.IsNullOrWhiteSpace(this.titleComboxPostUseProblem.Text))
+            {
                 errorMsg = "请补充使用后问题！";
                 return false;
             }
@@ -406,7 +439,8 @@ namespace TaskManager
             return true;
         }
 
-        private EquipmentUsageRecordEntity extractDataFromUi() {
+        private EquipmentUsageRecordEntity extractDataFromUi()
+        {
             string preUseState = GetControlByFieldName("PreUseState").Value().Trim();
             string useState = GetControlByFieldName("UseState").Value().Trim();
             string postUseState = GetControlByFieldName("PostUseState").Value().Trim();
@@ -414,8 +448,8 @@ namespace TaskManager
             string remark = GetControlByFieldName("Remark").Value().Trim();
 
             this.updatedEquipmentUsageRecordEntity = new EquipmentUsageRecordEntity()
-                .state(this.recordId,preUseState,useState,postUseState,
-                postUseProblem,remark);
+                .state(this.recordId, preUseState, useState, postUseState,
+                postUseProblem, remark);
 
             return this.updatedEquipmentUsageRecordEntity;
         }

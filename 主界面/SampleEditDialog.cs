@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DevExpress.XtraGrid.Views.Grid;
 using ExpertLib.Controls;
 using LabSystem.DAL;
+using TaskManager.controller;
 using MSWord = Microsoft.Office.Interop.Word;
 
 namespace TaskManager
@@ -18,9 +19,8 @@ namespace TaskManager
     {
         private readonly bool IsAllocateTask;
 
-        public const string RootFolder = "轻排参数表服务器";
         public readonly string Server;
-        public string Folder => $"\\\\{Server}{RootFolder}\\参数表\\";
+        public string Folder;
         private SampleEditDialog():base()
         {
             InitializeComponent();
@@ -38,6 +38,8 @@ namespace TaskManager
             Server = sql.ServerIP;
             if (!Server.EndsWith("\\"))
                 Server += "\\";
+
+            Folder=ServerConfig.Instance.ParamTableFolder+ "\\";
         }
 
         protected override void BaseEditDialog_Load(object sender, EventArgs e)
@@ -294,99 +296,111 @@ namespace TaskManager
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button1_Click(object sender, EventArgs e)
+        private void btnViewParamFile_Click(object sender, EventArgs e)
         {
-            if((GetControlByFieldName("VIN") is TitleCombox VIN))
-            {
+            //无法连接文件服务
+            if (ServerConfig.Instance.CanNotConnectBlobServer) {
+                MessageBox.Show(ServerConfig.Instance.CannNotConnectBlobServerTips, "提醒", MessageBoxButtons.OK);
+                return;
+            }
 
-                if (VIN.Value().ToString() == "")
+            if (!(GetControlByFieldName("VIN") is TitleCombox VIN)) {
+                return;
+            }
+            if (VIN.Value().ToString() == "")
+            {
+                MessageBox.Show("无附件");
+                return;
+            }
+            var name = VIN.Value().ToString()+".doc";              
+            var sourcePath = $"{Folder}\\{VIN.Value().ToString()}\\{name}";
+            if (!File.Exists(sourcePath))
+            {
+                MessageBox.Show($"参数表文件不存在", "提醒");
+                return;
+            }
+
+            //var fileDialog = new SaveFileDialog
+            //{
+            //    Title = $"下载 {name}",
+            //    FileName = name,
+            //    RestoreDirectory = true,
+            //    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)
+            //};
+            //fileDialog.ShowDialog();
+
+            //if (fileDialog.ShowDialog() != DialogResult.OK)
+            //    return;
+
+            //var targetPath = fileDialog.FileName;
+            //File.Copy(sourcePath, targetPath, true);
+            //MessageBox.Show("附件下载成功！");
+
+            m_word = new MSWord.Application();
+            Object filename = name;
+            Object filefullname = sourcePath;
+            Object confirmConversions = Type.Missing;
+            Object readOnly = Type.Missing;
+            Object addToRecentFiles = Type.Missing;
+            Object passwordDocument = Type.Missing;
+            Object passwordTemplate = Type.Missing;
+            Object revert = Type.Missing;
+            Object writePasswordDocument = Type.Missing;
+            Object writePasswordTemplate = Type.Missing;
+            Object format = Type.Missing;
+            Object encoding = Type.Missing;
+            Object visible = Type.Missing;
+            Object openConflictDocument = Type.Missing;
+            Object openAndRepair = Type.Missing;
+            Object documentDirection = Type.Missing;
+            Object noEncodingDialog = Type.Missing;
+
+            for (int i = 1; i <= m_word.Documents.Count; i++)
+            {
+                String str = m_word.Documents[i].FullName.ToString();
+                if (str == filefullname.ToString())
                 {
-                    MessageBox.Show("无附件");
+                    MessageBox.Show("请勿重复打开该文档");
                     return;
                 }
-
-                var name = VIN.Value().ToString()+".doc";              
-
-                var sourcePath = $"{Folder}\\{VIN.Value().ToString()}\\{name}";
-                //var fileDialog = new SaveFileDialog
-                //{
-                //    Title = $"下载 {name}",
-                //    FileName = name,
-                //    RestoreDirectory = true,
-                //    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)
-                //};
-                //fileDialog.ShowDialog();
-
-                //if (fileDialog.ShowDialog() != DialogResult.OK)
-                //    return;
-
-                //var targetPath = fileDialog.FileName;
-                //File.Copy(sourcePath, targetPath, true);
-                //MessageBox.Show("附件下载成功！");
-
-                m_word = new MSWord.Application();
-                Object filename = name;
-                Object filefullname = sourcePath;
-                Object confirmConversions = Type.Missing;
-                Object readOnly = Type.Missing;
-                Object addToRecentFiles = Type.Missing;
-                Object passwordDocument = Type.Missing;
-                Object passwordTemplate = Type.Missing;
-                Object revert = Type.Missing;
-                Object writePasswordDocument = Type.Missing;
-                Object writePasswordTemplate = Type.Missing;
-                Object format = Type.Missing;
-                Object encoding = Type.Missing;
-                Object visible = Type.Missing;
-                Object openConflictDocument = Type.Missing;
-                Object openAndRepair = Type.Missing;
-                Object documentDirection = Type.Missing;
-                Object noEncodingDialog = Type.Missing;
-
-                for (int i = 1; i <= m_word.Documents.Count; i++)
-                {
-                    String str = m_word.Documents[i].FullName.ToString();
-                    if (str == filefullname.ToString())
-                    {
-                        MessageBox.Show("请勿重复打开该文档");
-                        return;
-                    }
-                }
-                try
-                {
-                    m_word.Documents.Open(ref filefullname,
-                            ref confirmConversions, ref readOnly, ref addToRecentFiles,
-                            ref passwordDocument, ref passwordTemplate, ref revert,
-                            ref writePasswordDocument, ref writePasswordTemplate,
-                            ref format, ref encoding, ref visible, ref openConflictDocument,
-                            ref openAndRepair, ref documentDirection, ref noEncodingDialog
-                            );
-                    m_word.Visible = true;
-
-                    //MessageBox.Show(m_word.Documents.Count.ToString());
-                    //MessageBox.Show(m_word.Documents[1].FullName.ToString());
-                }
-                catch (System.Exception ex)
-                {
-                    MessageBox.Show("打开Word文档出错");
-                }
-
-
-
-
-
             }
-           // this.TopLevel = Bottom;
+            try
+            {
+                m_word.Documents.Open(ref filefullname,
+                        ref confirmConversions, ref readOnly, ref addToRecentFiles,
+                        ref passwordDocument, ref passwordTemplate, ref revert,
+                        ref writePasswordDocument, ref writePasswordTemplate,
+                        ref format, ref encoding, ref visible, ref openConflictDocument,
+                        ref openAndRepair, ref documentDirection, ref noEncodingDialog
+                        );
+                m_word.Visible = true;
+
+                //MessageBox.Show(m_word.Documents.Count.ToString());
+                //MessageBox.Show(m_word.Documents[1].FullName.ToString());
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("打开Word文档出错");
+            }
+
+        // this.TopLevel = Bottom;
         }
 
         public FreshCorrect freshcorrect;
         protected override void BtnUpdateClick(object sender, EventArgs e)
         {
-            string vin = view.GetRowCellValue(hand, "VIN").ToString();
-            var vin00 = GetControlByFieldName("VIN").Value().Trim();
+            //无法连接文件服务
+            if (ServerConfig.Instance.CanNotConnectBlobServer)
+            {
+                MessageBox.Show(ServerConfig.Instance.CannNotConnectBlobServerTips, "提醒", MessageBoxButtons.OK);
+                return;
+            }
+
+            string oriVin = view.GetRowCellValue(hand, "VIN").ToString();
+            string newVin = GetControlByFieldName("VIN").Value().Trim();
             if (btnUpdate.Text == "新增")
             {  
-                string sql = $"select count(*) from sampletable where VIN ='{vin00}'";
+                string sql = $"select count(*) from sampletable where VIN ='{newVin}'";
                 if (SqlHelper.GetList(sql).Rows[0][0].ToString() != "0")
                 {
                     MessageBox.Show("VIN已存在，无法继续录入");
@@ -395,9 +409,9 @@ namespace TaskManager
             }
             else
             {
-                if (vin != vin00)
+                if (oriVin != newVin)
                 {
-                    string sql = $"select count(*) from sampletable where VIN ='{vin00}'";
+                    string sql = $"select count(*) from sampletable where VIN ='{newVin}'";
                     if (SqlHelper.GetList(sql).Rows[0][0].ToString() != "0")
                     {
                         MessageBox.Show("VIN已存在，无法继续录入");
@@ -406,6 +420,7 @@ namespace TaskManager
                 }
             }
 
+            //同步至表单
             foreach (var control in controls)
             {
                 var fieldName = control.Value.Tag?.ToString();
@@ -418,54 +433,43 @@ namespace TaskManager
             view.FocusedRowHandle = hand + 1;
             view.FocusedRowHandle = hand; //防止出错
 
-            var dir = new DirectoryInfo($"{Folder}{vin}");
+            //创建样本的文件目录
+            var dir = new DirectoryInfo($"{Folder}{oriVin}");
             if (!dir.Exists)
                 dir.Create();
-
             if (btnUpdate.Text == "更新"){
                 //string samesql = $"select * from TestStatistic  where  SampleModel ='{GetControlByFieldName("VehicleModel").Value().ToString()}' and Producer='{GetControlByFieldName("SampleProducter").Value().ToString()}' and Carvin='{GetControlByFieldName("VIN").Value().ToString()}' and YNDirect='{GetControlByFieldName("DirectInjection").Value().ToString()}' and PowerType='{GetControlByFieldName("PowerType").Value().ToString()}' and EngineModel='{GetControlByFieldName("EngineModel").Value().ToString()}' and TransmissionType='{GetControlByFieldName("GearboxForm").Value().ToString()}' and EngineProduct='{GetControlByFieldName("EngineProducter").Value().ToString()}' and FuelLabel='{GetControlByFieldName("FuelLabel").Value().ToString()}' and FuelType='{GetControlByFieldName("FuelType").Value().ToString()}' and CarType='{GetControlByFieldName("CarType").Value().ToString()}'";
 
                 //DataTable samedata = SqlHelper.GetList(samesql);
                 //if (samedata.Rows.Count == 0)
                 //{
-                //更新共享文件夹名字
-               
-                        
-                if(vin!= GetControlByFieldName("VIN").Value().ToString())
-                {
-                    if (File.Exists($"{Folder}{vin}\\{vin}.doc"))
+                //更新共享文件夹名字                                     
+                if(oriVin!= newVin) { 
+                    if (File.Exists($"{Folder}{oriVin}\\{oriVin}.doc"))
                     {
-                        Microsoft.VisualBasic.FileIO.FileSystem.RenameFile($"{Folder}{vin}\\{vin}.doc", $"{GetControlByFieldName("VIN").Value().ToString()}.doc");
+                        Microsoft.VisualBasic.FileIO.FileSystem.RenameFile($"{Folder}{oriVin}\\{oriVin}.doc", $"{newVin}.doc");
                     }
                     
-                        Microsoft.VisualBasic.FileIO.FileSystem.RenameDirectory($"{Folder}{vin}", GetControlByFieldName("VIN").Value().ToString());
-                    string sql = $"update sampletable set VIN = '{GetControlByFieldName("VIN").Value().ToString()}' where VIN ='{vin}'";
+                    Microsoft.VisualBasic.FileIO.FileSystem.RenameDirectory($"{Folder}{oriVin}", newVin);
+                    string sql = $"update sampletable set VIN = '{newVin}' where VIN ='{oriVin}'";
                     SqlHelper.ExecuteNonquery(sql, CommandType.Text);
                 }
-
-                        if (MessageBox.Show("是否将改动的样品信息同步到试验统计对应的信息？", " 提示", MessageBoxButtons.OKCancel) == DialogResult.OK)
-                        {
-                        string sql = $"update TestStatistic  set SampleModel ='{GetControlByFieldName("VehicleModel").Value().ToString()}',Producer='{GetControlByFieldName("SampleProducter").Value().ToString()}',Carvin='{GetControlByFieldName("VIN").Value().ToString()}',YNDirect='{GetControlByFieldName("DirectInjection").Value().ToString()}',PowerType='{GetControlByFieldName("PowerType").Value().ToString()}',EngineModel='{GetControlByFieldName("EngineModel").Value().ToString()}',TransmissionType='{GetControlByFieldName("GearboxForm").Value().ToString()}',EngineProduct='{GetControlByFieldName("EngineProducter").Value().ToString()}',FuelLabel='{GetControlByFieldName("FuelLabel").Value().ToString()}',FuelType='{GetControlByFieldName("FuelType").Value().ToString()}',CarType='{GetControlByFieldName("CarType").Value().ToString()}' where Carvin='{vin}'";
-                        SqlHelper.ExecuteNonquery(sql, System.Data.CommandType.Text);
-                        MessageBox.Show("同步成功");
-                    }
+                //TODO:该功能于2024-04废除掉
+                //if (MessageBox.Show("是否将改动的样品信息同步到试验统计对应的信息？", " 提示", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                //{
+                //    string sql = $"update TestStatistic  set SampleModel ='{GetControlByFieldName("VehicleModel").Value().ToString()}',Producer='{GetControlByFieldName("SampleProducter").Value().ToString()}',Carvin='{GetControlByFieldName("VIN").Value().ToString()}',YNDirect='{GetControlByFieldName("DirectInjection").Value().ToString()}',PowerType='{GetControlByFieldName("PowerType").Value().ToString()}',EngineModel='{GetControlByFieldName("EngineModel").Value().ToString()}',TransmissionType='{GetControlByFieldName("GearboxForm").Value().ToString()}',EngineProduct='{GetControlByFieldName("EngineProducter").Value().ToString()}',FuelLabel='{GetControlByFieldName("FuelLabel").Value().ToString()}',FuelType='{GetControlByFieldName("FuelType").Value().ToString()}',CarType='{GetControlByFieldName("CarType").Value().ToString()}' where Carvin='{oriVin}'";
+                //    SqlHelper.ExecuteNonquery(sql, System.Data.CommandType.Text);
+                //    MessageBox.Show("同步成功");
+                // }
                 //}
 
                 //if (MessageBox.Show("是否校验样品信息？", " 提示", MessageBoxButtons.OKCancel) == DialogResult.OK)
                 //{
                 //    freshcorrect();
                 //}
-
-
             }
-            
-
-           
-
             DialogResult = DialogResult.OK;
             Close();
-
-
         }
 
         private void SampleEditDialog_Load(object sender, EventArgs e)
@@ -476,17 +480,25 @@ namespace TaskManager
             
         }
 
-        private void button2_Click(object sender, EventArgs e)
+      
+        private void btnViewFile_Click(object sender, EventArgs e)
         {
+            //无法连接文件服务
+            if (ServerConfig.Instance.CanNotConnectBlobServer)
+            {
+                MessageBox.Show(ServerConfig.Instance.CannNotConnectBlobServerTips, "提醒", MessageBoxButtons.OK);
+                return;
+            }
+
             if ((GetControlByFieldName("VIN") is TitleCombox VIN))
             {
-                if (Directory.Exists($"{Folder}{VIN.Value().ToString()}"))
-                    System.Diagnostics.Process.Start("Explorer.exe", $"{Folder}{VIN.Value().ToString()}");
+                string fileDirectory = $"{Folder}{VIN.Value().ToString()}";
+                if (Directory.Exists(fileDirectory))
+                    System.Diagnostics.Process.Start("Explorer.exe", fileDirectory);
                 else
-                    MessageBox.Show($"{Folder}文件夹不存在", "提醒");
+                    MessageBox.Show($"附件目录‘{fileDirectory}’不存在", "提醒");
 
             }
-               
         }
     }
 }

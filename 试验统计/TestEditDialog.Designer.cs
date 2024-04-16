@@ -57,8 +57,8 @@ namespace TaskManager
             this.titleCombox4 = new ExpertLib.Controls.TitleCombox();
             this.dateEdit2 = new ExpertLib.Controls.TitleEditor.DateEdit();
             this.dateEdit1 = new ExpertLib.Controls.TitleEditor.DateEdit();
-            this.titleCombox10 = new ExpertLib.Controls.TitleCombox();
-            this.titleCombox9 = new ExpertLib.Controls.TitleCombox();
+            this.titleCombox10 = new ExpertLib.Controls.RequiredTitleCombox();
+            this.titleCombox9 = new ExpertLib.Controls.RequiredTitleCombox();
             this.titleCombox7 = new ExpertLib.Controls.TitleCombox();
             this.titleCombox11 = new ExpertLib.Controls.TitleCombox();
             this.label5 = new System.Windows.Forms.Label();
@@ -69,7 +69,7 @@ namespace TaskManager
             this.titleCombox3 = new ExpertLib.Controls.TitleCombox();
             this.label4 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.titleCombox16 = new ExpertLib.Controls.TitleCombox();
+            this.titleCombox16 = new ExpertLib.Controls.RequiredTitleCombox();
             this.titleCombox15 = new ExpertLib.Controls.TitleCombox();
             this.titleCombox6 = new ExpertLib.Controls.TitleCombox();
             this.titleCombox14 = new ExpertLib.Controls.TitleCombox();

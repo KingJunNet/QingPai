@@ -1,5 +1,5 @@
 ﻿using ExpertLib.Controls;
-
+using System.Drawing;
 
 namespace TaskManager
 {
@@ -40,7 +40,7 @@ namespace TaskManager
             this.titleComboxUser = new ExpertLib.Controls.TitleCombox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.titleComboxVin = new ExpertLib.Controls.TitleCombox();
+            this.titleComboxVin = new ExpertLib.Controls.RequiredTitleCombox();
             this.titleComboxSampleType = new ExpertLib.Controls.TitleCombox();
             this.titleComboxCarType = new ExpertLib.Controls.TitleCombox();
             this.titleComboxCarModel = new ExpertLib.Controls.TitleCombox();
@@ -54,8 +54,8 @@ namespace TaskManager
             this.titleComboxFuelType = new ExpertLib.Controls.TitleCombox();
             this.titleComboxRoz = new ExpertLib.Controls.TitleCombox();
             this.label7 = new System.Windows.Forms.Label();
-            this.titleComboxItemType = new ExpertLib.Controls.TitleCombox();
-            this.titleComboxItemBrief = new ExpertLib.Controls.TitleCombox();
+            this.titleComboxItemType = new ExpertLib.Controls.RequiredTitleCombox();
+            this.titleComboxItemBrief = new ExpertLib.Controls.RequiredTitleCombox();
             this.titleComboxBeginTime = new ExpertLib.Controls.TitleEditor.DateEdit();
             this.titleComboxStandard = new ExpertLib.Controls.TitleCombox();
             this.titleComboxItemRemark = new ExpertLib.Controls.TitleCombox();
@@ -415,7 +415,7 @@ namespace TaskManager
             this.titleComboxItemBrief.Size = new System.Drawing.Size(420, 41);
             this.titleComboxItemBrief.TabIndex = 102;
             this.titleComboxItemBrief.Title = "项目简称";
-            this.titleComboxItemBrief.ViewModels = null;
+            this.titleComboxItemBrief.ViewModels = null;           
             // 
             // titleComboxBeginTime
             // 

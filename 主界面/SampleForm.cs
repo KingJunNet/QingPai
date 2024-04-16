@@ -23,10 +23,9 @@ namespace TaskManager
 {
     public partial class SampleForm : BaseForm
     {
-
-        public const string RootFolder = "轻排参数表服务器";
         public readonly string Server;
-        public string Folder => $"\\\\{Server}\\{RootFolder}\\参数表";
+
+        public string Folder;
         public SampleForm()
         {
             InitializeComponent();
@@ -41,6 +40,8 @@ namespace TaskManager
             if (!Server.EndsWith("\\"))
                 Server += "\\";
 
+            //文件系统服务
+            Folder = ServerConfig.Instance.ParamTableFolder;
             this._control.afterSavedHandle = new TableControl.AfterSavedEvent(handleAfterSaved);
         }
 
@@ -434,7 +435,7 @@ namespace TaskManager
                 {
                     if (MessageBox.Show("是否校验样品信息？", " 提示", MessageBoxButtons.OKCancel) == DialogResult.OK)
                     {
-                        barButtonItem14_ItemClick(null, null);
+                        btnValidate_ItemClick(null, null);
                     }
                 }
                
@@ -451,9 +452,7 @@ namespace TaskManager
         /// </summary>
         private void Website_freshsample()
         {
-            barButtonItem14_ItemClick(null, null);
-
-
+            btnValidate_ItemClick(null, null);
         }
 
         protected override DialogResult OpenReplaceForm(GridView view, int hand, List<DataField> fields)
@@ -1754,7 +1753,13 @@ namespace TaskManager
         /// <param name="e"></param>
         private void barButtonItem9_ItemClick(object sender, ItemClickEventArgs e)
         {
-          
+            //无法连接文件服务
+            if (ServerConfig.Instance.CanNotConnectBlobServer)
+            {
+                MessageBox.Show(ServerConfig.Instance.CannNotConnectBlobServerTips, "提醒", MessageBoxButtons.OK);
+                return;
+            }
+
             var fileDialog = new OpenFileDialog
             {
                 Multiselect = true,
@@ -1771,10 +1776,14 @@ namespace TaskManager
 
         private void barButtonItem7_ItemClick(object sender, ItemClickEventArgs e)
         {
+            //无法连接文件服务
+            if (ServerConfig.Instance.CanNotConnectBlobServer)
+            {
+                MessageBox.Show(ServerConfig.Instance.CannNotConnectBlobServerTips, "提醒", MessageBoxButtons.OK);
+                return;
+            }
 
-
-
-           // string filename = AppDomain.CurrentDomain.BaseDirectory + "样品参数表\\1982";
+            // string filename = AppDomain.CurrentDomain.BaseDirectory + "样品参数表\\1982";
             var fileDialog = new OpenFileDialog
             {
                 Multiselect = true,
@@ -1788,6 +1797,13 @@ namespace TaskManager
 
         private void barButtonItem10_ItemClick(object sender, ItemClickEventArgs e)
         {
+            //无法连接文件服务
+            if (ServerConfig.Instance.CanNotConnectBlobServer)
+            {
+                MessageBox.Show(ServerConfig.Instance.CannNotConnectBlobServerTips, "提醒", MessageBoxButtons.OK);
+                return;
+            }
+
             //string filename = AppDomain.CurrentDomain.BaseDirectory + "样品参数表\\1979";
             var fileDialog = new OpenFileDialog
             {
@@ -1921,8 +1937,15 @@ namespace TaskManager
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void barButtonItem14_ItemClick(object sender, ItemClickEventArgs e)
+        private void btnValidate_ItemClick(object sender, ItemClickEventArgs e)
         {
+            //无法连接文件服务
+            if (ServerConfig.Instance.CanNotConnectBlobServer)
+            {
+                MessageBox.Show(ServerConfig.Instance.CannNotConnectBlobServerTips, "提醒", MessageBoxButtons.OK);
+                return;
+            }
+
             if (_control._view.SelectedRowsCount == 1)
             {
                 int row = Convert.ToInt32(_control._view.GetSelectedRows()[0]);
@@ -1932,24 +1955,25 @@ namespace TaskManager
                 var name = vin + ".doc";
 
                 var sourcePath = $"{Folder}\\{vin}\\{name}";
-                if (Consistent.Contains("83") && File.Exists(sourcePath))
+                if (!File.Exists(sourcePath)) {
+                    MessageBox.Show("参数信息表不存在", "提醒", MessageBoxButtons.OK);
+                    return;
+                }
+                if (Consistent.Contains("83"))
                 {
-                    
                     CheckWordData83(sourcePath, vin, row);
-                }else if (Consistent.Contains("82") && File.Exists(sourcePath))
+                }
+                else if (Consistent.Contains("82"))
                 {
                     CheckWordData82(sourcePath, vin, row);
                 }
-                else if (Consistent.Contains("79") && File.Exists(sourcePath))
+                else if (Consistent.Contains("79"))
                 {
                     CheckWordData79(sourcePath, vin, row);
                 }
-                else
-                {
-                    MessageBox.Show("参数信息表不存在");
+                else {
+                    MessageBox.Show("无校验标识", "提醒", MessageBoxButtons.OK);
                 }
-                
-
             }
             else
             {
@@ -1962,8 +1986,15 @@ namespace TaskManager
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void barButtonItem15_ItemClick(object sender, ItemClickEventArgs e)
+        private void btnUploadFiles_ItemClick(object sender, ItemClickEventArgs e)
         {
+            //无法连接文件服务
+            if (ServerConfig.Instance.CanNotConnectBlobServer)
+            {
+                MessageBox.Show(ServerConfig.Instance.CannNotConnectBlobServerTips, "提醒", MessageBoxButtons.OK);
+                return;
+            }
+
             if (_control._view.SelectedRowsCount == 1)
             {
                 var fileDialog = new OpenFileDialog

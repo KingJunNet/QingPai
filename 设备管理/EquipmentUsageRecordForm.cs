@@ -37,7 +37,32 @@ namespace TaskManager
                 return;
             this.isNewCopyFromCurItem = true;
             _control._view.RowStyle += ViewOnRowStyle;
+            this._control.saveDataSourceEvent = new TableControl.SaveDataSourceEvent(handleBeforeSaveDataSource);
             this.Controls.Add(maskLayer);
+        }
+
+        private DataTable handleBeforeSaveDataSource(DataTable updateTable)
+        {
+            DataRowCollection rows = updateTable.Rows;
+
+            DateTime nowTime = DateTime.Now;
+            string author = FormSignIn.CurrentUser.Name;
+            for (int index = 0; index < rows.Count; index++)
+            {
+                DataRow row = rows[index];
+                if (row.RowState == DataRowState.Deleted)
+                {
+                    continue;
+                }
+                //新增则补充创建人和创建时间
+                if (row.RowState == DataRowState.Added) {
+                    row["CreateUser"] = author;
+                    row["CreateTime"] = nowTime;
+                }
+                row["UpdateTime"] = nowTime;
+            }
+
+            return updateTable;
         }
 
         protected override void setTimeSpanCondition()
@@ -257,13 +282,41 @@ namespace TaskManager
         {
             if (e.RowHandle >= 0)
             {
+                //手动的设备使用记录
                 string vin = _control._view.GetRowCellValue(e.RowHandle, "CarVin")?.ToString().Trim();
                 if (string.IsNullOrWhiteSpace(vin))
                 {
                     e.Appearance.BackColor = Color.FromArgb(199, 237, 204);
                 }
+
+                //导出提示
+                this.setRowStyleByExportMark(e);              
+            }
+        }
+
+        private void setRowStyleByExportMark(RowStyleEventArgs e) {
+            object exportTimeFileld = _control._view.GetRowCellValue(e.RowHandle, "ExportTime");
+            object updateTimeFileld = _control._view.GetRowCellValue(e.RowHandle, "UpdateTime");
+            //未导出过
+            if (exportTimeFileld == null || exportTimeFileld is DBNull)
+            {
+                e.Appearance.BackColor = Color.Orange;
+                return;
             }
 
+            //未有更新时间
+            if (updateTimeFileld == null || updateTimeFileld is DBNull) {
+                return;
+            }
+
+            //更新时间大于导出时间，则高亮显示
+            DateTime exportTime = (DateTime)exportTimeFileld;
+            DateTime updateTime = (DateTime)updateTimeFileld;
+            if (updateTime.Ticks > exportTime.Ticks)
+            {
+                e.Appearance.BackColor = Color.Orange;
+            }          
+            
         }
 
         protected override DialogResult OpenEditForm(GridView view, int hand, List<DataField> fields)
@@ -293,11 +346,18 @@ namespace TaskManager
         private EquipmentUsageRecordEntity extractEquipmentUsageRecordEntityByRowHand(GridView view, int hand)
         {
             EquipmentUsageRecordEntity entity = new EquipmentUsageRecordEntity();
-            entity.EquipmentCode = view.GetRowCellValue(hand, "EquipmentCode").ToString();
-            entity.EquipmentName = view.GetRowCellValue(hand, "EquipmentName").ToString();
-            entity.EquipmentType = view.GetRowCellValue(hand, "EquipmentType").ToString();
-            entity.Purpose = view.GetRowCellValue(hand, "Purpose").ToString();
-            entity.ItemBrief = view.GetRowCellValue(hand, "ItemBrief").ToString();
+
+            try
+            {
+                entity.EquipmentCode = view.GetRowCellValue(hand, "EquipmentCode").ToString();
+                entity.EquipmentName = view.GetRowCellValue(hand, "EquipmentName").ToString();
+                entity.EquipmentType = view.GetRowCellValue(hand, "EquipmentType").ToString();
+                entity.Purpose = view.GetRowCellValue(hand, "Purpose").ToString();
+                entity.ItemBrief = view.GetRowCellValue(hand, "ItemBrief").ToString();
+            }
+            catch (Exception ex) {
+                return null;
+            }
 
             return entity;
         }

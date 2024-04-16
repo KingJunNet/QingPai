@@ -276,6 +276,8 @@ namespace TaskManager
 
             titleComboxVin.SetTextUpdate(VinTextUpdate);
             titleComboxEquipment.SetTextUpdate(EquipmentTextUpdate);
+
+            //titleComboxVin.SetNotContentBackColor(Color.Red);
         }
 
         private void initUsingEquipmentListView()
