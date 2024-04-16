@@ -29,7 +29,8 @@ namespace TaskManager.domain.valueobject
             "Producer",
             "CarVin",
             "TestState",
-            "SecurityLevel" };
+            "SecurityLevel",
+             "UpdateTime"};
 
         /// <summary>
         /// 设备用途
@@ -96,6 +97,11 @@ namespace TaskManager.domain.valueobject
         /// </summary>
         public string SecurityLevel { get; set; }
 
+        /// <summary>
+        /// 更新时间
+        /// </summary>
+        public DateTime UpdateTime { get; set; }
+
         public List<string> buildUpdateValueConditions()
         {
             List<string> results = new List<string>();
@@ -126,6 +132,9 @@ namespace TaskManager.domain.valueobject
 
             this.buildPurpose();
 
+            //修改更新时间
+            this.UpdateTime = testStatisticEntity.UpdateTime;
+
             return this;
         }
 
@@ -153,7 +162,8 @@ namespace TaskManager.domain.valueobject
             new SqlParameter("Producer",DbHelper.ValueOrDBNullIfNull(this.Producer)),
             new SqlParameter("CarVin",DbHelper.ValueOrDBNullIfNull(this.CarVin)),
             new SqlParameter("TestState",DbHelper.ValueOrDBNullIfNull(this.TestState)),
-            new SqlParameter("SecurityLevel",DbHelper.ValueOrDBNullIfNull(this.SecurityLevel))
+            new SqlParameter("SecurityLevel",DbHelper.ValueOrDBNullIfNull(this.SecurityLevel)),
+              new SqlParameter("UpdateTime",DbHelper.ValueOrDBNullIfNull(this.UpdateTime))
                 };
 
             return parameters;

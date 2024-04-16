@@ -124,6 +124,27 @@ namespace TaskManager.infrastructure.db
         }
 
         /// <summary>
+        /// 更新指定记录的导出时间
+        /// </summary>
+        /// <param name="ids">id集合</param>
+        /// <param name="exportTime">导出时间</param>
+        /// <returns>void</returns>
+        public void updateExportTime(List<int> ids, DateTime exportTime) {
+            if (Collections.isEmpty(ids))
+            {
+                return;
+            }
+
+            string sqlText = $"UPDATE EquipmentUsageRecordTable SET ExportTime=@ExportTime where ID in {DbHelper.buildInCondition(ids)}";
+            SqlParameter[] sqlParameters = new[] {
+                    new SqlParameter("ExportTime", DbHelper.ValueOrDBNullIfNull(exportTime))
+                };
+            dbProvider.ExecuteNonQuery(sqlText, sqlParameters);
+        }
+
+     
+
+        /// <summary>
         /// 删除指定测试任务的设备使用记录
         /// </summary>
         /// <param name="testTaskId">实验任务Id</param>

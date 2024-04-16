@@ -26,5 +26,12 @@ namespace TaskManager.domain.repository
         /// <param name="vin">vin</param>
         /// <returns>样本简要信息</returns>
         SampleBrief selectLatestSampleVin(string vin);
+
+        /// <summary>
+        /// 查询指定的id的试验部分属性
+        /// </summary>
+        /// <param name="ids">id集合</param>
+        /// <returns>设备使用记录测试任务属性集合</returns>
+        List<EquipmentUsageRecordTestPart> selectPartsByIds(List<int> ids);
     }
 }

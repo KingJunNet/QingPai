@@ -17,6 +17,7 @@ public class DataControl
 
     public string ServerIP;
     public string IniPath;
+    public string BlobServer;
 
     #region API函数声明
 
@@ -34,8 +35,10 @@ public class DataControl
         IniPath = AppDomain.CurrentDomain.BaseDirectory + "constring.ini";
         var server = new StringBuilder(1024);
         var pwd = new StringBuilder(1024);
+        var blobServer = new StringBuilder(1024);
         GetPrivateProfileString("a", "server ", "192.168.1.35", server, 1024, IniPath);
         GetPrivateProfileString("a", "pwd ", "7100196", pwd, 1024, IniPath);
+        GetPrivateProfileString("a", "blobServer ", "10.12.48.30", blobServer, 1024, IniPath);
         if (server.ToString().Contains(","))
         {
             ServerIP = server.ToString().Split(',')[0];
@@ -44,6 +47,8 @@ public class DataControl
         {
             ServerIP = server.ToString();
         }
+        BlobServer = blobServer.ToString();
+
         
         strCon = $"server={server};database=NewTaskManager;uid=sa;pwd={pwd};Pooling=true; max pool size=32765;min pool size=0;Asynchronous Processing=true;";
       

@@ -10,11 +10,17 @@ using TaskManager.controller;
 using TaskManager.domain.entity;
 using NPOI.XWPF.UserModel;
 using NPOI.OpenXmlFormats.Wordprocessing;
+using TaskManager.infrastructure.db;
+using TaskManager.domain.repository;
 
 namespace TaskManager.domain.service
 {
     class EquipmentUasageRecordExportHanlderPlus
     {
+        private IEquipmentUsageRecordRepository equipmentUsageRecordRepository;
+
+        private DateTime workTime;
+
         private MaskLayer maskLayer;
         private List<EquipmentUsageRecordEntity> equipmentUsageRecords;
 
@@ -35,7 +41,11 @@ namespace TaskManager.domain.service
         /// </summary>
         public string FileBasePath { get; set; }
 
-        public EquipmentUasageRecordExportHanlderPlus(List<EquipmentUsageRecordEntity> equipmentUsageRecords, MaskLayer lMaskLayer1)
+        public EquipmentUasageRecordExportHanlderPlus() {
+            this.equipmentUsageRecordRepository = new EquipmentUsageRecordRepository();
+        }
+
+        public EquipmentUasageRecordExportHanlderPlus(List<EquipmentUsageRecordEntity> equipmentUsageRecords, MaskLayer lMaskLayer1):this()
         {
             this.equipmentUsageRecords = equipmentUsageRecords;
             this.maskLayer = lMaskLayer1;
@@ -43,6 +53,7 @@ namespace TaskManager.domain.service
 
         public void work()
         {
+            this.workTime = DateTime.Now;
             this.generateWordFileUnits = new List<GenerateWordFileUnit>();
             string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
             this.FileBasePath = Path.Combine(appDirectory, BASE_DIRECTORY_NAME);
@@ -63,6 +74,7 @@ namespace TaskManager.domain.service
                     return;
                 }
                 this.generateUsageRecordWordFiles(this.generateWordFileUnits[i]);
+                this.setUsageRecordsExportTime(this.generateWordFileUnits[i].equipmentUsageRecords);
                 maskLayer.SetProgressBarValue(i + 1);
             }
         }
@@ -116,6 +128,11 @@ namespace TaskManager.domain.service
                 unit.equipmentName,
                 unit.equipmentType,
                 unit.equipmentUsageRecords);
+        }
+
+        private void setUsageRecordsExportTime(List<EquipmentUsageRecordEntity> equipmentUsageRecords) {
+            List<int> ids= equipmentUsageRecords.Select(item => item.ID).ToList();
+            this.equipmentUsageRecordRepository.updateExportTime(ids,this.workTime);
         }
 
         private void generateUsageRecordWordFilesBack(string personDirectory,

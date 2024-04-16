@@ -185,7 +185,11 @@ namespace TaskManager
                       "ItemBrief",                    
                        "SampleModel",
                        "Producer",
-                       "CarVin"
+                       "CarVin",
+                       "ExportTime",
+                       "UpdateTime",
+                       "CreateUser",
+                       "CreateTime",
                        };
 
                 Add = true;

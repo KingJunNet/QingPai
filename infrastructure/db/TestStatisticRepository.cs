@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TaskManager.common.utils;
 using TaskManager.domain.entity;
 using TaskManager.domain.repository;
+using TaskManager.domain.service;
 using TaskManager.domain.valueobject;
 
 namespace TaskManager.infrastructure.db
@@ -153,6 +154,31 @@ namespace TaskManager.infrastructure.db
             return result;
         }
 
+        /// <summary>
+        /// 查询指定的id的试验部分属性
+        /// </summary>
+        /// <param name="ids">id集合</param>
+        /// <returns>设备使用记录测试任务属性集合</returns>
+        public List<EquipmentUsageRecordTestPart> selectPartsByIds(List<int> ids) {
+            List<EquipmentUsageRecordTestPart> results = new List<EquipmentUsageRecordTestPart>();
+
+            string sql = $"SELECT ID,department,LocationNumber,Registrant,ItemBrief,TestStartDate,TestEndDate,SampleModel,Producer,Carvin,Finishstate,Confidentiality " +
+                $" FROM TestStatistic " +
+                $" WHERE ID in {DbHelper.buildInCondition(ids)}";
+            SqlParameter[] sqlParameters = new SqlParameter[0];
+            var dt = this.dbProvider.ExecuteQuery(sql, sqlParameters).Tables[0];
+            if (dt.Rows.Count == 0)
+            {
+                return results;
+            }
+            foreach (DataRow row in dt.Rows)
+            {
+                results.Add(DataTranslator.dataRow2EquipmentUsageRecordTestPart(row));
+            }
+
+            return results;
+        }
+
         private SampleBrief dataRow2SampleBrief(DataRow row)
         {
             SampleBrief sampleBrief = new SampleBrief();
@@ -172,5 +198,7 @@ namespace TaskManager.infrastructure.db
 
             return sampleBrief;
         }
+
+        
     }
 }

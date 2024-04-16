@@ -39,7 +39,12 @@ namespace TaskManager.domain.entity
             "CarVin",
             "TestState",
             "SecurityLevel",
-             "Remark"
+             "Remark",
+
+              "ExportTime",
+              "CreateUser",
+             "CreateTime",
+             "UpdateTime"
     };
 
         public EquipmentUsageRecordEntity state(int id,string preUseState, string useState,
@@ -97,6 +102,21 @@ namespace TaskManager.domain.entity
                 Remark = ConstHolder.SECURITY_LEVEL_A_REAMRK_TEXT;
             }
             this.buildPurpose();
+
+            //补充维护信息
+            this.CreateUser = testStatisticEntity.CreateUser;
+            this.CreateTime = testStatisticEntity.CreateTime;
+            this.UpdateTime = testStatisticEntity.UpdateTime;
+
+            return this;
+        }
+
+        public EquipmentUsageRecordEntity fixFromTestUpdated(TestStatisticEntity testStatisticEntity)
+        {
+            //补充维护信息
+            this.CreateUser = testStatisticEntity.Registrant;
+            this.CreateTime = testStatisticEntity.UpdateTime;
+            this.UpdateTime = testStatisticEntity.UpdateTime;
 
             return this;
         }
@@ -226,6 +246,27 @@ namespace TaskManager.domain.entity
         /// </summary>
         public string Remark { get; set; }
 
+        /// <summary>
+        /// 导出时间
+        /// </summary>
+        public DateTime ExportTime { get; set; }
+
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        public string CreateUser { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        /// 更新时间
+        /// </summary>
+        public DateTime UpdateTime { get; set; }
+
+
         override
         protected string dataTableName()
         {
@@ -270,7 +311,12 @@ namespace TaskManager.domain.entity
             new SqlParameter("CarVin",DbHelper.ValueOrDBNullIfNull(this.CarVin)),
             new SqlParameter("TestState",DbHelper.ValueOrDBNullIfNull(this.TestState)),
              new SqlParameter("SecurityLevel",DbHelper.ValueOrDBNullIfNull(this.SecurityLevel)),
-             new SqlParameter("Remark", DbHelper.ValueOrDBNullIfNull(this.Remark))
+             new SqlParameter("Remark", DbHelper.ValueOrDBNullIfNull(this.Remark)),
+
+              new SqlParameter("ExportTime", DbHelper.ValueOrDBNullIfNull(this.ExportTime)),
+              new SqlParameter("CreateUser", DbHelper.ValueOrDBNullIfNull(this.CreateUser)),
+              new SqlParameter("CreateTime", DbHelper.ValueOrDBNullIfNull(this.CreateTime)),
+              new SqlParameter("UpdateTime", DbHelper.ValueOrDBNullIfNull(this.UpdateTime)),
                 };
 
             return parameters;

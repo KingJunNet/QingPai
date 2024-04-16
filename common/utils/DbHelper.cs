@@ -51,5 +51,11 @@ namespace TaskManager.common.utils
 
             return DateTime.MinValue;
         }
+
+        public static string buildInCondition(List<int> values)
+        {
+            string condition = $"({string.Join(",", values)})";
+            return condition;
+        }
     }
 }

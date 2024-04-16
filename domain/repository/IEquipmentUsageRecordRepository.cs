@@ -61,5 +61,13 @@ namespace TaskManager.domain.repository
         /// <param name="needUpdateRemarkRecords">需要更新备注信息的记录</param>
         /// <returns>void</returns>
         void updateRemark(List<EquipmentUsageRecordLite> needUpdateRemarkRecords);
+
+        /// <summary>
+        /// 更新指定记录的导出时间
+        /// </summary>
+        /// <param name="ids">id集合</param>
+        /// <param name="exportTime">导出时间</param>
+        /// <returns>void</returns>
+        void updateExportTime(List<int> ids,DateTime exportTime);
     }
 }
