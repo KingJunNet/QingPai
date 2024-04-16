@@ -18,6 +18,7 @@ using IWshRuntimeLibrary;
 using System.Text.RegularExpressions;
 using TaskManager.domain.valueobject;
 using TaskManager.controller;
+using TaskManager.common.utils;
 
 namespace TaskManager
 {
@@ -27,9 +28,8 @@ namespace TaskManager
     //4、首次进入判断更新
     public partial class Form1 : DevExpress.XtraBars.Ribbon.RibbonForm
     {
-        //public static double VERSION = 20230202.01;
-        public static double VERSION = 20240122.02;
-        public static double NEWEST_Version = 202004028.01;
+        public static double curVersion = 2024.0101;
+        public static double newestVersion = 2024.0101;
 
 
         public const string RootFolder = "轻排参数表服务器";
@@ -91,6 +91,13 @@ namespace TaskManager
 
         private void Form1_Shown(object sender, EventArgs e)
         {
+            string userRole = FormSignIn.CurrentUser.Role;
+            if (!userRole.Equals(Role.超级管理员.ToString()))
+            {
+                btnSubmmitExe.Visible = false;
+                btnSubmmitCode.Visible = false;
+                btnDownloadCode.Visible = false;
+            }
             ShowUserInfo();
             ShowInstallPath();
 
@@ -101,7 +108,6 @@ namespace TaskManager
             {
                 MessageBox.Show("当前密码为初始密码，请及时修改！");
             }
-
         }
 
         public static void ShowWaitForm()
@@ -139,7 +145,7 @@ namespace TaskManager
             lblUser.Text = FormSignIn.CurrentUser.Describe;
             lblDepartment.Text = FormSignIn.CurrentUser.Department;
             lblRole.Text = FormSignIn.CurrentUser.Role;
-            lblVersion.Caption = "版本号:" + VERSION;
+            lblVersion.Caption = "版本号:" + curVersion;
             //lblVersion.Caption = "版本号:20220428.01";
             lblServer.Caption = "服务器:" + Sql.ServerIP;
         }
@@ -658,9 +664,9 @@ namespace TaskManager
 
             var info = new FileInfo(exePath);
 
-            NEWEST_Version = Sql.GetExpr1("select top 1 version as Expr1 from Version", 1000.00);
+            newestVersion = Sql.GetExpr1("select top 1 version as Expr1 from Version", 1000.00);
             var count = Sql.GetExpr1("select count(*) as Expr1 from FileTable where category='安装包'", 0);
-            if (!(NEWEST_Version > VERSION) || count <= 0) return;
+            if (!(newestVersion > curVersion) || count <= 0) return;
             //if (!(NEWEST_Version > VERSION)) return;
             YNinstall = true;
             //if (MessageBox.Show("更新方法：点击确定进行更新" +
@@ -675,7 +681,7 @@ namespace TaskManager
             //    YNinstall = false;
             //}
             MessageBox.Show("更新方法：点击确定进行更新" +
-                                "\n版本号：" + NEWEST_Version, "有新版本请更新");
+                                "\n版本号：" + newestVersion, "有新版本请更新");
             YNinstall = false;
             //var dialog = new FolderBrowserDialog { Description = "请选择下载目标文件夹" };
             //if (dialog.ShowDialog() != DialogResult.OK) return;
@@ -731,71 +737,22 @@ namespace TaskManager
         /// </summary>
         private void ShowInstallPath()
         {
-            var exePath = AppDomain.CurrentDomain.BaseDirectory;
-
-            //DirectoryInfo info0 = new DirectoryInfo(Application.StartupPath);
-            //string debugpath = info0.Parent.FullName;
-
-            var info = new FileInfo(exePath);
-
-            NEWEST_Version = Sql.GetExpr1("select top 1 version as Expr1 from Version", 1000.00);
-            var count = Sql.GetExpr1("select count(*) as Expr1 from FileTable where category='安装包'", 0);
-            if (!(NEWEST_Version > VERSION) || count <= 0) return;
-            //if (!(NEWEST_Version > VERSION)) return;
-            YNinstall = true;
-            //if (MessageBox.Show("更新方法：点击确定进行更新" +
-            //                    "\n版本号：" + NEWEST_Version +               
-            //                    "\n点击取消忽略本次更新",
-            //        "有新版本请更新", MessageBoxButtons.OKCancel) != DialogResult.OK) {                
-            //    YNinstall = false;
-            //    return;
-            //}
-            //else
-            //{
-            //    YNinstall = false;
-            //}
-            MessageBox.Show("更新方法：点击确定进行更新" +
-                                "\n版本号：" + NEWEST_Version, "有新版本请更新");
-            YNinstall = false;
+            //是否需要下载
+            if (!this.isNeedUpdateApp()) {
+                return;
+            }
             
-
-
-
-            //try
-            //{
-            //    Process.Start(Folder);
-            //}
-            //catch
-            //{
-            //    MessageBox.Show("无法访问安装文件，请确认此电脑是否正常访问服务器共享文件夹！");
-            //}
-            //finally
-            //{
-
-            //    System.Environment.Exit(0);
-            //}
-
-
+            MessageBox.Show("更新方法：点击确定进行更新" +
+                                "\n版本号：" + newestVersion, "有新版本请更新");
             try
             {
-                var dialog = new FolderBrowserDialog { Description = "请选择下载目标文件夹" };
-                if (dialog.ShowDialog() != DialogResult.OK) return;
-                ShowWaitForm();
-
-                var strsql = "select top 1 [file] as Expr1,name as Expr2 from FileTable where category='安装包'";
-                var dt = Sql.ExecuteQuery(strsql).Tables[0];
-                if (dt.Rows.Count == 0) return;
-
-                var picBytes = (byte[])dt.Rows[0]["Expr1"];
-                //var stream0 = new FileStream(fileDialog.FileName, FileMode.Open);
-                //var picBytes = stream0.StreamToBytes();
-
-                string appFilePath = dialog.SelectedPath + "\\TaskMangerSetup.msi";
-                using (var stream = new FileStream(appFilePath, FileMode.Create))
+                FileDownloadResult result = this.downloadFile("安装包");
+                if (!result.IsSuccess)
                 {
-                    stream.Write(picBytes, 0, picBytes.Length);
+                    MessageBox.Show($"更新包下载失败,失败原因：{result.ErrorMessage}", "错误信息", MessageBoxButtons.OK);
+                    return;
                 }
-
+                string appFilePath = result.FilePath;
                 DialogResult downResult= MessageBox.Show("更新包已下载,开始安装");
                 if (downResult == DialogResult.OK) {
                     Process.Start(appFilePath);
@@ -803,12 +760,38 @@ namespace TaskManager
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "下载失败");
+                MessageBox.Show(ex.ToString(), "更新包安装失败");
             }
             finally
             {
                 System.Environment.Exit(0);
             }
+        }
+
+        private bool isNeedUpdateApp() {
+            var strsql = $"select top 1 version,userScope from Version";
+            var dt = Sql.ExecuteQuery(strsql).Tables[0];
+            if (dt.Rows.Count == 0)
+            {
+                return false;
+            }
+            newestVersion = double.Parse(dt.Rows[0]["version"].ToString());
+            string userScope = DbHelper.dataColumn2String(dt.Rows[0]["userScope"]);
+            var count = Sql.GetExpr1("select count(*) as Expr1 from FileTable where category='安装包'", 0);
+            if ((curVersion >=  newestVersion) || count <= 0)
+            {
+                return false;
+            }
+            //未设置范围
+            if (string.IsNullOrWhiteSpace(userScope)) {
+                return true;
+            }
+
+            string curUser = FormSignIn.CurrentUser.Name;
+            List<string> users = new List<string>(userScope.Split('，'));
+            bool isNeed = users.Exists(item => item.Equals("ALL") || item.Equals(curUser));
+
+            return isNeed;
         }
 
         /// <summary>
@@ -818,17 +801,13 @@ namespace TaskManager
         /// <param name="e"></param>
         private void btnSubmitUpdate_Click(object sender, EventArgs e)
         {
-
-            //ShowInstallPath();
-
-            var value = XtraInputBox.Show("格式如：20170901.01", "请输入新版本号", VERSION.ToString());
-
-            if (!double.TryParse(value, out NEWEST_Version))
+            string value = XtraInputBox.Show("格式如：20170901.01", "请输入新版本号", curVersion.ToString());
+            if (!double.TryParse(value, out newestVersion))
             {
                 MessageBox.Show("版本号格式不合法");
                 return;
             }
-            else if (NEWEST_Version < VERSION)
+            else if (newestVersion < curVersion)
             {
                 MessageBox.Show("版本号比当前版本号小");
                 return;
@@ -852,16 +831,14 @@ namespace TaskManager
                 var stream = new FileStream(fileDialog.FileName, FileMode.Open);
                 var paras = new[] {
                         new SqlParameter("name",Path.GetFileName(filePath) ),
-                        new SqlParameter("foreignKey",(VERSION*100).ToString() ),
+                        new SqlParameter("foreignKey",(curVersion*100).ToString() ),
                         new SqlParameter("file",stream.StreamToBytes())
                         };
                 var strsql = "insert into FileTable(name,[file],category,foreignKey) values( ";
                 strsql += "@name,@file,'安装包',@foreignKey)";
-
                 Sql.ExecuteNonQuery(strsql, paras);
-                Sql.ExecuteNonQuery("update Version set [version]=" + NEWEST_Version);
-
-                MessageBox.Show("成功");
+                Sql.ExecuteNonQuery("update Version set [version]=" + newestVersion);
+                MessageBox.Show("更新包提交成功", "提示", MessageBoxButtons.OK);
             }
             catch (Exception ex)
             {
@@ -872,6 +849,131 @@ namespace TaskManager
                 Form1.CloseWaitForm();
             }
         }
+
+        private void btnSubmmitCode_Click(object sender, EventArgs e)
+        {
+            var fileDialog = new OpenFileDialog
+            {
+                Multiselect = true,
+                Title = "请选择项目源代码",
+                Filter = "压缩文件|*.zip;*.rar"
+            };
+            if (fileDialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                Form1.ShowWaitForm();
+                string key= DateTime.Now.ToString("yyyyMMdd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                var filePath = fileDialog.FileName;
+                Sql.ExecuteNonQuery("delete FileTable where category='ProjectCode'");
+                var stream = new FileStream(fileDialog.FileName, FileMode.Open);
+                var paras = new[] {
+                        new SqlParameter("name",Path.GetFileName(filePath) ),
+                        new SqlParameter("foreignKey", key),
+                        new SqlParameter("file",stream.StreamToBytes())
+                        };
+                var strsql = "insert into FileTable(name,[file],category,foreignKey) values( ";
+                strsql += "@name,@file,'ProjectCode',@foreignKey)";
+                Sql.ExecuteNonQuery(strsql, paras);
+                MessageBox.Show("项目源代码提交成功", "提示", MessageBoxButtons.OK);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                Form1.CloseWaitForm();
+            }
+        }
+
+        private void btnDownloadExe_Click(object sender, EventArgs e)
+        {
+            FileDownloadResult result = this.downloadFile("安装包");
+            if (!result.IsSuccess)
+            {
+                MessageBox.Show($"更新包下载失败,失败原因：{result.ErrorMessage}", "错误信息", MessageBoxButtons.OK);
+                return;
+            }
+            MessageBox.Show($"更新包已下载,请转至路径'{result.FilePath}'查看", "提示", MessageBoxButtons.OK);
+        }
+    
+        private void btnDownloadCode_Click(object sender, EventArgs e)
+        {
+            FileDownloadResult result = this.downloadFile("ProjectCode");
+            if (!result.IsSuccess)
+            {
+                MessageBox.Show($"项目源代码下载失败,失败原因：{result.ErrorMessage}", "错误信息", MessageBoxButtons.OK);
+                return;
+            }
+            MessageBox.Show($"项目源代码已下载,请转至路径'{result.FilePath}'查看", "提示", MessageBoxButtons.OK);
+        }
+
+        private string downloadAppFile()
+        {
+            string appFilePath = "";
+
+            var dialog = new FolderBrowserDialog { Description = "请选择下载目标文件夹" };
+            if (dialog.ShowDialog() != DialogResult.OK)
+            {
+                return appFilePath;
+            }
+            ShowWaitForm();
+            var strsql = "select top 1 [file] as Expr1,name as Expr2 from FileTable where category='安装包'";
+            var dt = Sql.ExecuteQuery(strsql).Tables[0];
+            if (dt.Rows.Count == 0)
+            {
+                return appFilePath;
+            }
+
+            var picBytes = (byte[])dt.Rows[0]["Expr1"];
+            //var stream0 = new FileStream(fileDialog.FileName, FileMode.Open);
+            //var picBytes = stream0.StreamToBytes();
+
+            appFilePath = dialog.SelectedPath + "\\TaskMangerSetup.msi";
+            using (var stream = new FileStream(appFilePath, FileMode.Create))
+            {
+                stream.Write(picBytes, 0, picBytes.Length);
+            }
+            CloseWaitForm();
+
+            return appFilePath;
+        }
+
+        private FileDownloadResult downloadFile(string category)
+        {
+            FileDownloadResult result = new FileDownloadResult();
+
+            string filePath = "";
+
+            var dialog = new FolderBrowserDialog { Description = "请选择下载目标文件夹" };
+            if (dialog.ShowDialog() != DialogResult.OK)
+            {
+                return result.failed("未选择文件夹");
+            }
+            ShowWaitForm();
+            var strsql = $"select top 1 [file] as Expr1,name as Expr2 from FileTable where category='{category}'";
+            var dt = Sql.ExecuteQuery(strsql).Tables[0];
+            if (dt.Rows.Count == 0)
+            {
+                 return result.failed("文件不存在"); ;
+            }
+            var picBytes = (byte[])dt.Rows[0]["Expr1"];
+            string fileName = dt.Rows[0]["Expr2"].ToString();
+            //var stream0 = new FileStream(fileDialog.FileName, FileMode.Open);
+            //var picBytes = stream0.StreamToBytes();
+
+            filePath = dialog.SelectedPath + $"\\{fileName}";
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                stream.Write(picBytes, 0, picBytes.Length);
+            }
+            CloseWaitForm();
+
+            return result.success(filePath);
+        }
+
 
         #endregion
 
@@ -1763,7 +1865,7 @@ namespace TaskManager
     
         }
 
-       
+     
         /// <summary>
         /// 根据kuai
         /// </summary>
@@ -1783,5 +1885,40 @@ namespace TaskManager
         //    }
 
         //}
+    }
+
+    class FileDownloadResult {
+        /// <summary>
+        /// 是否成功
+        /// </summary>      
+        public bool IsSuccess { get; set; }
+
+        /// <summary>
+        /// 错误信息
+        /// </summary>      
+        public string ErrorMessage { get; set; }
+
+        /// <summary>
+        /// 文件路径
+        /// </summary>      
+        public string FilePath { get; set; }
+
+        public FileDownloadResult failed(string errorMessage) {
+            this.IsSuccess = false;
+            this.ErrorMessage = errorMessage;
+            this.FilePath = "";
+
+            return this;
+        }
+
+        public FileDownloadResult success(string filePath)
+        {
+            this.IsSuccess = true;
+            this.ErrorMessage = "";
+            this.FilePath = filePath;
+
+            return this;
+        }
+
     }
 }

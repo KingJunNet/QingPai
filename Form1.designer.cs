@@ -30,12 +30,15 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem1 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem2 = new DevExpress.Utils.ToolTipItem();
             this.ribbonControl1 = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.backstageViewControl1 = new DevExpress.XtraBars.Ribbon.BackstageViewControl();
             this.backstageViewClientControl2 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
-            this.btnSubmmitUpdate = new System.Windows.Forms.Button();
+            this.btnDownloadCode = new System.Windows.Forms.Button();
+            this.btnSubmmitCode = new System.Windows.Forms.Button();
+            this.btnDownloadExe = new System.Windows.Forms.Button();
+            this.btnSubmmitExe = new System.Windows.Forms.Button();
             this.backstageViewClientControl1 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button3 = new System.Windows.Forms.Button();
@@ -185,21 +188,66 @@
             // 
             // backstageViewClientControl2
             // 
-            this.backstageViewClientControl2.Controls.Add(this.btnSubmmitUpdate);
+            this.backstageViewClientControl2.Controls.Add(this.btnDownloadCode);
+            this.backstageViewClientControl2.Controls.Add(this.btnSubmmitCode);
+            this.backstageViewClientControl2.Controls.Add(this.btnDownloadExe);
+            this.backstageViewClientControl2.Controls.Add(this.btnSubmmitExe);
             this.backstageViewClientControl2.Location = new System.Drawing.Point(146, 0);
             this.backstageViewClientControl2.Name = "backstageViewClientControl2";
             this.backstageViewClientControl2.Size = new System.Drawing.Size(899, 683);
             this.backstageViewClientControl2.TabIndex = 2;
             // 
-            // btnSubmmitUpdate
+            // btnDownloadCode
             // 
-            this.btnSubmmitUpdate.Location = new System.Drawing.Point(37, 33);
-            this.btnSubmmitUpdate.Name = "btnSubmmitUpdate";
-            this.btnSubmmitUpdate.Size = new System.Drawing.Size(189, 33);
-            this.btnSubmmitUpdate.TabIndex = 3;
-            this.btnSubmmitUpdate.Text = "提交更新文件";
-            this.btnSubmmitUpdate.UseVisualStyleBackColor = true;
-            this.btnSubmmitUpdate.Click += new System.EventHandler(this.btnSubmitUpdate_Click);
+            this.btnDownloadCode.BackColor = System.Drawing.Color.Teal;
+            this.btnDownloadCode.Font = new System.Drawing.Font("Tahoma", 10.8F);
+            this.btnDownloadCode.ForeColor = System.Drawing.Color.White;
+            this.btnDownloadCode.Location = new System.Drawing.Point(19, 128);
+            this.btnDownloadCode.Name = "btnDownloadCode";
+            this.btnDownloadCode.Size = new System.Drawing.Size(166, 54);
+            this.btnDownloadCode.TabIndex = 6;
+            this.btnDownloadCode.Text = "下载项目代码";
+            this.btnDownloadCode.UseVisualStyleBackColor = false;
+            this.btnDownloadCode.Click += new System.EventHandler(this.btnDownloadCode_Click);
+            // 
+            // btnSubmmitCode
+            // 
+            this.btnSubmmitCode.BackColor = System.Drawing.Color.Teal;
+            this.btnSubmmitCode.Font = new System.Drawing.Font("Tahoma", 10.8F);
+            this.btnSubmmitCode.ForeColor = System.Drawing.Color.White;
+            this.btnSubmmitCode.Location = new System.Drawing.Point(288, 128);
+            this.btnSubmmitCode.Name = "btnSubmmitCode";
+            this.btnSubmmitCode.Size = new System.Drawing.Size(166, 54);
+            this.btnSubmmitCode.TabIndex = 5;
+            this.btnSubmmitCode.Text = "提交项目代码";
+            this.btnSubmmitCode.UseVisualStyleBackColor = false;
+            this.btnSubmmitCode.Click += new System.EventHandler(this.btnSubmmitCode_Click);
+            // 
+            // btnDownloadExe
+            // 
+            this.btnDownloadExe.BackColor = System.Drawing.Color.Teal;
+            this.btnDownloadExe.Font = new System.Drawing.Font("Tahoma", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDownloadExe.ForeColor = System.Drawing.Color.White;
+            this.btnDownloadExe.Location = new System.Drawing.Point(19, 21);
+            this.btnDownloadExe.Name = "btnDownloadExe";
+            this.btnDownloadExe.Size = new System.Drawing.Size(166, 54);
+            this.btnDownloadExe.TabIndex = 4;
+            this.btnDownloadExe.Text = "下载更新文件";
+            this.btnDownloadExe.UseVisualStyleBackColor = false;
+            this.btnDownloadExe.Click += new System.EventHandler(this.btnDownloadExe_Click);
+            // 
+            // btnSubmmitExe
+            // 
+            this.btnSubmmitExe.BackColor = System.Drawing.Color.Teal;
+            this.btnSubmmitExe.Font = new System.Drawing.Font("Tahoma", 10.8F);
+            this.btnSubmmitExe.ForeColor = System.Drawing.Color.White;
+            this.btnSubmmitExe.Location = new System.Drawing.Point(288, 21);
+            this.btnSubmmitExe.Name = "btnSubmmitExe";
+            this.btnSubmmitExe.Size = new System.Drawing.Size(166, 54);
+            this.btnSubmmitExe.TabIndex = 3;
+            this.btnSubmmitExe.Text = "提交更新文件";
+            this.btnSubmmitExe.UseVisualStyleBackColor = false;
+            this.btnSubmmitExe.Click += new System.EventHandler(this.btnSubmitUpdate_Click);
             // 
             // backstageViewClientControl1
             // 
@@ -471,9 +519,9 @@
             this.barRemainder.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.warning_32x32;
             this.barRemainder.Name = "barRemainder";
             this.barRemainder.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large;
-            toolTipItem1.Text = "查看试验任务和设备状态提醒";
-            superToolTip1.Items.Add(toolTipItem1);
-            this.barRemainder.SuperTip = superToolTip1;
+            toolTipItem2.Text = "查看试验任务和设备状态提醒";
+            superToolTip2.Items.Add(toolTipItem2);
+            this.barRemainder.SuperTip = superToolTip2;
             this.barRemainder.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barRemainder_ItemClick);
             // 
             // barButtonItem1
@@ -931,7 +979,7 @@
         private System.Windows.Forms.Label lblDepartment;
         private System.Windows.Forms.Label lblUser;
         private DevExpress.XtraBars.Ribbon.BackstageViewClientControl backstageViewClientControl2;
-        private System.Windows.Forms.Button btnSubmmitUpdate;
+        private System.Windows.Forms.Button btnSubmmitExe;
         private DevExpress.XtraBars.Ribbon.BackstageViewTabItem backstageViewTabItem1;
         private DevExpress.XtraBars.Ribbon.BackstageViewButtonItem backstageViewButtonItem2;
         private DevExpress.XtraBars.Ribbon.BackstageViewTabItem backstageViewTabItem2;
@@ -962,5 +1010,8 @@
         private DevExpress.XtraBars.BarStaticItem baralert;
         private System.Windows.Forms.Timer timer2;
         private DevExpress.XtraBars.Navigation.AccordionControlElement accordionControlElement6;
+        private System.Windows.Forms.Button btnDownloadExe;
+        private System.Windows.Forms.Button btnDownloadCode;
+        private System.Windows.Forms.Button btnSubmmitCode;
     }
 }

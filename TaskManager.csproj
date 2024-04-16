@@ -159,6 +159,7 @@
     <Compile Include="common\utils\Report.cs" />
     <Compile Include="common\utils\ReportPlus.cs" />
     <Compile Include="common\utils\StringUtils.cs" />
+    <Compile Include="controller\ServerConfig.cs" />
     <Compile Include="controller\MaskLayer .cs">
       <SubType>Component</SubType>
     </Compile>
@@ -207,6 +208,7 @@
     <Compile Include="domain\repository\IItemEquipmentRepository.cs" />
     <Compile Include="domain\repository\ISampleRepository.cs" />
     <Compile Include="domain\repository\ITestStatisticRepository.cs" />
+    <Compile Include="infrastructure\db\DataTranslator.cs" />
     <Compile Include="domain\service\EquipmentUasageRecordExportHanlderPlus.cs" />
     <Compile Include="domain\service\EquipmentUasageRecordExportHanlder.cs" />
     <Compile Include="domain\service\GenerateWordFileUnit.cs" />
