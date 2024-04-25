@@ -140,9 +140,14 @@ namespace TaskManager
                 comGroup.EditValue = "所有组别";
                 _control.Department = "所有组别";
             }
+            if (Type.Equals(FormType.ConfigItem))
+            {
+                comGroup.EditValue = "所有组别";
+                _control.Department = "所有组别";
+            }
         }
 
-        protected void InitComUserView()
+        protected virtual void InitComUserView()
         {
             repositoryItemComboBox5.Items.Clear();
             repositoryItemComboBox5.Items.Add("所有人");
@@ -175,12 +180,14 @@ namespace TaskManager
             //导出word默认隐藏
             btnExportWord.Visibility = BarItemVisibility.Never;
 
+            //备选项编辑功能关闭
+            btnEditCfgItems.Visibility = BarItemVisibility.Never;
+
             //导入，
             string userRole = FormSignIn.CurrentUser.Role;
             if (!(userRole.Equals(Role.超级管理员.ToString())|| userRole.Equals(Role.管理员.ToString())))
             {
                 btnBatchReplace.Visibility = BarItemVisibility.Never;
-                btnEditCfgItems.Visibility = BarItemVisibility.Never;
                 btnImport.Visibility = BarItemVisibility.Never;
                 //btnExport.Visibility = BarItemVisibility.Never;
                 //btnExportEmptyTpl.Visibility = BarItemVisibility.Never;
@@ -288,6 +295,11 @@ namespace TaskManager
             if (!FormTable.Delete)
                 return;
 
+            if (!this.validateRemoveAuthority())
+            {
+                return;
+            }
+
             if (FormTable.Category == "设备使用记录")
             {
                 for (int i = 0; i < _control._view.SelectedRowsCount; i++)
@@ -330,8 +342,6 @@ namespace TaskManager
                     MessageBox.Show("无权限进行删除");
                     return;
                 }
-
-
             }
             if (FormTable.Module == "任务管理")
             {
@@ -365,6 +375,11 @@ namespace TaskManager
             }
             _control.DeleteSelectedRows();
         }
+
+        protected virtual bool validateRemoveAuthority() {
+            return true;
+        }
+
 
         protected void hideCopyMenuItem() {
             this.复制ToolStripMenuItem.Visible = false;
@@ -424,7 +439,7 @@ namespace TaskManager
             try
             {
                 //Form1.ShowWaitForm();
-                if (FormTable.Category == "试验统计" && hand < 0)
+                if (hand < 0)
                 {
                     MessageBox.Show("请先选中需要编辑的数据记录！", "提示", MessageBoxButtons.OK);
                     return;
@@ -474,6 +489,10 @@ namespace TaskManager
                 var newRow = hand < 0;
                 if (newRow)//新数据
                     view.AddNewRow();
+
+                //处理新行第一列为日期的问题
+                string firstColumnField= view.Columns[1].FieldName;
+                view.SetFocusedRowCellValue(firstColumnField,"");
 
                 var result = OpenAddForm(view, view.FocusedRowHandle, _control.Fields);
                 if (newRow)
@@ -629,7 +648,7 @@ namespace TaskManager
 
         protected void reloadData() {
             string user = null;
-            if (comboxState.Caption == "使用人")
+            if (comboxState.Caption == "使用人"|| comboxState.Caption == "类   别")
             {
                 user = _user;
             }

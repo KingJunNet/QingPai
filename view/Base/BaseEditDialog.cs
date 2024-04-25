@@ -32,6 +32,11 @@ namespace TaskManager
 
         public BaseEditDialog(bool authorityEdit, GridView theView, int theHand, List<DataField> fields, FormType Type1)
         {
+            if (theHand == -2147483646)
+            {
+                theHand = -2147483647;
+            }
+
             InitializeComponent();
             type = Type1;
             if(DesignMode)
@@ -58,6 +63,14 @@ namespace TaskManager
                 Server += "\\";
         }
 
+        protected void setControlsEditabled(bool editabled)
+        {
+            foreach (var titleControl in fieldControlMap.Values)
+            {
+                titleControl.SetReadOnly(!editabled);
+                titleControl.OriginalReadOnly = !editabled;
+            }
+        }
         protected virtual string buildTitle() {
             string title = "";
             if (this.operation.Equals(OperationType.ADD)) {
@@ -115,7 +128,8 @@ namespace TaskManager
             }
 
             var idValue = view.GetRowCellValue(hand, "ID");
-            this.recordId = int.Parse(idValue.ToString());
+            this.recordId = -1;
+            int.TryParse(idValue.ToString(),out recordId);
 
             Panel.GetType().GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance
                                                                      | System.Reflection.BindingFlags.NonPublic)
@@ -130,6 +144,10 @@ namespace TaskManager
         }
 
         #endregion
+
+        protected void setOkBtnEnabled(bool enabled) {
+            btnUpdate.Enabled = enabled;
+        }
 
         protected virtual void BtnUpdateClick(object sender, EventArgs e)
         {

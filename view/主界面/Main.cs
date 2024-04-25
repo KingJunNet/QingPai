@@ -19,6 +19,7 @@ using System.Text.RegularExpressions;
 using TaskManager.domain.valueobject;
 using TaskManager.controller;
 using TaskManager.common.utils;
+using TaskManager.Model;
 
 namespace TaskManager
 {
@@ -38,6 +39,8 @@ namespace TaskManager
         //public string Folder => $"\\\\{Server}{RootFolder}\\轻排更新包.exe";
 
         public string Folder => @"D:\code\TaskMangerSetup\Debug\setup.exe";
+
+        private Dictionary<string, ThirdAppCfgItem> thirdAppCfgItemMap;
 
         public static DateTimeFormatInfo DTFormat
         {
@@ -371,6 +374,7 @@ namespace TaskManager
         private EquipmentForm formEquipmentAll;
 
         private EquipmentUsageRecordForm EquipmentUsageRecordForm;
+        private ConfigItemForm configItemForm;
 
         private CreateTaskForm CreateTaskForm;
 
@@ -1072,10 +1076,16 @@ namespace TaskManager
 
             foreach (var format in formats)
             {
-                var list = sql.GetStringList("select distinct item from ComboxTable " +
-                                             $"where format='{format}' order by item");
+                //var list = sql.GetStringList("select distinct item from ComboxTable " +
+                //                             $"where format='{format}' order by item");
+                var list = sql.GetStringList("select distinct Value from ConfigItemTable " +
+                                            $"where Name='{format}' order by Value");
                 ComboxDictionary.Add(format, list);
             }
+
+            //选项名称
+            List<string> optionNames= sql.GetStringList("select distinct Name from ConfigItemTable order by Name");
+            ComboxDictionary.Add("配置项名称", optionNames);
         }
 
         /// <summary>
@@ -1837,6 +1847,96 @@ namespace TaskManager
             //((AccordionControl)sender).BackColor = Color.Blue;
         }
 
+        private void accordionControlWeight_Click(object sender, EventArgs e)
+        {
+            this.startThirdApp(ThirdAppName.WEIGHT_CLIENT.ToString());
+        }
+
+        private void startThirdApp(string appName) {
+            string appPath = GetAppPathFromBinFile(appName);
+            if (string.IsNullOrEmpty(appPath) || !System.IO.File.Exists(appPath))
+            {
+                if (!this.resetAppPath(appName, out appPath))
+                {
+                    return;
+                }
+            }
+
+            //启动应用
+            StartApp(appPath);
+        }
+
+        private bool resetAppPath(string appName,out string appPath) {
+            appPath = XtraInputBox.Show("请输入应用的安装路径", "应用路径输入", "");
+            if (string.IsNullOrEmpty(appPath) || !System.IO.File.Exists(appPath))
+            {
+                DialogResult result = MessageBox.Show("应用路径无效或文件不存在,需重新配置应用路径", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                if (result == DialogResult.OK)
+                {
+                    return this.resetAppPath(appName, out appPath);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+             SaveAppPathToBinFile(appName, appPath);
+             return true;
+        }
+
+        private void StartApp(string appPath)
+        {
+            try
+            {
+                Process.Start(appPath);
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage("启动应用时发生错误", ex);
+            }
+        }
+
+        private string GetAppPathFromBinFile(string appName)
+        {
+            if (this.thirdAppCfgItemMap == null)
+            {
+                this.thirdAppCfgItemMap = FileCtr.ReadSerializable<string, ThirdAppCfgItem>(ConstHolder.THIRD_APP_CONFIG_FILE_NAME);
+            }
+            if (!this.thirdAppCfgItemMap.ContainsKey(appName))
+            {
+                return null;
+            }
+
+            return thirdAppCfgItemMap[appName].Path;
+        }
+     
+        private void SaveAppPathToBinFile(string appName,string appPath)
+        {
+            ThirdAppCfgItem cfgItem= new ThirdAppCfgItem(appName, appPath);
+            if (this.thirdAppCfgItemMap.ContainsKey(appName))
+            {
+                this.thirdAppCfgItemMap[appName] = cfgItem;
+            }
+            else
+            {
+                this.thirdAppCfgItemMap.Add(appName,cfgItem);
+            }
+            thirdAppCfgItemMap.WriteSerializable(ConstHolder.THIRD_APP_CONFIG_FILE_NAME);
+        }
+
+        // 显示成功消息  
+        private void ShowSuccessMessage(string message)
+        {
+            MessageBox.Show(message, "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // 显示错误消息  
+        private void ShowErrorMessage(string message, Exception ex = null)
+        {
+            string errorMessage = ex != null ? $"{message}: {ex.Message}" : message;
+            MessageBox.Show(errorMessage, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         /// <summary>
         /// 蒸发系统
         /// </summary>
@@ -1865,7 +1965,41 @@ namespace TaskManager
     
         }
 
-     
+        private void tabItemConfig_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Log.e("OpenForm ConfigItemForm");
+                ShowWaitForm();
+
+                if (configItemForm == null || configItemForm.IsDisposed)
+                {
+                    configItemForm = new ConfigItemForm(FormType.ConfigItem, null)
+                    {
+                        MdiParent = this,
+                        WindowState = FormWindowState.Maximized
+                    };
+                    configItemForm.Show();
+                }
+                else
+                {
+                    configItemForm.MdiParent = this;
+                    configItemForm.WindowState = FormWindowState.Maximized;
+                    configItemForm.Show();
+                    configItemForm.Activate();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.e($"OpenForm ConfigItemForm {ex}");
+            }
+            finally
+            {
+                Log.e("OpenForm ConfigItemForm Finish");
+                CloseWaitForm();
+            }
+        }
+
         /// <summary>
         /// 根据kuai
         /// </summary>

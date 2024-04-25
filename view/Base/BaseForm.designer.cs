@@ -25,21 +25,21 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BaseForm));
+            DevExpress.Utils.SuperToolTip superToolTip11 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem7 = new DevExpress.Utils.ToolTipTitleItem();
+            DevExpress.Utils.ToolTipItem toolTipItem9 = new DevExpress.Utils.ToolTipItem();
             DevExpress.Utils.SuperToolTip superToolTip6 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem4 = new DevExpress.Utils.ToolTipTitleItem();
             DevExpress.Utils.ToolTipItem toolTipItem5 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip7 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem6 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip12 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem5 = new DevExpress.Utils.ToolTipTitleItem();
-            DevExpress.Utils.ToolTipItem toolTipItem10 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip13 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem11 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip14 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem8 = new DevExpress.Utils.ToolTipTitleItem();
-            DevExpress.Utils.SuperToolTip superToolTip15 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem9 = new DevExpress.Utils.ToolTipTitleItem();
-            DevExpress.Utils.ToolTipItem toolTipItem12 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip16 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem4 = new DevExpress.Utils.ToolTipTitleItem();
+            DevExpress.Utils.ToolTipItem toolTipItem13 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip17 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem14 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip18 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem10 = new DevExpress.Utils.ToolTipTitleItem();
+            DevExpress.Utils.SuperToolTip superToolTip19 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem11 = new DevExpress.Utils.ToolTipTitleItem();
+            DevExpress.Utils.ToolTipItem toolTipItem15 = new DevExpress.Utils.ToolTipItem();
             this.repositoryItemFontEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemFontEdit();
             this.ribbonControl1 = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.btnExport = new DevExpress.XtraBars.BarButtonItem();
@@ -190,7 +190,7 @@
             this.repositoryItemDateEdit3});
             this.ribbonControl1.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.True;
             this.ribbonControl1.ShowExpandCollapseButton = DevExpress.Utils.DefaultBoolean.True;
-            this.ribbonControl1.Size = new System.Drawing.Size(1242, 190);
+            this.ribbonControl1.Size = new System.Drawing.Size(1252, 190);
             // 
             // btnExport
             // 
@@ -258,12 +258,12 @@
             this.textYear.Name = "textYear";
             this.textYear.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
             | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
-            toolTipTitleItem4.Text = "输入年份";
-            toolTipItem5.LeftIndent = 6;
-            toolTipItem5.Text = "然后点击刷新按钮，表格加载该年份的数据";
-            superToolTip6.Items.Add(toolTipTitleItem4);
-            superToolTip6.Items.Add(toolTipItem5);
-            this.textYear.SuperTip = superToolTip6;
+            toolTipTitleItem7.Text = "输入年份";
+            toolTipItem9.LeftIndent = 6;
+            toolTipItem9.Text = "然后点击刷新按钮，表格加载该年份的数据";
+            superToolTip11.Items.Add(toolTipTitleItem7);
+            superToolTip11.Items.Add(toolTipItem9);
+            this.textYear.SuperTip = superToolTip11;
             // 
             // repositoryItemTextEdit3
             // 
@@ -296,9 +296,9 @@
             this.btnCopyPaste.Name = "btnCopyPaste";
             this.btnCopyPaste.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
             | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
-            toolTipItem6.Text = "复制选中行，然后粘贴到表格的最前面";
-            superToolTip7.Items.Add(toolTipItem6);
-            this.btnCopyPaste.SuperTip = superToolTip7;
+            toolTipItem5.Text = "复制选中行，然后粘贴到表格的最前面";
+            superToolTip6.Items.Add(toolTipItem5);
+            this.btnCopyPaste.SuperTip = superToolTip6;
             this.btnCopyPaste.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem1_ItemClick);
             // 
             // btnCorrectDate
@@ -309,12 +309,12 @@
             this.btnCorrectDate.Name = "btnCorrectDate";
             this.btnCorrectDate.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
             | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
-            toolTipTitleItem5.Text = "修正日期格式";
-            toolTipItem10.LeftIndent = 6;
-            toolTipItem10.Text = "将日期型内容转换为yyyy/MM/dd格式\r\n将时间型内容转换为yyyy/MM/dd HH:mm:ss ";
-            superToolTip12.Items.Add(toolTipTitleItem5);
-            superToolTip12.Items.Add(toolTipItem10);
-            this.btnCorrectDate.SuperTip = superToolTip12;
+            toolTipTitleItem4.Text = "修正日期格式";
+            toolTipItem13.LeftIndent = 6;
+            toolTipItem13.Text = "将日期型内容转换为yyyy/MM/dd格式\r\n将时间型内容转换为yyyy/MM/dd HH:mm:ss ";
+            superToolTip16.Items.Add(toolTipTitleItem4);
+            superToolTip16.Items.Add(toolTipItem13);
+            this.btnCorrectDate.SuperTip = superToolTip16;
             this.btnCorrectDate.Visibility = DevExpress.XtraBars.BarItemVisibility.Never;
             this.btnCorrectDate.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnCorrectDate_ItemClick);
             // 
@@ -348,9 +348,9 @@
             this.btnEditCfgItems.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.dropdown;
             this.btnEditCfgItems.Name = "btnEditCfgItems";
             this.btnEditCfgItems.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large;
-            toolTipItem11.Text = "编辑单元格下拉框的备选项，以方便用户输入";
-            superToolTip13.Items.Add(toolTipItem11);
-            this.btnEditCfgItems.SuperTip = superToolTip13;
+            toolTipItem14.Text = "编辑单元格下拉框的备选项，以方便用户输入";
+            superToolTip17.Items.Add(toolTipItem14);
+            this.btnEditCfgItems.SuperTip = superToolTip17;
             this.btnEditCfgItems.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem2_ItemClick);
             // 
             // btnImport
@@ -468,9 +468,9 @@
             this.ribbonPageGroup1.ItemLinks.Add(this.btnExportWord);
             this.ribbonPageGroup1.MergeOrder = 0;
             this.ribbonPageGroup1.Name = "ribbonPageGroup1";
-            toolTipTitleItem8.Text = "数据的导入导出";
-            superToolTip14.Items.Add(toolTipTitleItem8);
-            this.ribbonPageGroup1.SuperTip = superToolTip14;
+            toolTipTitleItem10.Text = "数据的导入导出";
+            superToolTip18.Items.Add(toolTipTitleItem10);
+            this.ribbonPageGroup1.SuperTip = superToolTip18;
             this.ribbonPageGroup1.Text = "文件";
             // 
             // ribbonPageGroup6
@@ -645,7 +645,7 @@
             this._control.Location = new System.Drawing.Point(0, 190);
             this._control.Margin = new System.Windows.Forms.Padding(2);
             this._control.Name = "_control";
-            this._control.Size = new System.Drawing.Size(1242, 727);
+            this._control.Size = new System.Drawing.Size(1252, 732);
             this._control.TabIndex = 0;
             this._control.Load += new System.EventHandler(this._control_Load);
             // 
@@ -728,12 +728,12 @@
             this.barEditItem1.Name = "barEditItem1";
             this.barEditItem1.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
             | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
-            toolTipTitleItem9.Text = "输入年份";
-            toolTipItem12.LeftIndent = 6;
-            toolTipItem12.Text = "然后点击刷新按钮，表格加载该年份的数据";
-            superToolTip15.Items.Add(toolTipTitleItem9);
-            superToolTip15.Items.Add(toolTipItem12);
-            this.barEditItem1.SuperTip = superToolTip15;
+            toolTipTitleItem11.Text = "输入年份";
+            toolTipItem15.LeftIndent = 6;
+            toolTipItem15.Text = "然后点击刷新按钮，表格加载该年份的数据";
+            superToolTip19.Items.Add(toolTipTitleItem11);
+            superToolTip19.Items.Add(toolTipItem15);
+            this.barEditItem1.SuperTip = superToolTip19;
             // 
             // barEditItem2
             // 
@@ -756,7 +756,7 @@
             this.AllowFormGlass = DevExpress.Utils.DefaultBoolean.True;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1242, 917);
+            this.ClientSize = new System.Drawing.Size(1252, 922);
             this.Controls.Add(this._control);
             this.Controls.Add(this.ribbonControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

@@ -6,21 +6,54 @@ using System.Windows.Forms;
 
 namespace ExpertLib.Controls
 {
-    public partial class TitleCombox : TitleControl
+    public partial class TitleComboxPro : TitleControl
     {
         /// <summary>
         /// 视图数据
         /// </summary>
         public List<Object> ViewModels { get; set; }
 
+        public CheckedListBox CheckedListBox { get; set; }
+
         protected Color notContentBackColor= Color.LightYellow;
 
-        public TitleCombox()
+        public TitleComboxPro()
         {
             this.init();
+            this.initCheckedListBox();
         }
 
-        public TitleCombox(Color color)
+        private void initCheckedListBox()
+        {
+            // 多选列表
+            CheckedListBox = new CheckedListBox();
+            CheckedListBox.CheckOnClick = true;
+            CheckedListBox.BorderStyle = BorderStyle.Fixed3D;
+            CheckedListBox.Visible = true;
+            CheckedListBox.Margin = new Padding(0);
+
+            showCheckBox();
+        }
+
+        private void showCheckBox()
+        {
+            CheckedListBox.Items.Add("052a", true);
+            CheckedListBox.Items.Add("052b", true);
+            CheckedListBox.Items.Add("052c", true);
+            CheckedListBox.Items.Add("052d", true);
+            CheckedListBox.Items.Add("052e", true);
+            CheckedListBox.Items.Add("052f", true);
+            CheckedListBox.Items.Add("052g", true);
+            CheckedListBox.Width = comboBox1.Width;
+            CheckedListBox.ItemHeight = comboBox1.ItemHeight;
+            CheckedListBox.Size = new Size(comboBox1.DropDownWidth, CheckedListBox.Items.Count * 18);
+            CheckedListBox.Location = new Point(comboBox1.Left, comboBox1.Height);
+            this.Controls.Add(CheckedListBox);
+            CheckedListBox.Visible = true;
+
+        }
+
+        public TitleComboxPro(Color color)
         {
             this.SetNotContentBackColor(color);
             this.init();

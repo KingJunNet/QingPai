@@ -37,4 +37,6 @@ namespace TaskManager.domain.valueobject
         停用 = 8,
         报废 = 16,
     }
+
+   
 }

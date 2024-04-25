@@ -13,5 +13,10 @@ namespace TaskManager.domain.valueobject
 
         public static readonly List<string> EQUIPMENT_STATE_CHN_NAMES = new List<string> { "使用中","未启用", "待检定", "停用", "报废" };
         public static readonly List<string> EQUIPMENT_TRACEABILITY_STATE_CHN_NAMES = new List<string> { "无", "失效", "有效" };
+
+        /// <summary>
+        /// 第三方应用配置文件名称
+        /// </summary>
+        public static readonly string THIRD_APP_CONFIG_FILE_NAME = "third-app-config.bin";
     }
 }

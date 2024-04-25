@@ -94,9 +94,28 @@
     <Compile Include="Controls\Charts\BaseChart.Designer.cs">
       <DependentUpon>BaseChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CheckItem.cs" />
     <Compile Include="Controls\ControlHelper.cs" />
     <Compile Include="Controls\Enum.cs" />
     <Compile Include="Controls\Field.cs" />
+    <Compile Include="Controls\TitleEditor\MultiComboBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TitleEditor\MultiComboBox.Designer.cs">
+      <DependentUpon>MultiComboBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TitleEditor\TitleComboxPro.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TitleEditor\TitleComboxPro.Designer.cs">
+      <DependentUpon>TitleComboxPro.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TitleEditor\TitleMutiCombox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TitleEditor\TitleMutiCombox.Designer.cs">
+      <DependentUpon>TitleMutiCombox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TitleEditor\ComboBoxMax.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -188,6 +207,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Controls\Charts\BaseChart.resx">
       <DependentUpon>BaseChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TitleEditor\RequiredTitleCombox.resx">
+      <DependentUpon>RequiredTitleCombox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TitleEditor\TitleComboxPro.resx">
+      <DependentUpon>TitleComboxPro.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TitleEditor\TitleMutiCombox.resx">
+      <DependentUpon>TitleMutiCombox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TitleEditor\DateEdit.resx">
       <DependentUpon>DateEdit.cs</DependentUpon>

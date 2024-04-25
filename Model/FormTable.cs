@@ -16,7 +16,8 @@ namespace TaskManager
         NewTask=701,       //任务管理
         Sample =801,       //样品信息
         Test = 802,       //试验统计
-        Project =803      //项目报价
+        Project =803,      //项目报价
+        ConfigItem = 901      //项目报价
     };
 
     public class FormTable
@@ -197,6 +198,25 @@ namespace TaskManager
                 Delete = true;
             }
 
+            if (formType == FormType.ConfigItem)
+            {
+                TableName = "ConfigItemTable";
+                Category = "配置项管理";
+                FormTitle = "备选项管理";
+                Module = "配置项管理";
+                StateCol = "";
+                ReminderCol = "";
+                DateCol = "Name";
+                OrderCol = "Name";
+
+                ReadOnlyCols = new List<string> { "GroupName"
+                       };
+
+                Add = true;
+                Edit = true;
+                Delete = true;
+            }
+
             //     else if (formType == FormType.EquipmentDepartment)
             //     {
             //         FormTitle = $"{Department}设备管理";
@@ -333,6 +353,8 @@ namespace TaskManager
             }
             else if (Type == FormType.EquipmentUsageRecord)
                 sWhere = EquipmentUsageRecordSqlString(year,department,searchUserName,startdate,enddate);
+            else if (Type == FormType.ConfigItem)
+                sWhere = ConfigItemSqlString(department, searchUserName);
             else
                 throw new Exception("GetSqlString no form type");
 
@@ -434,6 +456,23 @@ namespace TaskManager
                 sWhere.Add($" ({DateCol}>='{startdate}' and {DateCol}<='{enddate}')");
             }
                 
+            return sWhere;
+        }
+
+        private List<string> ConfigItemSqlString(string department, string name)
+        {
+            var sWhere = new List<string>();
+
+         
+            if (!string.IsNullOrWhiteSpace(department) && department != "所有组别")
+            {
+                sWhere.Add($"GroupName like '%{department}%'");
+            }
+            if (!string.IsNullOrWhiteSpace(name) && name != "所有类别")
+            {
+                sWhere.Add($"Name ='{name}'");
+            }
+            
             return sWhere;
         }
 

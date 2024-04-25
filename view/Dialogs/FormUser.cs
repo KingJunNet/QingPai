@@ -60,6 +60,11 @@ namespace TaskManager
             IsSaved = false;
             Text = "未保存-" + title;
         }
+
+        private void FormUser_Load(object sender, EventArgs e)
+        {
+            userContrl.InitRepoCombox();
+        }
     }
 
     public class UserGridControl:IDisposable
@@ -148,6 +153,12 @@ namespace TaskManager
         {
             e.ExceptionMode = DevExpress.XtraEditors.Controls.ExceptionMode.NoAction;
             
+        }
+
+        public void InitRepoCombox()
+        {
+            var colGroup = _view.Columns["department"];
+            colGroup.ColumnEdit = null;
         }
 
         private void ValidateRow(object sender, ValidateRowEventArgs e)

@@ -59,6 +59,7 @@
             this.repoEquipmentUsageState = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repoEquipmentManageState = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repoEquipmentTraceabilityState = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
+            this.repoConfigItemName = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repoNumber = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repoVerification = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repoInspection = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
@@ -120,6 +121,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repoEquipmentUsageState)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoEquipmentManageState)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoEquipmentTraceabilityState)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repoConfigItemName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoVerification)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoInspection)).BeginInit();
@@ -205,6 +207,7 @@
             this.repoEquipmentUsageState,
             this.repoEquipmentManageState,
             this.repoEquipmentTraceabilityState,
+            this.repoConfigItemName,
             this.repoNumber,
             this.repoVerification,
             this.repoInspection,
@@ -490,6 +493,14 @@
             this.repoEquipmentTraceabilityState.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.repoEquipmentTraceabilityState.Name = "repoEquipmentTraceabilityState";
+
+            // 
+            // repoConfigItemName
+            // 
+            this.repoConfigItemName.AutoHeight = false;
+            this.repoConfigItemName.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repoConfigItemName.Name = "repoConfigItemName";
 
             // 
             // repoNumber
@@ -781,6 +792,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repoEquipmentUsageState)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoEquipmentManageState)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoEquipmentTraceabilityState)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repoConfigItemName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoNumber)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoVerification)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoInspection)).EndInit();
@@ -853,6 +865,7 @@
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoEquipmentUsageState;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoEquipmentManageState;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoEquipmentTraceabilityState;
+        private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoConfigItemName;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoNumber;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoVerification;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoInspection;

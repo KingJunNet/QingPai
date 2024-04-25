@@ -1,6 +1,7 @@
-﻿namespace ExpertLib.Controls
+﻿using System.Text;
+namespace ExpertLib.Controls
 {
-    partial class TitleDate
+    partial class TitleMutiCombox
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -28,34 +29,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.multiComboBox1 = new ExpertLib.Controls.MultiComboBox();
             this.SuspendLayout();
             // 
-            // dateTimePicker1
+            // multiComboBox1
             // 
-            this.dateTimePicker1.CustomFormat = "yyyy/MM/dd";
-            this.dateTimePicker1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimePicker1.Location = new System.Drawing.Point(103, 2);
-            this.dateTimePicker1.Margin = new System.Windows.Forms.Padding(4);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(279, 27);
-            this.dateTimePicker1.TabIndex = 1;
+            this.multiComboBox1.AutoSize = true;
+            this.multiComboBox1.Location = new System.Drawing.Point(130, 5);
+            this.multiComboBox1.Name = "multiComboBox1";
+            this.multiComboBox1.Size = new System.Drawing.Size(299, 29);
+            this.multiComboBox1.TabIndex = 1;
             // 
-            // TitleDate
+            // TitleMutiCombox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 17F);
-            this.Controls.Add(this.dateTimePicker1);
+            this.Controls.Add(this.multiComboBox1);
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "TitleDate";
+            this.Name = "TitleMutiCombox";
             this.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.Controls.SetChildIndex(this.dateTimePicker1, 0);
+            this.Size = new System.Drawing.Size(435, 34);
+            this.Controls.SetChildIndex(this.multiComboBox1, 0);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private MultiComboBox multiComboBox1;
     }
 }

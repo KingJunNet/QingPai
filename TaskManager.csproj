@@ -167,28 +167,30 @@
     <Compile Include="controller\UIHelp.cs" />
     <Compile Include="controller\CacheDataHandler.cs" />
     <Compile Include="controller\UserHelper.cs" />
-    <Compile Include="Dialogs\AuthorityForm.cs">
+    <Compile Include="domain\entity\ConfigItemEntity.cs" />
+    <Compile Include="domain\service\RoleManager.cs" />
+    <Compile Include="view\Dialogs\AuthorityForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\AuthorityForm.Designer.cs">
+    <Compile Include="view\Dialogs\AuthorityForm.Designer.cs">
       <DependentUpon>AuthorityForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\UserStructure.cs">
+    <Compile Include="view\Dialogs\UserStructure.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\UserStructure.designer.cs">
+    <Compile Include="view\Dialogs\UserStructure.designer.cs">
       <DependentUpon>UserStructure.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\ReminderDialog.cs">
+    <Compile Include="view\Dialogs\ReminderDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\ReminderDialog.Designer.cs">
+    <Compile Include="view\Dialogs\ReminderDialog.Designer.cs">
       <DependentUpon>ReminderDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\ReplaceSelectRows.cs">
+    <Compile Include="view\Dialogs\ReplaceSelectRows.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\ReplaceSelectRows.Designer.cs">
+    <Compile Include="view\Dialogs\ReplaceSelectRows.Designer.cs">
       <DependentUpon>ReplaceSelectRows.cs</DependentUpon>
     </Compile>
     <Compile Include="domain\entity\BaseEntity.cs" />
@@ -233,401 +235,421 @@
     <Compile Include="infrastructure\db\TestStatisticRepository.cs" />
     <Compile Include="infrastructure\db\BaseRepository.cs" />
     <Compile Include="MessageFilter.cs" />
-    <Compile Include="Model\Copy.cs" />
-    <Compile Include="Model\Filter.cs" />
-    <Compile Include="Model\MyDelegate.cs" />
-    <Compile Include="Model\SqlHelper.cs" />
-    <Compile Include="试验统计\CreateTaskForm.cs">
+    <Compile Include="model\ThirdAppName.cs" />
+    <Compile Include="model\ThirdAppCfgItem.cs" />
+    <Compile Include="model\Copy.cs" />
+    <Compile Include="model\Filter.cs" />
+    <Compile Include="model\MyDelegate.cs" />
+    <Compile Include="model\SqlHelper.cs" />
+    <Compile Include="view\系统管理\ConfigItemForm .cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="试验统计\CreateTaskForm.Designer.cs">
+    <Compile Include="view\系统管理\ConfigItemForm .Designer.cs">
+      <DependentUpon>ConfigItemForm .cs</DependentUpon>
+    </Compile>
+    <Compile Include="view\系统管理\EditConfigItemDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="view\系统管理\EditConfigItemDialog.Designer.cs">
+      <DependentUpon>EditConfigItemDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="view\试验统计\CreateTaskForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="view\试验统计\CreateTaskForm.Designer.cs">
       <DependentUpon>CreateTaskForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="设备管理\EquipmentUsageRecordForm.cs">
+    <Compile Include="view\设备管理\EquipmentUsageRecordForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="设备管理\EquipmentUsageRecordForm.Designer.cs">
+    <Compile Include="view\设备管理\EquipmentUsageRecordForm.Designer.cs">
       <DependentUpon>EquipmentUsageRecordForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="主界面\SampleEditDialog.cs">
+    <Compile Include="view\样品管理\SampleEditDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="主界面\SampleEditDialog.Designer.cs">
+    <Compile Include="view\样品管理\SampleEditDialog.Designer.cs">
       <DependentUpon>SampleEditDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="主界面\SampleForm.cs">
+    <Compile Include="view\样品管理\SampleForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="主界面\SampleForm.Designer.cs">
+    <Compile Include="view\样品管理\SampleForm.Designer.cs">
       <DependentUpon>SampleForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\updateVIN.cs">
+    <Compile Include="view\Dialogs\updateVIN.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\updateVIN.Designer.cs">
+    <Compile Include="view\Dialogs\updateVIN.Designer.cs">
       <DependentUpon>updateVIN.cs</DependentUpon>
     </Compile>
-    <Compile Include="任务管理\AlertTemplate.cs">
+    <Compile Include="view\任务管理\AlertTemplate.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="任务管理\AlertTemplate.Designer.cs">
+    <Compile Include="view\任务管理\AlertTemplate.Designer.cs">
       <DependentUpon>AlertTemplate.cs</DependentUpon>
     </Compile>
-    <Compile Include="任务管理\Delegate.cs" />
-    <Compile Include="任务管理\EditTemplate.cs">
+    <Compile Include="view\任务管理\Delegate.cs" />
+    <Compile Include="view\任务管理\EditTemplate.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="任务管理\EditTemplate.Designer.cs">
+    <Compile Include="view\任务管理\EditTemplate.Designer.cs">
       <DependentUpon>EditTemplate.cs</DependentUpon>
     </Compile>
-    <Compile Include="任务管理\freshForm.cs" />
-    <Compile Include="任务管理\NewTaskForm.cs">
+    <Compile Include="view\任务管理\freshForm.cs" />
+    <Compile Include="view\任务管理\NewTaskForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="任务管理\NewTaskForm.Designer.cs">
+    <Compile Include="view\任务管理\NewTaskForm.Designer.cs">
       <DependentUpon>NewTaskForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="任务管理\ProjectInfo.cs">
+    <Compile Include="view\任务管理\ProjectInfo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="任务管理\ProjectInfo.Designer.cs">
+    <Compile Include="view\任务管理\ProjectInfo.Designer.cs">
       <DependentUpon>ProjectInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="任务管理\SelectTemplate.cs">
+    <Compile Include="view\任务管理\SelectTemplate.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="任务管理\SelectTemplate.Designer.cs">
+    <Compile Include="view\任务管理\SelectTemplate.Designer.cs">
       <DependentUpon>SelectTemplate.cs</DependentUpon>
     </Compile>
-    <Compile Include="任务管理\NewTaskEditDialog.cs">
+    <Compile Include="view\任务管理\NewTaskEditDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="任务管理\NewTaskEditDialog.Designer.cs">
+    <Compile Include="view\任务管理\NewTaskEditDialog.Designer.cs">
       <DependentUpon>NewTaskEditDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="任务管理\Templatecolumn.cs" />
-    <Compile Include="统计\ChartForm.cs">
+    <Compile Include="view\任务管理\Templatecolumn.cs" />
+    <Compile Include="view\统计数据\ChartForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="统计\ChartForm.Designer.cs">
+    <Compile Include="view\统计数据\ChartForm.Designer.cs">
       <DependentUpon>ChartForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="统计\ShowInfo.cs">
+    <Compile Include="view\统计数据\ShowInfo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="统计\ShowInfo.Designer.cs">
+    <Compile Include="view\统计数据\ShowInfo.Designer.cs">
       <DependentUpon>ShowInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="统计\StatisticForm.cs">
+    <Compile Include="view\统计数据\StatisticForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="统计\StatisticForm.Designer.cs">
+    <Compile Include="view\统计数据\StatisticForm.Designer.cs">
       <DependentUpon>StatisticForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="编辑数据\AllocateTest.cs">
+    <Compile Include="view\编辑数据\AllocateTest.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="编辑数据\AllocateTest.Designer.cs">
+    <Compile Include="view\编辑数据\AllocateTest.Designer.cs">
       <DependentUpon>AllocateTest.cs</DependentUpon>
     </Compile>
-    <Compile Include="编辑数据\EditDialog\EquipEditDialog.cs">
+    <Compile Include="view\编辑数据\EditDialog\EquipEditDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="编辑数据\EditDialog\EquipEditDialog.Designer.cs">
+    <Compile Include="view\编辑数据\EditDialog\EquipEditDialog.Designer.cs">
       <DependentUpon>EquipEditDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="编辑数据\FileView.cs">
+    <Compile Include="view\编辑数据\FileView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="编辑数据\FileView.Designer.cs">
+    <Compile Include="view\编辑数据\FileView.Designer.cs">
       <DependentUpon>FileView.cs</DependentUpon>
     </Compile>
-    <Compile Include="设备管理\EquipmentForm.cs">
+    <Compile Include="view\设备管理\EquipmentForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="设备管理\EquipmentForm.Designer.cs">
+    <Compile Include="view\设备管理\EquipmentForm.Designer.cs">
       <DependentUpon>EquipmentForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="编辑数据\FileView1.cs">
+    <Compile Include="view\编辑数据\FileView1.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="编辑数据\FileView1.designer.cs">
+    <Compile Include="view\编辑数据\FileView1.designer.cs">
       <DependentUpon>FileView1.cs</DependentUpon>
     </Compile>
-    <Compile Include="编辑数据\Frmreport.cs">
+    <Compile Include="view\编辑数据\Frmreport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="编辑数据\Frmreport.designer.cs">
+    <Compile Include="view\编辑数据\Frmreport.designer.cs">
       <DependentUpon>Frmreport.cs</DependentUpon>
     </Compile>
-    <Compile Include="编辑数据\SelectWebsite.cs">
+    <Compile Include="view\编辑数据\SelectWebsite.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="编辑数据\SelectWebsite.Designer.cs">
+    <Compile Include="view\编辑数据\SelectWebsite.Designer.cs">
       <DependentUpon>SelectWebsite.cs</DependentUpon>
     </Compile>
-    <Compile Include="编辑数据\StructureDialog.cs">
+    <Compile Include="view\编辑数据\StructureDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="编辑数据\StructureDialog.Designer.cs">
+    <Compile Include="view\编辑数据\StructureDialog.Designer.cs">
       <DependentUpon>StructureDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="编辑数据\蒸发组\ImportData.cs">
+    <Compile Include="view\编辑数据\蒸发组\ImportData.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="编辑数据\蒸发组\ImportData.Designer.cs">
+    <Compile Include="view\编辑数据\蒸发组\ImportData.Designer.cs">
       <DependentUpon>ImportData.cs</DependentUpon>
     </Compile>
-    <Compile Include="编辑数据\AllocateTaskDialog.cs">
+    <Compile Include="view\编辑数据\AllocateTaskDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="编辑数据\AllocateTaskDialog.Designer.cs">
+    <Compile Include="view\编辑数据\AllocateTaskDialog.Designer.cs">
       <DependentUpon>AllocateTaskDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="编辑数据\TaskPreview.cs">
+    <Compile Include="view\编辑数据\TaskPreview.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="编辑数据\TaskPreview.Designer.cs">
+    <Compile Include="view\编辑数据\TaskPreview.Designer.cs">
       <DependentUpon>TaskPreview.cs</DependentUpon>
     </Compile>
-    <Compile Include="编辑数据\EditDialog\BaseEditDialog.cs">
+    <Compile Include="view\Base\BaseEditDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="编辑数据\EditDialog\BaseEditDialog.Designer.cs">
+    <Compile Include="view\Base\BaseEditDialog.Designer.cs">
       <DependentUpon>BaseEditDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\ComboxForm.cs">
+    <Compile Include="view\Dialogs\ComboxForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\ComboxForm.Designer.cs">
+    <Compile Include="view\Dialogs\ComboxForm.Designer.cs">
       <DependentUpon>ComboxForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Model\DataControl.cs" />
-    <Compile Include="主界面\BaseForm.cs">
+    <Compile Include="model\DataControl.cs" />
+    <Compile Include="view\Base\BaseForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="主界面\BaseForm.designer.cs">
+    <Compile Include="view\Base\BaseForm.designer.cs">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="view\主界面\Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="view\主界面\Main.designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\FormDataBase.cs">
+    <Compile Include="view\Dialogs\FormDataBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\FormDataBase.designer.cs">
+    <Compile Include="view\Dialogs\FormDataBase.designer.cs">
       <DependentUpon>FormDataBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\FormUser.cs">
+    <Compile Include="view\Dialogs\FormUser.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\FormUser.designer.cs">
+    <Compile Include="view\Dialogs\FormUser.designer.cs">
       <DependentUpon>FormUser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\SplashScreen1.cs">
+    <Compile Include="view\Dialogs\SplashScreen1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\SplashScreen1.designer.cs">
+    <Compile Include="view\Dialogs\SplashScreen1.designer.cs">
       <DependentUpon>SplashScreen1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\WaitForm1.cs">
+    <Compile Include="view\Dialogs\WaitForm1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\WaitForm1.designer.cs">
+    <Compile Include="view\Dialogs\WaitForm1.designer.cs">
       <DependentUpon>WaitForm1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Model\DataField.cs" />
-    <Compile Include="Model\MyGridViewHandler.cs" />
-    <Compile Include="Model\FormTable.cs" />
-    <Compile Include="Model\User.cs" />
+    <Compile Include="model\DataField.cs" />
+    <Compile Include="model\MyGridViewHandler.cs" />
+    <Compile Include="model\FormTable.cs" />
+    <Compile Include="model\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Dialogs\FormLog.cs">
+    <Compile Include="view\Dialogs\FormLog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\FormLog.Designer.cs">
+    <Compile Include="view\Dialogs\FormLog.Designer.cs">
       <DependentUpon>FormLog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\FormSignIn.cs">
+    <Compile Include="view\主界面\FormSignIn.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\FormSignIn.designer.cs">
+    <Compile Include="view\主界面\FormSignIn.designer.cs">
       <DependentUpon>FormSignIn.cs</DependentUpon>
     </Compile>
-    <Compile Include="主界面\TableControl.cs">
+    <Compile Include="view\Base\TableControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="主界面\TableControl.designer.cs">
+    <Compile Include="view\Base\TableControl.designer.cs">
       <DependentUpon>TableControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="设备管理\EditEquipmentUsageRecordDialog.cs">
+    <Compile Include="view\设备管理\EditEquipmentUsageRecordDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="设备管理\EditEquipmentUsageRecordDialog.Designer.cs">
+    <Compile Include="view\设备管理\EditEquipmentUsageRecordDialog.Designer.cs">
       <DependentUpon>EditEquipmentUsageRecordDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="试验统计\TestEditDialog.cs">
+    <Compile Include="view\试验统计\TestEditDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="试验统计\TestEditDialog.Designer.cs">
+    <Compile Include="view\试验统计\TestEditDialog.Designer.cs">
       <DependentUpon>TestEditDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="试验统计\TestStatistic.cs">
+    <Compile Include="view\试验统计\TestStatistic.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="试验统计\TestStatistic.Designer.cs">
+    <Compile Include="view\试验统计\TestStatistic.Designer.cs">
       <DependentUpon>TestStatistic.cs</DependentUpon>
     </Compile>
-    <Compile Include="项目报价\ProjectEditDialog.cs">
+    <Compile Include="view\项目报价\ProjectEditDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="项目报价\ProjectEditDialog.Designer.cs">
+    <Compile Include="view\项目报价\ProjectEditDialog.Designer.cs">
       <DependentUpon>ProjectEditDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="项目报价\ProjectPrice.cs">
+    <Compile Include="view\项目报价\ProjectPrice.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="项目报价\ProjectPrice.Designer.cs">
+    <Compile Include="view\项目报价\ProjectPrice.Designer.cs">
       <DependentUpon>ProjectPrice.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Dialogs\UserStructure.resx">
+    <EmbeddedResource Include="view\Dialogs\UserStructure.resx">
       <DependentUpon>UserStructure.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\ReminderDialog.resx">
+    <EmbeddedResource Include="view\Dialogs\ReminderDialog.resx">
       <DependentUpon>ReminderDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\updateVIN.resx">
+    <EmbeddedResource Include="view\Dialogs\updateVIN.resx">
       <DependentUpon>updateVIN.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
-    <EmbeddedResource Include="试验统计\CreateTaskForm.resx">
+    <EmbeddedResource Include="view\系统管理\ConfigItemForm .resx">
+      <DependentUpon>ConfigItemForm .cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="view\系统管理\EditConfigItemDialog.resx">
+      <DependentUpon>EditConfigItemDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="view\试验统计\CreateTaskForm.resx">
       <DependentUpon>CreateTaskForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="设备管理\EquipmentUsageRecordForm.resx">
+    <EmbeddedResource Include="view\设备管理\EquipmentUsageRecordForm.resx">
       <DependentUpon>EquipmentUsageRecordForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="任务管理\EditTemplate.resx">
+    <EmbeddedResource Include="view\任务管理\EditTemplate.resx">
       <DependentUpon>EditTemplate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="编辑数据\AllocateTest.resx">
+    <EmbeddedResource Include="view\编辑数据\AllocateTest.resx">
       <DependentUpon>AllocateTest.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="编辑数据\FileView1.resx">
+    <EmbeddedResource Include="view\编辑数据\FileView1.resx">
       <DependentUpon>FileView1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="编辑数据\Frmreport.resx">
+    <EmbeddedResource Include="view\编辑数据\Frmreport.resx">
       <DependentUpon>Frmreport.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="编辑数据\SelectWebsite.resx">
+    <EmbeddedResource Include="view\编辑数据\SelectWebsite.resx">
       <DependentUpon>SelectWebsite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="编辑数据\StructureDialog.resx">
+    <EmbeddedResource Include="view\编辑数据\StructureDialog.resx">
       <DependentUpon>StructureDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="设备管理\EditEquipmentUsageRecordDialog.resx">
+    <EmbeddedResource Include="view\设备管理\EditEquipmentUsageRecordDialog.resx">
       <DependentUpon>EditEquipmentUsageRecordDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="试验统计\TestEditDialog.resx">
+    <EmbeddedResource Include="view\试验统计\TestEditDialog.resx">
       <DependentUpon>TestEditDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="试验统计\TestStatistic.resx">
+    <EmbeddedResource Include="view\试验统计\TestStatistic.resx">
       <DependentUpon>TestStatistic.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="项目报价\ProjectEditDialog.resx">
+    <EmbeddedResource Include="view\项目报价\ProjectEditDialog.resx">
       <DependentUpon>ProjectEditDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="项目报价\ProjectPrice.resx">
+    <EmbeddedResource Include="view\项目报价\ProjectPrice.resx">
       <DependentUpon>ProjectPrice.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="ClassDiagram1.cd" />
     <None Include="ClassDiagram2.cd" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Dialogs\ReplaceSelectRows.resx">
+    <EmbeddedResource Include="view\Dialogs\ReplaceSelectRows.resx">
       <DependentUpon>ReplaceSelectRows.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="设备管理\EquipmentForm.resx">
+    <EmbeddedResource Include="view\设备管理\EquipmentForm.resx">
       <DependentUpon>EquipmentForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="主界面\SampleEditDialog.resx">
+    <EmbeddedResource Include="view\样品管理\SampleEditDialog.resx">
       <DependentUpon>SampleEditDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="主界面\SampleForm.resx">
+    <EmbeddedResource Include="view\样品管理\SampleForm.resx">
       <DependentUpon>SampleForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="任务管理\AlertTemplate.resx">
+    <EmbeddedResource Include="view\任务管理\AlertTemplate.resx">
       <DependentUpon>AlertTemplate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="任务管理\NewTaskForm.resx">
+    <EmbeddedResource Include="view\任务管理\NewTaskForm.resx">
       <DependentUpon>NewTaskForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="任务管理\ProjectInfo.resx">
+    <EmbeddedResource Include="view\任务管理\ProjectInfo.resx">
       <DependentUpon>ProjectInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="任务管理\SelectTemplate.resx">
+    <EmbeddedResource Include="view\任务管理\SelectTemplate.resx">
       <DependentUpon>SelectTemplate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="任务管理\NewTaskEditDialog.resx">
+    <EmbeddedResource Include="view\任务管理\NewTaskEditDialog.resx">
       <DependentUpon>NewTaskEditDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="统计\ChartForm.resx">
+    <EmbeddedResource Include="view\统计数据\ChartForm.resx">
       <DependentUpon>ChartForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="统计\ShowInfo.resx">
+    <EmbeddedResource Include="view\统计数据\ShowInfo.resx">
       <DependentUpon>ShowInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="统计\StatisticForm.resx">
+    <EmbeddedResource Include="view\统计数据\StatisticForm.resx">
       <DependentUpon>StatisticForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="编辑数据\EditDialog\EquipEditDialog.resx">
+    <EmbeddedResource Include="view\编辑数据\EditDialog\EquipEditDialog.resx">
       <DependentUpon>EquipEditDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\AuthorityForm.resx">
+    <EmbeddedResource Include="view\Dialogs\AuthorityForm.resx">
       <DependentUpon>AuthorityForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="编辑数据\FileView.resx">
+    <EmbeddedResource Include="view\编辑数据\FileView.resx">
       <DependentUpon>FileView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="编辑数据\蒸发组\ImportData.resx">
+    <EmbeddedResource Include="view\编辑数据\蒸发组\ImportData.resx">
       <DependentUpon>ImportData.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="编辑数据\AllocateTaskDialog.resx">
+    <EmbeddedResource Include="view\编辑数据\AllocateTaskDialog.resx">
       <DependentUpon>AllocateTaskDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="编辑数据\TaskPreview.resx">
+    <EmbeddedResource Include="view\编辑数据\TaskPreview.resx">
       <DependentUpon>TaskPreview.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="编辑数据\EditDialog\BaseEditDialog.resx">
+    <EmbeddedResource Include="view\Base\BaseEditDialog.resx">
       <DependentUpon>BaseEditDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\ComboxForm.resx">
+    <EmbeddedResource Include="view\Dialogs\ComboxForm.resx">
       <DependentUpon>ComboxForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="主界面\BaseForm.resx">
+    <EmbeddedResource Include="view\Base\BaseForm.resx">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="view\主界面\Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\FormDataBase.resx">
+    <EmbeddedResource Include="view\Dialogs\FormDataBase.resx">
       <DependentUpon>FormDataBase.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\FormUser.resx">
+    <EmbeddedResource Include="view\Dialogs\FormUser.resx">
       <DependentUpon>FormUser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\SplashScreen1.resx">
+    <EmbeddedResource Include="view\Dialogs\SplashScreen1.resx">
       <DependentUpon>SplashScreen1.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\WaitForm1.resx">
+    <EmbeddedResource Include="view\Dialogs\WaitForm1.resx">
       <DependentUpon>WaitForm1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="主界面\TableControl.resx">
+    <EmbeddedResource Include="view\Base\TableControl.resx">
       <DependentUpon>TableControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -640,10 +662,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Dialogs\FormLog.resx">
+    <EmbeddedResource Include="view\Dialogs\FormLog.resx">
       <DependentUpon>FormLog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\FormSignIn.resx">
+    <EmbeddedResource Include="view\主界面\FormSignIn.resx">
       <DependentUpon>FormSignIn.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -724,6 +746,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ICON.ico" />
+    <None Include="Resources\称重端app.png" />
+    <None Include="Resources\称重端.png" />
     <None Include="Resources\绿.png" />
     <None Include="Resources\红.png" />
     <None Include="Resources\警报.gif" />

@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem2 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem1 = new DevExpress.Utils.ToolTipItem();
             this.ribbonControl1 = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.backstageViewControl1 = new DevExpress.XtraBars.Ribbon.BackstageViewControl();
             this.backstageViewClientControl2 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
@@ -91,12 +91,14 @@
             this.accordionControlElement43 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.网址链接 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement6 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.accordionControlWeight = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement4 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.系统维护 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement14 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement19 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement1 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement3 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.tabItemConfig = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement2 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.accordionControlElement5 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -519,9 +521,9 @@
             this.barRemainder.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.warning_32x32;
             this.barRemainder.Name = "barRemainder";
             this.barRemainder.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large;
-            toolTipItem2.Text = "查看试验任务和设备状态提醒";
-            superToolTip2.Items.Add(toolTipItem2);
-            this.barRemainder.SuperTip = superToolTip2;
+            toolTipItem1.Text = "查看试验任务和设备状态提醒";
+            superToolTip1.Items.Add(toolTipItem1);
+            this.barRemainder.SuperTip = superToolTip1;
             this.barRemainder.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barRemainder_ItemClick);
             // 
             // barButtonItem1
@@ -634,6 +636,7 @@
             this.项目报价,
             this.网址链接,
             this.accordionControlElement6,
+            this.accordionControlWeight,
             this.accordionControlElement4,
             this.系统维护});
             this.accordionControl1.Location = new System.Drawing.Point(0, 190);
@@ -762,6 +765,16 @@
             this.accordionControlElement6.Text = "蒸发系统";
             this.accordionControlElement6.Click += new System.EventHandler(this.accordionControlElement6_Click_1);
             // 
+            // accordionControlWeight
+            // 
+            this.accordionControlWeight.Appearance.Normal.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.accordionControlWeight.Appearance.Normal.Options.UseFont = true;
+            this.accordionControlWeight.ImageOptions.Image = global::TaskManager.Properties.Resources.称重端app;
+            this.accordionControlWeight.Name = "accordionControlWeight";
+            this.accordionControlWeight.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.accordionControlWeight.Text = "称重系统";
+            this.accordionControlWeight.Click += new System.EventHandler(this.accordionControlWeight_Click);
+            // 
             // accordionControlElement4
             // 
             this.accordionControlElement4.Appearance.Normal.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -778,7 +791,9 @@
             this.accordionControlElement14,
             this.accordionControlElement19,
             this.accordionControlElement1,
-            this.accordionControlElement3});
+            this.accordionControlElement3,
+            this.tabItemConfig});
+            this.系统维护.Expanded = true;
             this.系统维护.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("系统维护.ImageOptions.Image")));
             this.系统维护.Name = "系统维护";
             this.系统维护.Text = "系统配置";
@@ -814,6 +829,14 @@
             this.accordionControlElement3.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
             this.accordionControlElement3.Text = "组织结构";
             this.accordionControlElement3.Click += new System.EventHandler(this.accordionControlElement3_Click);
+            // 
+            // tabItemConfig
+            // 
+            this.tabItemConfig.ImageOptions.Image = global::TaskManager.Properties.Resources.addfooter_32x32;
+            this.tabItemConfig.Name = "tabItemConfig";
+            this.tabItemConfig.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.tabItemConfig.Text = "备 选 项";
+            this.tabItemConfig.Click += new System.EventHandler(this.tabItemConfig_Click);
             // 
             // accordionControlElement2
             // 
@@ -1010,8 +1033,10 @@
         private DevExpress.XtraBars.BarStaticItem baralert;
         private System.Windows.Forms.Timer timer2;
         private DevExpress.XtraBars.Navigation.AccordionControlElement accordionControlElement6;
+        private DevExpress.XtraBars.Navigation.AccordionControlElement accordionControlWeight;
         private System.Windows.Forms.Button btnDownloadExe;
         private System.Windows.Forms.Button btnDownloadCode;
         private System.Windows.Forms.Button btnSubmmitCode;
+        private DevExpress.XtraBars.Navigation.AccordionControlElement tabItemConfig;
     }
 }

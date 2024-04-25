@@ -92,7 +92,7 @@
             this.btnUploadFiles});
             this.ribbonControl1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.ribbonControl1.MaxItemId = 68;
-            this.ribbonControl1.Size = new System.Drawing.Size(1572, 184);
+            this.ribbonControl1.Size = new System.Drawing.Size(1592, 190);
             this.ribbonControl1.Click += new System.EventHandler(this.ribbonControl1_Click);
             // 
             // ribbonPage1
@@ -128,8 +128,9 @@
             // 
             // _control
             // 
+            this._control.Location = new System.Drawing.Point(0, 190);
             this._control.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
-            this._control.Size = new System.Drawing.Size(1572, 592);
+            this._control.Size = new System.Drawing.Size(1592, 596);
             this._control.Load += new System.EventHandler(this._control_Load);
             // 
             // barButtonItem2
@@ -233,8 +234,8 @@
             // 
             this.btnUploadFiles.Caption = "上传附件";
             this.btnUploadFiles.Id = 67;
-            this.btnUploadFiles.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItem15.ImageOptions.Image")));
-            this.btnUploadFiles.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItem15.ImageOptions.LargeImage")));
+            this.btnUploadFiles.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnUploadFiles.ImageOptions.Image")));
+            this.btnUploadFiles.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnUploadFiles.ImageOptions.LargeImage")));
             this.btnUploadFiles.Name = "btnUploadFiles";
             this.btnUploadFiles.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnUploadFiles_ItemClick);
             // 
@@ -288,7 +289,7 @@
             // SampleForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
-            this.ClientSize = new System.Drawing.Size(1572, 776);
+            this.ClientSize = new System.Drawing.Size(1592, 786);
             this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.Name = "SampleForm";
             this.Activated += new System.EventHandler(this.SampleForm_Activated);

@@ -289,6 +289,9 @@ namespace TaskManager
             repoEquipmentManageState.Items.AddRange(ConstHolder.EQUIPMENT_STATE_CHN_NAMES);
             repoEquipmentTraceabilityState.Items.AddRange(ConstHolder.EQUIPMENT_TRACEABILITY_STATE_CHN_NAMES);
 
+            //配置项类型
+            repoConfigItemName.Items.AddRange(Form1.ComboxDictionary["配置项名称"]);
+
             foreach (GridColumn col in _view.Columns)
             {
                 var field = DataField.GetFieldByEng(Fields, col.FieldName);
@@ -408,6 +411,8 @@ namespace TaskManager
                     col.ColumnEdit = repoEquipmentManageState;
                 else if (field.Format.Equals("设备溯源状态"))
                     col.ColumnEdit = repoEquipmentTraceabilityState;
+                else if (field.Format.Equals("配置项名称"))
+                    col.ColumnEdit = repoConfigItemName;
             }
         }
 
