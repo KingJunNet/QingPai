@@ -195,6 +195,7 @@ namespace TaskManager.infrastructure.db
             sampleBrief.DriverType = row["Drivertype"].ToString().Trim();
             sampleBrief.FuelType = row["FuelType"].ToString().Trim();
             sampleBrief.Roz = row["FuelLabel"].ToString().Trim();
+            sampleBrief.Tirepressure = row["Tirepressure"].ToString().Trim();
 
             return sampleBrief;
         }

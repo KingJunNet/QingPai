@@ -687,12 +687,9 @@ namespace TaskManager
         /// 获取lims数据
         /// </summary>
         public void GetLimsData(string startdate,string enddate) {
-
-            
-
-           
-            string strURL = "http://10.12.48.2/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
+            //string strURL = "http://10.12.48.2/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
             //string strURL = "http://rmyc6395.xicp.net:18085/tjoa/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
+            string strURL = "http://rmyc6395.xicp.net:17099/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
 
 
             //创建一个HTTP请求 (公用)

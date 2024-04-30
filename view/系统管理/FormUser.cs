@@ -63,7 +63,8 @@ namespace TaskManager
 
         private void FormUser_Load(object sender, EventArgs e)
         {
-            userContrl.InitRepoCombox();
+            //userContrl.InitRepoCombox();
+            repoDepartment.Items.AddRange(FormSignIn.UserDic.Keys);
         }
     }
 

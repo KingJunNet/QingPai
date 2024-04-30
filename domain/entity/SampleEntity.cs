@@ -244,13 +244,14 @@ namespace TaskManager.domain.entity
             new SqlParameter("OBDProductor",DbHelper.ValueOrDBNullIfNull(this.OBDProductor)),
             new SqlParameter("BOBForm",DbHelper.ValueOrDBNullIfNull(this.BOBForm)),
             new SqlParameter("Remark",DbHelper.ValueOrDBNullIfNull(this.Remark)),
-            new SqlParameter("consistent",DbHelper.ValueOrDBNullIfNull(this.Consistent))
-                };
+            new SqlParameter("consistent",DbHelper.ValueOrDBNullIfNull(this.Consistent)),
+            };
 
             return parameters;
         }
 
-        public SampleEntity init(String author,DateTime time) {
+        public SampleEntity init(String author, DateTime time)
+        {
             this.CreatePeople = author;
             this.RegPeople = author;
             this.UpdateDate = time;
@@ -258,7 +259,8 @@ namespace TaskManager.domain.entity
             return this;
         }
 
-        public SampleEntity fromBrief(SampleBrief brief) {
+        public SampleEntity fromBrief(SampleBrief brief)
+        {
             this.VIN = brief.Vin;
             this.SampleType = brief.SampleType;
             this.CarType = brief.CarType;
@@ -272,6 +274,8 @@ namespace TaskManager.domain.entity
             this.DriveFormParameter = brief.DriverType;
             this.FuelType = brief.FuelType;
             this.FuelLabel = brief.Roz;
+            this.FetalPressureParameter = brief.Tirepressure;
+
 
             return this;
         }

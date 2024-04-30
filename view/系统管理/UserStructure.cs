@@ -38,6 +38,7 @@ namespace TaskManager
             {
                 //gridView1.OptionsBehavior.Editable = true;
             }
+           
         }
 
         private void FormUser_Shown(object sender, EventArgs e)
@@ -98,7 +99,8 @@ namespace TaskManager
 
         private void UserStructure_Load(object sender, EventArgs e)
         {
-
+            repoDepartment.Items.AddRange(FormSignIn.UserDic.Keys);
+            this.gridColumn6.ColumnEdit = this.repoDepartment;
         }
 
         /// <summary>

@@ -159,6 +159,7 @@
     <Compile Include="common\utils\Report.cs" />
     <Compile Include="common\utils\ReportPlus.cs" />
     <Compile Include="common\utils\StringUtils.cs" />
+    <Compile Include="controller\ConfigStorage.cs" />
     <Compile Include="controller\ServerConfig.cs" />
     <Compile Include="controller\MaskLayer .cs">
       <SubType>Component</SubType>
@@ -169,16 +170,16 @@
     <Compile Include="controller\UserHelper.cs" />
     <Compile Include="domain\entity\ConfigItemEntity.cs" />
     <Compile Include="domain\service\RoleManager.cs" />
-    <Compile Include="view\Dialogs\AuthorityForm.cs">
+    <Compile Include="view\系统管理\AuthorityForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="view\Dialogs\AuthorityForm.Designer.cs">
+    <Compile Include="view\系统管理\AuthorityForm.Designer.cs">
       <DependentUpon>AuthorityForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="view\Dialogs\UserStructure.cs">
+    <Compile Include="view\系统管理\UserStructure.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="view\Dialogs\UserStructure.designer.cs">
+    <Compile Include="view\系统管理\UserStructure.designer.cs">
       <DependentUpon>UserStructure.cs</DependentUpon>
     </Compile>
     <Compile Include="view\Dialogs\ReminderDialog.cs">
@@ -340,16 +341,16 @@
     <Compile Include="view\统计数据\StatisticForm.Designer.cs">
       <DependentUpon>StatisticForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="view\编辑数据\AllocateTest.cs">
+    <Compile Include="view\试验统计\AllocateTest.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="view\编辑数据\AllocateTest.Designer.cs">
+    <Compile Include="view\试验统计\AllocateTest.Designer.cs">
       <DependentUpon>AllocateTest.cs</DependentUpon>
     </Compile>
-    <Compile Include="view\编辑数据\EditDialog\EquipEditDialog.cs">
+    <Compile Include="view\设备管理\EquipEditDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="view\编辑数据\EditDialog\EquipEditDialog.Designer.cs">
+    <Compile Include="view\设备管理\EquipEditDialog.Designer.cs">
       <DependentUpon>EquipEditDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="view\编辑数据\FileView.cs">
@@ -382,10 +383,10 @@
     <Compile Include="view\编辑数据\SelectWebsite.Designer.cs">
       <DependentUpon>SelectWebsite.cs</DependentUpon>
     </Compile>
-    <Compile Include="view\编辑数据\StructureDialog.cs">
+    <Compile Include="view\系统管理\StructureDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="view\编辑数据\StructureDialog.Designer.cs">
+    <Compile Include="view\系统管理\StructureDialog.Designer.cs">
       <DependentUpon>StructureDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="view\编辑数据\蒸发组\ImportData.cs">
@@ -394,10 +395,10 @@
     <Compile Include="view\编辑数据\蒸发组\ImportData.Designer.cs">
       <DependentUpon>ImportData.cs</DependentUpon>
     </Compile>
-    <Compile Include="view\编辑数据\AllocateTaskDialog.cs">
+    <Compile Include="view\试验统计\AllocateTaskDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="view\编辑数据\AllocateTaskDialog.Designer.cs">
+    <Compile Include="view\试验统计\AllocateTaskDialog.Designer.cs">
       <DependentUpon>AllocateTaskDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="view\编辑数据\TaskPreview.cs">
@@ -437,10 +438,10 @@
     <Compile Include="view\Dialogs\FormDataBase.designer.cs">
       <DependentUpon>FormDataBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="view\Dialogs\FormUser.cs">
+    <Compile Include="view\系统管理\FormUser.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="view\Dialogs\FormUser.designer.cs">
+    <Compile Include="view\系统管理\FormUser.designer.cs">
       <DependentUpon>FormUser.cs</DependentUpon>
     </Compile>
     <Compile Include="view\Dialogs\SplashScreen1.cs">
@@ -449,10 +450,10 @@
     <Compile Include="view\Dialogs\SplashScreen1.designer.cs">
       <DependentUpon>SplashScreen1.cs</DependentUpon>
     </Compile>
-    <Compile Include="view\Dialogs\WaitForm1.cs">
+    <Compile Include="view\Base\WaitForm1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="view\Dialogs\WaitForm1.designer.cs">
+    <Compile Include="view\Base\WaitForm1.designer.cs">
       <DependentUpon>WaitForm1.cs</DependentUpon>
     </Compile>
     <Compile Include="model\DataField.cs" />
@@ -461,10 +462,10 @@
     <Compile Include="model\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="view\Dialogs\FormLog.cs">
+    <Compile Include="view\系统管理\FormLog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="view\Dialogs\FormLog.Designer.cs">
+    <Compile Include="view\系统管理\FormLog.Designer.cs">
       <DependentUpon>FormLog.cs</DependentUpon>
     </Compile>
     <Compile Include="view\主界面\FormSignIn.cs">
@@ -509,7 +510,7 @@
     <Compile Include="view\项目报价\ProjectPrice.Designer.cs">
       <DependentUpon>ProjectPrice.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="view\Dialogs\UserStructure.resx">
+    <EmbeddedResource Include="view\系统管理\UserStructure.resx">
       <DependentUpon>UserStructure.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="view\Dialogs\ReminderDialog.resx">
@@ -534,7 +535,7 @@
     <EmbeddedResource Include="view\任务管理\EditTemplate.resx">
       <DependentUpon>EditTemplate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="view\编辑数据\AllocateTest.resx">
+    <EmbeddedResource Include="view\试验统计\AllocateTest.resx">
       <DependentUpon>AllocateTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="view\编辑数据\FileView1.resx">
@@ -546,7 +547,7 @@
     <EmbeddedResource Include="view\编辑数据\SelectWebsite.resx">
       <DependentUpon>SelectWebsite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="view\编辑数据\StructureDialog.resx">
+    <EmbeddedResource Include="view\系统管理\StructureDialog.resx">
       <DependentUpon>StructureDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="view\设备管理\EditEquipmentUsageRecordDialog.resx">
@@ -603,10 +604,10 @@
     <EmbeddedResource Include="view\统计数据\StatisticForm.resx">
       <DependentUpon>StatisticForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="view\编辑数据\EditDialog\EquipEditDialog.resx">
+    <EmbeddedResource Include="view\设备管理\EquipEditDialog.resx">
       <DependentUpon>EquipEditDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="view\Dialogs\AuthorityForm.resx">
+    <EmbeddedResource Include="view\系统管理\AuthorityForm.resx">
       <DependentUpon>AuthorityForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -616,7 +617,7 @@
     <EmbeddedResource Include="view\编辑数据\蒸发组\ImportData.resx">
       <DependentUpon>ImportData.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="view\编辑数据\AllocateTaskDialog.resx">
+    <EmbeddedResource Include="view\试验统计\AllocateTaskDialog.resx">
       <DependentUpon>AllocateTaskDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="view\编辑数据\TaskPreview.resx">
@@ -639,14 +640,14 @@
       <DependentUpon>FormDataBase.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="view\Dialogs\FormUser.resx">
+    <EmbeddedResource Include="view\系统管理\FormUser.resx">
       <DependentUpon>FormUser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="view\Dialogs\SplashScreen1.resx">
       <DependentUpon>SplashScreen1.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="view\Dialogs\WaitForm1.resx">
+    <EmbeddedResource Include="view\Base\WaitForm1.resx">
       <DependentUpon>WaitForm1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="view\Base\TableControl.resx">
@@ -662,7 +663,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="view\Dialogs\FormLog.resx">
+    <EmbeddedResource Include="view\系统管理\FormLog.resx">
       <DependentUpon>FormLog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="view\主界面\FormSignIn.resx">

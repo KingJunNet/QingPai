@@ -94,6 +94,12 @@ namespace TaskManager.domain.valueobject
         /// <value>The id.</value>
         public string Roz { get; set; }
 
+        /// <summary>
+        /// Id
+        /// </summary>
+        /// <value>The id.</value>
+        public string Tirepressure { get; set; }
+
         public bool equalsBack(SampleBrief another)
         {
             return another.Vin.Equals(this.Vin) &&
@@ -108,7 +114,8 @@ namespace TaskManager.domain.valueobject
               another.TransType.Equals(this.TransType) &&
               another.DriverType.Equals(this.DriverType) &&
               another.FuelType.Equals(this.FuelType) &&
-              another.Roz.Equals(this.Roz);
+              another.Roz.Equals(this.Roz) &&
+              another.Tirepressure.Equals(this.Tirepressure);
         }
 
         public void copyFrom(SampleBrief another)
@@ -126,6 +133,7 @@ namespace TaskManager.domain.valueobject
             this.DriverType = another.DriverType;
             this.FuelType = another.FuelType;
             this.Roz = another.Roz;
+            this.Tirepressure = another.Tirepressure;
         }
 
         public bool equals(SampleBrief another, out List<FieldChangedState> changedStates)
@@ -185,6 +193,7 @@ namespace TaskManager.domain.valueobject
             {
                 changedStates.Add(new FieldChangedState("燃油标号", this.Roz, another.Roz));
             }
+
 
             return Collections.isEmpty(changedStates);
         }

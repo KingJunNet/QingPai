@@ -259,6 +259,8 @@ namespace TaskManager
             titleComboxDriverType.SetItems(Form1.ComboxDictionary["驱动形式"]);
             titleComboxFuelType.SetItems(Form1.ComboxDictionary["燃料类型"]);
             titleComboxRoz.SetItems(Form1.ComboxDictionary["燃油标号"]);
+            titleComboxTirepressure.SetItems(Form1.ComboxDictionary["胎压"]);
+            titleComboxTirepressure.Visible = true;
 
             titleComboxItemType.SetItems(Form1.ComboxDictionary["项目类型"]);
             titleComboxItemBrief.SetItems(Form1.ComboxDictionary["项目简称"]);
@@ -560,7 +562,7 @@ namespace TaskManager
             titleComboxDriverType.SetValue(sample.DriverType);
             titleComboxFuelType.SetValue(sample.FuelType);
             titleComboxRoz.SetValue(sample.Roz);
-
+            titleComboxTirepressure.SetValue(sample.Tirepressure);
             //
         }
 
@@ -582,6 +584,7 @@ namespace TaskManager
             titleComboxDriverType.SetValue("");
             titleComboxFuelType.SetValue("");
             titleComboxRoz.SetValue("");
+            titleComboxTirepressure.SetValue("");
         }
 
         private void itemChangeHandler(object sender, EventArgs e)
@@ -849,6 +852,7 @@ namespace TaskManager
             string driverType = titleComboxDriverType.Text;
             string fuelType = titleComboxFuelType.Text;
             string roz = titleComboxRoz.Text;
+            string tirepressure = titleComboxTirepressure.Text;
 
             string itemType = titleComboxItemType.Text;
             string itemBrief = titleComboxItemBrief.Text;
@@ -868,7 +872,7 @@ namespace TaskManager
                 .createdTask(group = group, area = area, locationNo = locationNo, uesr = uesr,
              sampleType = sampleType, vin = vin, carType = carType, carModel = carModel,
              producer = producer, engineType = engineType, engineModel = engineModel, engineProducer = engineProducer,
-             ynDirect = ynDirect, transType = transType, driverType = driverType, fuelType = fuelType, roz = roz,
+             ynDirect = ynDirect, transType = transType, driverType = driverType, fuelType = fuelType, roz = roz, tirepressure=tirepressure,
              itemType = itemType, itemBrief = itemBrief, standard = standard, beginTime = beginTime, itemRemark,
              taskCode,taskCodeRemark, securityLevel,
              registrationDate,this.itemEquipments,createUser,nowTime);

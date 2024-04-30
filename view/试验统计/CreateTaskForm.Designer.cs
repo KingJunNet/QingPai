@@ -53,6 +53,7 @@ namespace TaskManager
             this.titleComboxDriverType = new ExpertLib.Controls.TitleCombox();
             this.titleComboxFuelType = new ExpertLib.Controls.TitleCombox();
             this.titleComboxRoz = new ExpertLib.Controls.TitleCombox();
+            this.titleComboxTirepressure = new ExpertLib.Controls.TitleCombox();
             this.label7 = new System.Windows.Forms.Label();
             this.titleComboxItemType = new ExpertLib.Controls.RequiredTitleCombox();
             this.titleComboxItemBrief = new ExpertLib.Controls.RequiredTitleCombox();
@@ -124,6 +125,7 @@ namespace TaskManager
             this.flowLayoutPanel1.Controls.Add(this.titleComboxDriverType);
             this.flowLayoutPanel1.Controls.Add(this.titleComboxFuelType);
             this.flowLayoutPanel1.Controls.Add(this.titleComboxRoz);
+            this.flowLayoutPanel1.Controls.Add(this.titleComboxTirepressure);
             this.flowLayoutPanel1.Controls.Add(this.label7);
             this.flowLayoutPanel1.Controls.Add(this.titleComboxItemType);
             this.flowLayoutPanel1.Controls.Add(this.titleComboxItemBrief);
@@ -380,6 +382,19 @@ namespace TaskManager
             this.titleComboxRoz.TabIndex = 91;
             this.titleComboxRoz.Title = "燃油标号";
             this.titleComboxRoz.ViewModels = null;
+            // 
+            // titleComboxTirepressure
+            // 
+            this.titleComboxTirepressure.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.titleComboxTirepressure.LabelWidth = 100;
+            this.titleComboxTirepressure.Location = new System.Drawing.Point(438, 393);
+            this.titleComboxTirepressure.Margin = new System.Windows.Forms.Padding(5);
+            this.titleComboxTirepressure.Name = "titleComboxTirepressure";
+            this.titleComboxTirepressure.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.titleComboxTirepressure.Size = new System.Drawing.Size(420, 41);
+            this.titleComboxTirepressure.TabIndex = 111;
+            this.titleComboxTirepressure.Title = "胎压";
+            this.titleComboxTirepressure.ViewModels = null;
             // 
             // label7
             // 
@@ -675,6 +690,7 @@ namespace TaskManager
         private TitleCombox titleComboxDriverType;
         private TitleCombox titleComboxFuelType;
         private TitleCombox titleComboxRoz;
+        private TitleCombox titleComboxTirepressure;
         private System.Windows.Forms.Label label7;
         private TitleCombox titleComboxItemType;
         private TitleCombox titleComboxItemBrief;

@@ -77,7 +77,7 @@ namespace TaskManager.infrastructure.db
             "PowerType",
             "EngineModel",
             "EngineProducter",
-            "DirectInjection",
+            "DirectInjection"
              };
 
         public SampleRepository()
@@ -174,7 +174,7 @@ namespace TaskManager.infrastructure.db
         private SampleBrief dataRow2SampleBrief(DataRow row)
         {
             SampleBrief sampleBrief = new SampleBrief();
-            sampleBrief.Id =int.Parse(row["ID"].ToString().Trim());
+            sampleBrief.Id = int.Parse(row["ID"].ToString().Trim());
             sampleBrief.Vin = row["VIN"].ToString().Trim();
             sampleBrief.SampleType = row["SampleType"].ToString().Trim();
             sampleBrief.CarType = row["CarType"].ToString().Trim();
@@ -188,6 +188,7 @@ namespace TaskManager.infrastructure.db
             sampleBrief.DriverType = row["DriveFormParameter"].ToString().Trim();
             sampleBrief.FuelType = row["FuelType"].ToString().Trim();
             sampleBrief.Roz = row["FuelLabel"].ToString().Trim();
+            sampleBrief.Tirepressure = row["FetalPressureParameter"].ToString().Trim();
 
             return sampleBrief;
         }

@@ -292,7 +292,7 @@ namespace TaskManager.domain.entity
             string driverType,
             string fuelType,
             string roz,
-
+            string tirepressure,
             string itemType,
             string itemBrief,
             string standard,
@@ -322,6 +322,7 @@ namespace TaskManager.domain.entity
             this.DriverType = driverType;
             this.FuelType = fuelType;
             this.FuelLabel = roz;
+            this.TirePressure = tirepressure;
             this.ItemType = itemType;
             this.ItemBrief = itemBrief;
             this.StandardStage = standard;
@@ -468,6 +469,7 @@ namespace TaskManager.domain.entity
             sampleBrief.DriverType = this.DriverType;
             sampleBrief.FuelType = this.FuelType;
             sampleBrief.Roz = this.FuelLabel;
+            sampleBrief.Tirepressure = this.TirePressure;
 
             return sampleBrief;
         }

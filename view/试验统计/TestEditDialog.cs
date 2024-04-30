@@ -1391,6 +1391,7 @@ namespace TaskManager
             this.setComboxValue("Drivertype", sample.DriverType);
             this.setComboxValue("FuelType", sample.FuelType);
             this.setComboxValue("FuelLabel", sample.Roz);
+            this.setComboxValue("Tirepressure", sample.Tirepressure);
         }
 
         private void notExistVinHnadler()
@@ -1412,6 +1413,7 @@ namespace TaskManager
             this.setComboxValue("Drivertype", "");
             this.setComboxValue("FuelType", "");
             this.setComboxValue("FuelLabel", "");
+            this.setComboxValue("Tirepressure", "");
         }
 
         private void updateEquipmentUsageRecordrRemark() {

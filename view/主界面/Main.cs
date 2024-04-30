@@ -29,8 +29,8 @@ namespace TaskManager
     //4、首次进入判断更新
     public partial class Form1 : DevExpress.XtraBars.Ribbon.RibbonForm
     {
-        public static double curVersion = 2024.0101;
-        public static double newestVersion = 2024.0101;
+        public static double curVersion = 2024.0001;
+        public static double newestVersion = 2024.0001;
 
 
         public const string RootFolder = "轻排参数表服务器";
@@ -1849,10 +1849,53 @@ namespace TaskManager
 
         private void accordionControlWeight_Click(object sender, EventArgs e)
         {
-            this.startThirdApp(ThirdAppName.WEIGHT_CLIENT.ToString());
+            this.startThirdApp(ThirdAppName.WEIGHT_CLIENT);
         }
 
-        private void startThirdApp(string appName) {
+        /// <summary>
+        /// 蒸发系统
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void accordionControlElement6_Click_1(object sender, EventArgs e)
+        {
+            this.startThirdApp(ThirdAppName.EVAPORATION_SYSTEM);
+        }
+
+        private void startEvaporationSystemOld()
+        {
+            //try
+            //{
+            //    //string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            //    //MessageBox.Show(path);
+            //    DirectoryInfo info0 = new DirectoryInfo(Application.StartupPath);
+            //    string debugpath = info0.Parent.FullName + "\\ORVR系统\\ORVR.exe";
+            //    //string debugpath = path + "\\ORVR.lnk";
+            //    //string realpath = getOriginPath(debugpath);
+            //    Process.Start(debugpath);
+            //}
+            //catch
+            //{
+            //    MessageBox.Show("请将蒸发系统安装包放到D盘根目录下,并将文件夹命名为'ORVR系统'", "提示");
+            //}
+        }
+
+        private void startThirdApp(ThirdAppName appName)
+        {
+            string appDescription = appName.GetDescription();
+            string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string appPath = Path.Combine(appDirectory, ConfigStorage.Instance.ThirdAppRelativePathMap[appName]);
+            if (string.IsNullOrEmpty(appPath) || !System.IO.File.Exists(appPath))
+            {
+                DialogResult result = MessageBox.Show("应用路径无效或文件不存在,请重新安装应用！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
+                return;
+            }
+
+            //启动应用
+            StartApp(appPath);
+        }
+
+        private void startThirdAppBack(string appName) {
             string appPath = GetAppPathFromBinFile(appName);
             if (string.IsNullOrEmpty(appPath) || !System.IO.File.Exists(appPath))
             {
@@ -1936,30 +1979,7 @@ namespace TaskManager
             string errorMessage = ex != null ? $"{message}: {ex.Message}" : message;
             MessageBox.Show(errorMessage, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-
-        /// <summary>
-        /// 蒸发系统
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void accordionControlElement6_Click_1(object sender, EventArgs e)
-        {
-            try
-            {
-                //string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                //MessageBox.Show(path);
-                DirectoryInfo info0 = new DirectoryInfo(Application.StartupPath);
-                string debugpath = info0.Parent.FullName + "\\ORVR系统\\ORVR.exe";
-                //string debugpath = path + "\\ORVR.lnk";
-                //string realpath = getOriginPath(debugpath);
-                Process.Start(debugpath);
-            }
-            catch
-            {
-                MessageBox.Show("请将蒸发系统安装包放到D盘根目录下,并将文件夹命名为'ORVR系统'", "提示");
-            }
-        }
-
+      
         private void ribbonControl1_Click(object sender, EventArgs e)
         {
     
