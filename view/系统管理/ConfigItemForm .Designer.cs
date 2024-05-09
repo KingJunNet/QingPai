@@ -83,16 +83,15 @@
             // 
             // _control
             // 
-            this._control.Location = new System.Drawing.Point(0, 190);
             this._control.Size = new System.Drawing.Size(1162, 747);
             // 
-            // ConfigItemForm 
+            // ConfigItemForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1162, 937);
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.Name = "ConfigItemForm ";
+            this.Name = "ConfigItemForm";
             this.Text = "EquipmentRecordForm";
             this.Load += new System.EventHandler(this.EquipmentRecordForm_Load);
             this.Controls.SetChildIndex(this.ribbonControl1, 0);

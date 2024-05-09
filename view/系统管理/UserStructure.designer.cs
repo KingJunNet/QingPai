@@ -77,7 +77,7 @@
             this.ribbon.Name = "ribbon";
             this.ribbon.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage1});
-            this.ribbon.Size = new System.Drawing.Size(1199, 184);
+            this.ribbon.Size = new System.Drawing.Size(1199, 190);
             this.ribbon.Click += new System.EventHandler(this.ribbon_Click);
             // 
             // barButtonItem1
@@ -150,7 +150,7 @@
             // gridControl1
             // 
             this.gridControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gridControl1.Location = new System.Drawing.Point(0, 184);
+            this.gridControl1.Location = new System.Drawing.Point(0, 190);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.MenuManager = this.ribbon;
             this.gridControl1.Name = "gridControl1";
@@ -158,16 +158,10 @@
             this.repositoryItemPictureEdit1,
             this.repositoryItemTextEdit1,
             this.repoDepartment});
-            this.gridControl1.Size = new System.Drawing.Size(1199, 427);
+            this.gridControl1.Size = new System.Drawing.Size(1199, 421);
             this.gridControl1.TabIndex = 1;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
-
-            //this.gridControl1.UseEmbeddedNavigator = true;
-            //this.gridControl1.EmbeddedNavigator.Buttons.Append.Visible = false;
-            //this.gridControl1.EmbeddedNavigator.Buttons.Remove.Visible = false;
-            //this.gridControl1.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-
             // 
             // gridView1
             // 

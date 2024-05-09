@@ -148,6 +148,25 @@ public class DataControl
         }
     }
     
+    public DataSet ExecuteHighCostQuery(string strSql)
+    {
+        DataSet newDataSet;
+        using (var SqlConn = new SqlConnection())
+        {
+            SqlConn.ConnectionString = strCon;
+            SqlConn.Open();
+
+            var dataAdapter = new SqlDataAdapter(strSql, SqlConn);
+            dataAdapter.SelectCommand.CommandTimeout = 60*15;
+            newDataSet = new DataSet();
+            dataAdapter.Fill(newDataSet);
+
+            SqlConn.Close();
+            SqlConn.Dispose();
+        }
+        return newDataSet;
+    }
+
     public DataSet ExecuteQuery(string strSql)
     {
         DataSet newDataSet;

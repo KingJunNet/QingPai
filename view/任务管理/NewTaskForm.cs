@@ -19,40 +19,46 @@ using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using LabSystem.DAL;
 using Newtonsoft.Json.Linq;
+using TaskManager.common.utils;
+using TaskManager.Model;
 using Xfrog.Net;
 
 namespace TaskManager
 {
     public partial class NewTaskForm : BaseForm
     {
+        public static readonly string LIMS_API_HOST_LAN = "http://10.12.48.2";
+        public static readonly string LIMS_API_HOST_NET = "http://rmyc6395.xicp.net:17099";
 
-      
+        private string limsApiHost;
+
         public NewTaskForm()
         {
             InitializeComponent();
+            this.limsApiHost = LIMS_API_HOST_LAN;
         }
 
         public NewTaskForm(FormType formType, string selectedDept) : base(formType, selectedDept)
         {
             InitializeComponent();
-         
+            this.limsApiHost = LIMS_API_HOST_NET;
         }
 
 
 
         protected override void InitUi()
         {
-            
+
             var year = DateTime.Now.Year.ToString();
 
             textYear.Visibility = BarItemVisibility.Never;
             comboxState.Visibility = BarItemVisibility.Never;
-           
+
 
             textYear.EditValue = year;
             comboxState.EditValue = "所有";
 
-            
+
 
             //蒸发组.Visible = !string.IsNullOrWhiteSpace(Department) && Department.Equals("蒸发组");
             barButtonItem2.Enabled = FormTable.Add;
@@ -64,7 +70,7 @@ namespace TaskManager
             _control._view.RowClick += _view_RowClick;
             _control._view.FocusedRowChanged += SelectChanged;
 
-             
+
 
 
             _control._view.Columns["Producer"].OptionsColumn.ReadOnly = true;
@@ -79,7 +85,7 @@ namespace TaskManager
             _control._view.Columns["SampleName"].OptionsColumn.ReadOnly = true;
             _control._view.Columns["RegistrationDate"].OptionsColumn.ReadOnly = true;
             _control._view.Columns["Taskcode"].OptionsColumn.ReadOnly = true;
-            
+
             _control._view.Columns["Brand"].OptionsColumn.ReadOnly = true;
             _control._view.Columns["CarType"].OptionsColumn.ReadOnly = true;
             _control._view.Columns["SecurityLevel"].OptionsColumn.ReadOnly = true;
@@ -87,7 +93,7 @@ namespace TaskManager
             _control._view.Columns["FinishDate"].OptionsColumn.ReadOnly = true;
             _control._view.Columns["State"].OptionsColumn.ReadOnly = true;
 
-             
+
             //_control.Height = _control.Parent.Height / 2;
 
 
@@ -95,7 +101,7 @@ namespace TaskManager
 
         private void _view_RowClick(object sender, RowClickEventArgs e)
         {
-            if (_control._view.RowCount == 1 && e.RowHandle>=0)
+            if (_control._view.RowCount == 1 && e.RowHandle >= 0)
             {
                 string taskcode = _control._view.GetRowCellValue(e.RowHandle, "Taskcode").ToString();
                 this.taskcode = taskcode;
@@ -124,10 +130,10 @@ namespace TaskManager
             {
                 Filter.filterText = _control._view.GetRowCellValue(e.FocusedRowHandle, "Taskcode")?.ToString().Trim();
             }
-            if (_control._view.SelectedRowsCount == 1 && e.FocusedRowHandle>=0)
+            if (_control._view.SelectedRowsCount == 1 && e.FocusedRowHandle >= 0)
             {
                 //int row = Convert.ToInt32(_control._view.GetSelectedRows()[0]);
-                
+
                 string taskcode = _control._view.GetRowCellValue(e.FocusedRowHandle, "Taskcode").ToString();
                 this.taskcode = taskcode;
                 //int row = Convert.ToInt32(_control._view.GetSelectedRows()[0]);
@@ -161,7 +167,7 @@ namespace TaskManager
         /// <param name="e"></param>
         private void ViewOnRowStyle(object sender, RowStyleEventArgs e)
         {
-           
+
             //var consistent = _control._view.GetRowCellValue(e.RowHandle,"consistent")?.ToString().Trim();
 
             //if (e.RowHandle >=0)
@@ -179,7 +185,7 @@ namespace TaskManager
             //    {
             //        e.Appearance.BackColor = Color.Orange;
             //    }
-               
+
 
             //}
 
@@ -224,16 +230,16 @@ namespace TaskManager
             //    //    }
             //    //}
             //}
-            
-            
-           
+
+
+
         }
 
         protected override DialogResult OpenEditForm(GridView view, int hand, List<DataField> fields)
         {
             Log.e("OpenEditForm");
             var isAllocateTask = false;
-            var dialog = new NewTaskEditDialog(FormTable.Edit, view, hand, fields, isAllocateTask,FormType.NewTask);
+            var dialog = new NewTaskEditDialog(FormTable.Edit, view, hand, fields, isAllocateTask, FormType.NewTask);
             return dialog.ShowDialog();
         }
         protected override DialogResult OpenReplaceForm(GridView view, int hand, List<DataField> fields)
@@ -259,7 +265,7 @@ namespace TaskManager
         private void _control_Load(object sender, EventArgs e)
         {
             //_control._view.FindFilterText = "222";
-            
+
 
         }
         private Thread childThread;
@@ -271,7 +277,7 @@ namespace TaskManager
         private void TaskForm_Load(object sender, EventArgs e)
         {
 
-          
+
 
 
 
@@ -300,8 +306,8 @@ namespace TaskManager
             //    _control._view.FocusedColumn = _control._view.Columns[0];
             //}
             //_control._view.FocusedColumn = _control._view.Columns["TypeBrief"];
-    
-            if (Templatecolumn.column == null || Templatecolumn.name== "默认模板")
+
+            if (Templatecolumn.column == null || Templatecolumn.name == "默认模板")
             {
 
                 _control._view.FocusedColumn = _control._view.Columns["TypeBrief"];
@@ -313,8 +319,8 @@ namespace TaskManager
         }
         private void barButtonItem4_ItemClick(object sender, ItemClickEventArgs e)
         {
-           
-      
+
+
         }
 
         private void barButtonItem6_ItemClick(object sender, ItemClickEventArgs e)
@@ -334,7 +340,7 @@ namespace TaskManager
         private ProjectInfo project;
         private string taskcode;
 
-        private bool showprojectinfo=false;
+        private bool showprojectinfo = false;
         /// <summary>
         /// 详细信息
         /// </summary>
@@ -352,7 +358,7 @@ namespace TaskManager
                 showprojectinfo = false;
 
                 _control.Dock = DockStyle.Top;
-                _control.Height = _control.Parent.Height/2;
+                _control.Height = _control.Parent.Height / 2;
                 gridControl1.Visible = true;
             }
             else
@@ -427,12 +433,10 @@ namespace TaskManager
 
         }
 
-        public void GetLimsData(string json, int row,int ss)
+        public void GetLimsData(string json, int row, int ss)
         {
             //SplashScreenManager.ShowForm(typeof(WaitForm1));
-            string strURL = "http://10.12.48.2/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
-
-            //string strURL = "http://rmyc6395.xicp.net:18085/tjoa/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
+            string strURL = $"{this.limsApiHost}/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
 
             //创建一个HTTP请求  
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(strURL);
@@ -493,7 +497,7 @@ namespace TaskManager
             }
 
             string reportstate = "已完成";
-           
+
 
             for (int i = 0; i < newObj1["rows"][0]["tcList"].Count(); i++)
             {
@@ -508,7 +512,7 @@ namespace TaskManager
                 string itemsItemSamplesVolume = newObj1["rows"][0]["tcList"][i]["itemsItemSamplesVolume"] != null ? newObj1["rows"][0]["tcList"][i]["itemsItemSamplesVolume"].ToString() : "";//样品数量。
 
                 string docStatus = newObj1["rows"][0]["tcList"][i]["docStatus"] != null ? newObj1["rows"][0]["tcList"][i]["docStatus"].ToString() : "";//是否归档。
-             
+
                 if (docStatus == "0")
                 {
                     reportstate = "未完成";
@@ -619,9 +623,9 @@ namespace TaskManager
                     }
                 }
             }
-           
 
-            
+
+
         }
 
 
@@ -642,7 +646,7 @@ namespace TaskManager
             {
                 return false;
             }
-        } 
+        }
 
         protected SqlConnection sqlConnection;
 
@@ -675,7 +679,7 @@ namespace TaskManager
         /// <summary>
         /// 子线程，获取Lims系统数据
         /// </summary>
-        public  void CallToChildThread()
+        public void CallToChildThread()
         {
             while (true)
             {
@@ -686,11 +690,9 @@ namespace TaskManager
         /// <summary>
         /// 获取lims数据
         /// </summary>
-        public void GetLimsData(string startdate,string enddate) {
-            //string strURL = "http://10.12.48.2/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
-            //string strURL = "http://rmyc6395.xicp.net:18085/tjoa/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
-            string strURL = "http://rmyc6395.xicp.net:17099/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
-
+        public void GetLimsData(string startdate, string enddate)
+        {
+            string strURL = $"{this.limsApiHost}/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
 
             //创建一个HTTP请求 (公用)
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(strURL);
@@ -777,7 +779,7 @@ namespace TaskManager
 
             //JsonObject newObj1 = new JsonObject(postContent);
 
-           
+
             JObject newObj1 = JObject.Parse(postContent);
             //MessageBox.Show(newObj1["rows"].Count().ToString());
             //foreach(var e in newObj1)
@@ -795,7 +797,7 @@ namespace TaskManager
                     //SplashScreenManager.CloseForm();
                     continue;
                 }
-                
+
 
                 string taskcode = newObj1["rows"][i]["tvo"]["taskCode"] != null ? newObj1["rows"][i]["tvo"]["taskCode"].ToString() : "";
 
@@ -813,8 +815,7 @@ namespace TaskManager
                 string sampleTrademark = newObj1["rows"][i]["tvo"]["sampleTrademark"] != null ? newObj1["rows"][i]["tvo"]["sampleTrademark"].ToString() : "";//商标。
                 string carType = newObj1["rows"][i]["tvo"]["carType"] != null ? newObj1["rows"][i]["tvo"]["carType"].ToString() : "";//车辆类型。
                 string confidentialityLevel = newObj1["rows"][i]["tvo"]["confidentialityLevel"] != null ? newObj1["rows"][i]["tvo"]["confidentialityLevel"].ToString() : "";//保密等级。
-
-                string reportnum = newObj1["rows"][i]["tcList"] != null ? newObj1["rows"][i]["tcList"].Count().ToString() : "0"; 
+                string reportnum = newObj1["rows"][i]["tcList"] != null ? newObj1["rows"][i]["tcList"].Count().ToString() : "0";
 
 
 
@@ -862,7 +863,7 @@ namespace TaskManager
                 //新增
                 if (YN)
                 {
-                        _control._view.AddNewRow();
+                    _control._view.AddNewRow();
 
                     ///日期设置为空
                     _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "RegistrationDate", startdateLIMS);
@@ -877,20 +878,20 @@ namespace TaskManager
                     {
                         _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "TypeBrief", taskcode.Substring(0, 2));//自动获取简称
                     }
-                   
+
 
                     _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "Producer", consignor);
-                        _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "Model", sampleType);
-                        _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "Clientman", principal);
-                        _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "PhoneNum", companyCheckTel);
-                        _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "ChargePeople", commiterId);
-                        _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "AgreedDate", finishDate);
-                        _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "ProductDate", produceDate);
-                        _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "DeliveryDate", sampleDate);
-                        _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "SampleName", sampleName);
-                        _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "Brand", sampleTrademark);
-                        _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "CarType", carType);
-                        _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "SecurityLevel", confidentialityLevel);
+                    _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "Model", sampleType);
+                    _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "Clientman", principal);
+                    _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "PhoneNum", companyCheckTel);
+                    _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "ChargePeople", commiterId);
+                    _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "AgreedDate", finishDate);
+                    _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "ProductDate", produceDate);
+                    _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "DeliveryDate", sampleDate);
+                    _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "SampleName", sampleName);
+                    _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "Brand", sampleTrademark);
+                    _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "CarType", carType);
+                    _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "SecurityLevel", confidentialityLevel);
                     _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "ReportNum", reportnum);
 
                     _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "consistent", DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
@@ -900,15 +901,15 @@ namespace TaskManager
 
 
                 }
-                
+
 
             }
-            
+
 
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
-            
+
             if ((DateTime.Now.ToString("HH") == "02") && FormSignIn.CurrentUser.Name == "赵红星")
             {
                 int monthcount = 0;
@@ -921,7 +922,7 @@ namespace TaskManager
 
                     startdate.EditValue = DateTime.Now.AddMonths(monthcount - 1).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
                     enddate.EditValue = DateTime.Now.AddMonths(monthcount).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-           
+
                     _control.RefreshClick(_year, startdate.EditValue.ToString().Trim(), enddate.EditValue.ToString().Trim(), _finishState, _group);
 
                     SplashScreenManager.ShowForm(typeof(WaitForm1));
@@ -958,19 +959,42 @@ namespace TaskManager
                     }
                 }
 
-
-            
-
-
-
             };
-
-
-
-
-
-
         }
+
+        private void timerUpdateCurDay_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                this.updateTodayTaskData();
+            }
+            catch (Exception ex)
+            {
+                Log.e($"Update Today Task Data Error: {ex}");
+            }
+        }
+
+        private void updateTodayTaskData()
+        {
+         if (FormSignIn.CurrentUser.Name != "赵红星")
+            {
+                return;
+            }
+            int hour = DateTime.Now.Hour;
+            if (hour >= 0 && hour < 6)
+            {
+                return;
+            }
+            //DateTime startTime = DateTime.Today.AddDays(-90);
+            //DateTime endTime = DateTime.Today.AddDays(1);
+
+            DateTime startTime = DateTime.Today;
+            DateTime endTime = startTime.Date.AddDays(1);
+            string startTimeContent = Convert.ToDateTime(startTime).ToString("yyyy-MM-dd");
+            string endTimeContent = Convert.ToDateTime(endTime).ToString("yyyy-MM-dd");
+            this.FetchLimsData(startTimeContent, endTimeContent);
+        }
+
         /// <summary>
         /// lims接口
         /// </summary>
@@ -978,72 +1002,53 @@ namespace TaskManager
         /// <param name="e"></param>
         private void barButtonItem9_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(_startdate) && !string.IsNullOrWhiteSpace(_enddate))
+            //DateTime startTime = DateTime.Today.AddDays(-20);
+            //DateTime endTime = DateTime.Today.AddDays(1);
+
+            DateTime startTime = DateTime.Today;
+            DateTime endTime = startTime.Date.AddDays(1);
+            string startTimeContent = Convert.ToDateTime(startTime).ToString("yyyy-MM-dd");
+            string endTimeContent = Convert.ToDateTime(endTime).ToString("yyyy-MM-dd");
+
+            //重置条件
+            startdate.EditValue = startTimeContent;
+            enddate.EditValue = endTimeContent;
+            _control._view.FindFilterText = "";
+
+            _control.RefreshClick(_year, startTimeContent, endTimeContent, _finishState, _group);
+
+            SplashScreenManager.ShowForm(typeof(WaitForm1));
+            GetLimsData(startTimeContent, endTimeContent);
+
+            //刷新状态
+
+            for (int j = 0; j < _control._view.RowCount; j++)
             {
-                string startdate = Convert.ToDateTime(_startdate).ToString("yyyy-MM-dd");
-                string enddate = Convert.ToDateTime(_enddate).ToString("yyyy-MM-dd");
+                string taskcode = _control._view.GetRowCellValue(j, "Taskcode").ToString();
+                this.taskcode = taskcode;
+                //int row = Convert.ToInt32(_control._view.GetSelectedRows()[0]);
+                //MessageBox.Show(this.taskcode);
 
-                DateTime end = Convert.ToDateTime(_enddate);
-                DateTime start = Convert.ToDateTime(_startdate);
-                TimeSpan sp = end.Subtract(start);
 
-                if (sp.Days > 62)
+                if (taskcode == "")
                 {
-                    MessageBox.Show("间隔日期不能超过两个月");
+                    //MessageBox.Show("任务单号为空");
                     return;
                 }
-                if (sp.Days > 30)
-                {
-                    if (MessageBox.Show($"时间跨度较大,加载需要时间较长，是否进行更新?", "提示", MessageBoxButtons.OKCancel) != DialogResult.OK)
-                    {
-                        return;
-                    }            
-                }
 
-                _control._view.FindFilterText = "";
+                string json = "{'deptid': 15,'page': 1,'pageSize': 100,'taskCode': '" + this.taskcode + "'}";
+                //string json = "{'operatetime_begin': '" + startdate + "','operatetime_end': '" + enddate + "','orgID': 13,'pageSize': 1000000}";
 
-                _control.RefreshClick(_year, _startdate, _enddate, _finishState, _group);
+                //LoadSource();
 
-                SplashScreenManager.ShowForm(typeof(WaitForm1));
-                GetLimsData(startdate, enddate);
+                GetLimsData(json, j, 0);
 
-                //刷新状态
-
-                for (int j = 0; j < _control._view.RowCount; j++)
-                {
-                    string taskcode = _control._view.GetRowCellValue(j, "Taskcode").ToString();
-                    this.taskcode = taskcode;
-                    //int row = Convert.ToInt32(_control._view.GetSelectedRows()[0]);
-                    //MessageBox.Show(this.taskcode);
-
-
-                    if (taskcode == "")
-                    {
-                        //MessageBox.Show("任务单号为空");
-                        return;
-                    }
-
-                    string json = "{'deptid': 15,'page': 1,'pageSize': 100,'taskCode': '" + this.taskcode + "'}";
-                    //string json = "{'operatetime_begin': '" + startdate + "','operatetime_end': '" + enddate + "','orgID': 13,'pageSize': 1000000}";
-
-                    //LoadSource();
-
-                    GetLimsData(json, j, 0);
-
-                }
-
-                MessageBox.Show("更新Lims数据成功");
-
-                SplashScreenManager.CloseForm();
-            } 
-            else
-            {
-                MessageBox.Show("请选择起止时间");
-                
             }
-            
-           
-           
+
+            MessageBox.Show("更新Lims数据成功");
+
+            SplashScreenManager.CloseForm();
+
         }
 
         private SelectTemplate selectTemplate;
@@ -1054,7 +1059,7 @@ namespace TaskManager
         /// <param name="e"></param>
         private void barButtonItem10_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(selectTemplate == null || selectTemplate.IsDisposed)
+            if (selectTemplate == null || selectTemplate.IsDisposed)
             {
                 selectTemplate = new SelectTemplate("任务管理");
                 selectTemplate.freshForm += SelectTemplate_freshForm;
@@ -1065,19 +1070,19 @@ namespace TaskManager
                 selectTemplate.Show();
                 selectTemplate.Activate();
             }
-           
+
         }
 
         private void SelectTemplate_freshForm()
         {
-            for(int j = 1; j < _control._view.Columns.Count; j++)
+            for (int j = 1; j < _control._view.Columns.Count; j++)
             {
                 _control._view.Columns[j].Visible = false;
             }
-            for (int i = Templatecolumn.column.Length-1; i >=0; i--)
+            for (int i = Templatecolumn.column.Length - 1; i >= 0; i--)
             {
                 _control._view.Columns[Templatecolumn.column[i]].Visible = true;
-               // _control._view.Columns[Templatecolumn.column[i]].VisibleIndex = i;
+                // _control._view.Columns[Templatecolumn.column[i]].VisibleIndex = i;
             }
         }
         /// <summary>
@@ -1106,60 +1111,28 @@ namespace TaskManager
                 {
                     _control._view.SetRowCellValue(e.RowHandle, "FinishDate", "");
                 }
-              
+
             }
             if (e.Column.FieldName == "Taskcode")
             {
-                if(_control._view.GetRowCellValue(e.RowHandle, "Taskcode").ToString().Length >= 2)
+                if (_control._view.GetRowCellValue(e.RowHandle, "Taskcode").ToString().Length >= 2)
                 {
                     _control._view.SetRowCellValue(e.RowHandle, "TypeBrief", _control._view.GetRowCellValue(e.RowHandle, "Taskcode").ToString().Substring(0, 2));
                 }
-               
-            }
-            if(e.Column.FieldName == "TypeBrief")
-            {
-                if (e.Value.ToString() == "QA")
-                {
-                    _control._view.SetRowCellValue(e.RowHandle, "Type1", "公告");
-                }
-                else if (e.Value.ToString() == "HB")
-                {
-                    _control._view.SetRowCellValue(e.RowHandle, "Type1", "环保");
-                }
-                else if (e.Value.ToString() == "WT")
-                {
-                    _control._view.SetRowCellValue(e.RowHandle, "Type1", "委托");
-                }
-                else if (e.Value.ToString() == "XG")
-                {
-                    _control._view.SetRowCellValue(e.RowHandle, "Type1", "修改");
-                }
-                else if (e.Value.ToString() == "JY")
-                {
-                    _control._view.SetRowCellValue(e.RowHandle, "Type1", "技研");
-                }
-                else if (e.Value.ToString() == "YF")
-                {
-                    _control._view.SetRowCellValue(e.RowHandle, "Type1", "研发");
-                }
-                else if (e.Value.ToString() == "CK")
-                {
-                    _control._view.SetRowCellValue(e.RowHandle, "Type1", "出口");
-                }
-                else if (e.Value.ToString() == "SZ")
-                {
-                    _control._view.SetRowCellValue(e.RowHandle, "Type1", "商检");
-                }
-                else if (e.Value.ToString() == "CA")
-                {
-                    _control._view.SetRowCellValue(e.RowHandle, "Type1", "测评");
-                }
-                else if (e.Value.ToString() == "HC")
-                {
-                    _control._view.SetRowCellValue(e.RowHandle, "Type1", "3C");
-                }
 
             }
+            if (e.Column.FieldName == "TypeBrief")
+            {
+                string typeCode = e.Value.ToString();
+                string typeChn = getTaskChnByCode(typeCode);
+                _control._view.SetRowCellValue(e.RowHandle, "Type1", typeChn);
+            }
+        }
+
+        private string getTaskChnByCode(string typeCode)
+        {
+            bool success = Enum.TryParse(typeCode, out TaskType taskType);
+            return success ? taskType.GetDescription() : "";
         }
 
         private AlertTemplate alertTemplate;
@@ -1182,11 +1155,232 @@ namespace TaskManager
             }
         }
 
+        public void FetchLimsData(string startdate, string enddate)
+        {
+            HandleLimsResponseData(startdate, enddate);
+        }
+
+        private void HandleLimsResponseData(string startdate, string enddate)
+        {
+            JObject jsonObj = GetTaskDateByPost(startdate, enddate);
+            DateTime nowTime = DateTime.Now;
+            for (int i = 0; i < jsonObj["rows"].Count(); i++)
+            {
+                var obj = jsonObj["rows"][i];
+                var taskObj = obj["tvo"];
+                try
+                {
+                    this.LimsResponseJson2TaskData(obj, taskObj, nowTime);
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
+            }
+        }
+
+        private void LimsResponseJson2TaskData(JToken obj, JToken taskObj, DateTime nowTime)
+        {
+            //提取数据
+            string consistent = nowTime.ToString("yyyy-MM-dd HH:mm");
+            string startdateLIMS = taskObj["createdate"] != null ? taskObj["createdate"].ToString() : "";
+            try
+            {
+                startdateLIMS = DateTime.ParseExact(startdateLIMS, "yyyyMMdd", System.Globalization.CultureInfo.CurrentCulture).ToString("yyyy-MM-dd");
+            }
+            catch
+            {
+                return;
+            }
+
+            string taskcode = taskObj["taskCode"] != null ? taskObj["taskCode"].ToString() : "";
+            string consignor = taskObj["consignor"] != null ? taskObj["consignor"].ToString() : "";//委托单位。
+            string sampleType = taskObj["sampleType"] != null ? taskObj["sampleType"].ToString() : "";//规格型号。
+            string principal = obj["otherVo"]["principal"] != null ? obj["otherVo"]["principal"].ToString() : "";//委托人
+            string companyCheckTel = obj["otherVo"]["companyCheckTel"] != null ? obj["otherVo"]["companyCheckTel"].ToString() : "";//电话。
+            string commiterId = taskObj["commiterId"] != null ? taskObj["commiterId"].ToString() : "";//任务单负责人。
+            string finishDate = taskObj["finishDate"] != null ? taskObj["finishDate"].ToString() : "";//商定完成时间。
+            string produceDate = taskObj["produceDate"] != null ? taskObj["produceDate"].ToString() : "";//生产日期。
+            string sampleDate = taskObj["sampleDate"] != null ? taskObj["sampleDate"].ToString() : "";//送样日期。
+            string sampleName = taskObj["sampleName"] != null ? taskObj["sampleName"].ToString() : "";//样品名称。
+            string sampleTrademark = taskObj["sampleTrademark"] != null ? taskObj["sampleTrademark"].ToString() : "";//商标。
+            string carType = taskObj["carType"] != null ? taskObj["carType"].ToString() : "";//车辆类型。
+            string confidentialityLevel = taskObj["confidentialityLevel"] != null ? taskObj["confidentialityLevel"].ToString() : "";//保密等级。
+            string reportnum = obj["tcList"] != null ? obj["tcList"].Count().ToString() : "0";
+            string taskState = this.extractTaskState(obj);
+            if (taskState == "已完成")
+            {
+                this.fixTaskFinishDate(obj, out finishDate);
+            }
+            string typeBrief = taskcode.Substring(0, 2);
+            string typeChn = getTaskChnByCode(typeBrief);
+
+            //验证数据是否存在
+            string sql = "";
+            bool taskcodeExists = ChecktaskcodeExists(taskcode);
+            if (taskcodeExists)
+            {
+                sql = $"UPDATE NewTaskTable " +
+                                   "SET " +
+                                   $"TypeBrief='{typeBrief}', " +
+                                   $"Type1='{typeChn}', " +
+                                   $"State='{taskState}', " +
+                                   $"RegistrationDate='{startdateLIMS}', " +
+                                   $"Producer='{consignor}', " +
+                                   $"Model='{sampleType}', " +
+                                   $"ReportNum='{reportnum}', " +
+                                   $"Clientman='{principal}', " +
+                                   $"PhoneNum='{companyCheckTel}', " +
+                                   $"ChargePeople='{commiterId}', " +
+                                   $"AgreedDate='{finishDate}', " +
+                                   $"ProductDate='{produceDate}', " +
+                                   $"DeliveryDate='{sampleDate}', " +
+                                   $"SampleName='{sampleName}', " +
+                                   $"Brand='{sampleTrademark}', " +
+                                   $"CarType='{carType}', " +
+                                   $"SecurityLevel='{confidentialityLevel}', " +
+                                   $"consistent='{consistent}' " +
+                                   $"WHERE taskcode='{taskcode}'";
+
+
+            }
+            else
+            {
+                sql = $"INSERT INTO NewTaskTable (" +
+                               $"Taskcode, " +
+                               $"TypeBrief, " +
+                               $"Type1, " +
+                               $"State, " +
+                               $"RegistrationDate, " +
+                               $"Producer, " +
+                               $"Model, " +
+                               $"ReportNum, " +
+                               $"Clientman, " +
+                               $"PhoneNum, " +
+                               $"ChargePeople, " +
+                               $"AgreedDate, " +
+                               $"ProductDate, " +
+                               $"DeliveryDate, " +
+                               $"SampleName, " +
+                               $"Brand, " +
+                               $"CarType, " +
+                               $"SecurityLevel, " +
+                               $"consistent" +
+                               $") VALUES (" +
+                               $"'{taskcode}', " +
+                               $"'{typeBrief}', " +
+                               $"'{typeChn}', " +
+                               $"'{taskState}', " +
+                               $"'{startdateLIMS}', " +
+                               $"'{consignor}', " +
+                               $"'{sampleType}', " +
+                               $"'{reportnum}', " +
+                               $"'{principal}', " +
+                               $"'{companyCheckTel}', " +
+                               $"'{commiterId}', " +
+                               $"'{finishDate}', " +
+                               $"'{produceDate}', " +
+                               $"'{sampleDate}', " +
+                               $"'{sampleName}', " +
+                               $"'{sampleTrademark}', " +
+                               $"'{carType}', " +
+                               $"'{confidentialityLevel}', " +
+                               $"'{consistent}'" +
+                               $")";
+
+            }
+
+            //执行数据库操作
+            SqlHelper.ExecuteNonquery(sql, CommandType.Text);
+        }
+
+        private string extractTaskState(JToken obj)
+        {
+            string state = "已完成";
+            //确定reportstate
+            for (int i = 0; i < obj["tcList"].Count(); i++)
+            {
+                string docStatus = obj["tcList"][i]["docStatus"] != null ? obj["tcList"][i]["docStatus"].ToString() : "";//是否归档。
+                if (docStatus == "0")
+                {
+                    return "未完成";
+                }
+            }
+
+            return state;
+        }
+
+        private void fixTaskFinishDate(JToken obj,out string finishDate)
+        {
+            DateTime date = Convert.ToDateTime("2000-01-01 00:00");
+            for (int j = 0; j < obj["tcList"].Count(); j++)
+            {
+                string attarchDate = obj["tcList"][j]["attarchDate"] != null ? obj["tcList"][j]["attarchDate"].ToString() : "";
+                if (!IsDate(attarchDate))
+                {
+                    continue;
+                }
+                if (Convert.ToDateTime(attarchDate) > date)
+                {
+                    date = Convert.ToDateTime(attarchDate);
+                }
+            }
+            if (date.ToString("yyyy-MM-dd") == "2000-01-01")
+            {
+                finishDate = "";
+            }
+            else
+            {
+                finishDate = date.ToString("yyyy-MM-dd");
+            }
+        }
+
+        private JObject GetTaskDateByPost(string startdate, string enddate)
+        {
+            string strURL = $"{this.limsApiHost}/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
+            // 构建请求体  
+            string jsonData = "{\"operatetime_begin\": \"" + startdate + "\",\"operatetime_end\": \"" + enddate + "\",\"deptid\": 15,\"pageSize\": 1000000}";
+            //创建一个HTTP请求 (公用)
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(strURL);
+            //Post请求方式  
+            request.Method = "POST";
+            //内容类型
+            request.ContentType = "application/json";
+
+            using (StreamWriter dataStream = new StreamWriter(request.GetRequestStream()))
+            {
+                dataStream.Write(jsonData);
+                dataStream.Close();
+            }
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            string encoding = response.ContentEncoding;
+            if (encoding == null || encoding.Length < 1)
+            {
+                encoding = "UTF-8"; //默认编码  
+            }
+            StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(encoding));
+            string postContent = reader.ReadToEnd();
+            JObject jsonObj = JObject.Parse(postContent);
+
+            return jsonObj;
+        }
+
+        private bool ChecktaskcodeExists(string taskcode)
+        {
+            string sql = "SELECT COUNT(*)FROM NewTaskTable WHERE Taskcode = @Taskcode";
+            SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("Taskcode", DbHelper.ValueOrDBNullIfNull(taskcode))
+                };
+            int count = (int)SqlHelper.ExcuteScalar(sql, parameters);
+            return count > 0;
+        }
+
 
         #region 样品信息
         public void LoadSource(string taskcode)
         {
-            
+
             //string sql = $"select * from TestStatistic where taskcode ='{taskcode}'";
             //DataTable da = SqlHelper.GetList(sql);
             //gridControl1.DataSource = da;
@@ -1257,7 +1451,7 @@ namespace TaskManager
         /// <param name="e"></param>
         private void barButtonItem19_ItemClick(object sender, ItemClickEventArgs e)
         {
-           
+
             var hand = _control.FocusedRowHandle;
             if (hand < 0)
             {
@@ -1286,8 +1480,8 @@ namespace TaskManager
         /// <param name="e"></param>
         private void 样品信息_ItemClick(object sender, ItemClickEventArgs e)
         {
-            
-               
+
+
         }
 
         private void barButtonItem17_ItemClick(object sender, ItemClickEventArgs e)
@@ -1312,17 +1506,17 @@ namespace TaskManager
             {
                 int row = Convert.ToInt32(_control._view.GetSelectedRows()[0]);
                 string taskcode = _control._view.GetRowCellValue(row, "Taskcode").ToString();
-                GetLimsData(taskcode,row);
+                GetLimsData(taskcode, row);
             }
             else
             {
                 MessageBox.Show("请选中某条数据进行还原！");
             }
         }
-        public void GetLimsData(string taskcode0,int row)
+        public void GetLimsData(string taskcode0, int row)
         {
             SplashScreenManager.ShowForm(typeof(WaitForm1));
-            string strURL = "http://10.12.48.2/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
+            string strURL = $"{this.limsApiHost}/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
             //创建一个HTTP请求  
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(strURL);
             //Post请求方式  
@@ -1378,9 +1572,10 @@ namespace TaskManager
 
             for (int i = 0; i < newObj1["rows"].Count(); i++)
             {
-                
+
                 string taskcode = newObj1["rows"][i]["tvo"]["taskCode"] != null ? newObj1["rows"][i]["tvo"]["taskCode"].ToString() : "";//委托单位。
-                if (taskcode0 == taskcode){
+                if (taskcode0 == taskcode)
+                {
                     string consignor = newObj1["rows"][i]["tvo"]["consignor"] != null ? newObj1["rows"][i]["tvo"]["consignor"].ToString() : "";//委托单位。
                     string sampleType = newObj1["rows"][i]["tvo"]["sampleType"] != null ? newObj1["rows"][i]["tvo"]["sampleType"].ToString() : "";//规格型号。
                     string principal = newObj1["rows"][i]["otherVo"]["principal"] != null ? newObj1["rows"][i]["otherVo"]["principal"].ToString() : "";//委托人
@@ -1420,17 +1615,17 @@ namespace TaskManager
 
         private void _control_TabIndexChanged(object sender, EventArgs e)
         {
-           
+
         }
 
         private void _control_Click(object sender, EventArgs e)
         {
-           
+
         }
 
         private void NewTaskForm_Shown(object sender, EventArgs e)
         {
-            _control.Height = _control.Parent.Height/2;
+            _control.Height = _control.Parent.Height / 2;
 
         }
 
@@ -1454,5 +1649,7 @@ namespace TaskManager
         {
 
         }
+
+      
     }
 }

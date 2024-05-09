@@ -44,7 +44,7 @@
             this.barButtonItem9 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem12 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem10 = new DevExpress.XtraBars.BarButtonItem();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.timerUpdateAllTask = new System.Windows.Forms.Timer(this.components);
             this.样品信息ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.试验信息ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.项目信息ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,6 +71,7 @@
             this.gridColumn6 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn7 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn9 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.timerUpdateCurDay = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
@@ -273,11 +274,11 @@
             this.barButtonItem10.Name = "barButtonItem10";
             this.barButtonItem10.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem10_ItemClick);
             // 
-            // timer1
+            // timerUpdateAllTask
             // 
-            this.timer1.Enabled = true;
-            this.timer1.Interval = 3600000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.timerUpdateAllTask.Enabled = true;
+            this.timerUpdateAllTask.Interval = 3600000;
+            this.timerUpdateAllTask.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // 样品信息ToolStripMenuItem
             // 
@@ -498,6 +499,12 @@
             this.gridColumn9.VisibleIndex = 7;
             this.gridColumn9.Width = 96;
             // 
+            // timerUpdateCurDay
+            // 
+            this.timerUpdateCurDay.Enabled = true;
+            this.timerUpdateCurDay.Interval = 60000;
+            this.timerUpdateCurDay.Tick += new System.EventHandler(this.timerUpdateCurDay_Tick);
+            // 
             // NewTaskForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
@@ -554,7 +561,7 @@
         private DevExpress.XtraBars.BarButtonItem barButtonItem7;
         private DevExpress.XtraBars.BarButtonItem barButtonItem8;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup4;
-        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer timerUpdateAllTask;
         private DevExpress.XtraBars.BarButtonItem barButtonItem9;
         private DevExpress.XtraBars.BarButtonItem barButtonItem10;
         private DevExpress.XtraBars.BarButtonItem barButtonItem12;
@@ -585,5 +592,6 @@
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn6;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn7;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn9;
+        private System.Windows.Forms.Timer timerUpdateCurDay;
     }
 }

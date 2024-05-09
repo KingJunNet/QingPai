@@ -17,6 +17,39 @@ namespace TaskManager.Model
         WEIGHT_CLIENT = 1
     }
 
+    public enum TaskType
+    {
+        [Description("公告")]
+        QA = 0,
+
+        [Description("环保")]
+        HB = 1,
+
+        [Description("委托")]
+        WT = 2,
+
+        [Description("修改")]
+        XG = 3,
+
+        [Description("技研")]
+        JY = 4,
+
+        [Description("研发")]
+        YF = 5,
+
+        [Description("出口")]
+        CK = 6,
+
+        [Description("商检")]
+        SZ = 7,
+
+        [Description("测评")]
+        CA = 8,
+
+        [Description("3C")]
+        HC = 9,
+    }
+
     static class EnumExtensions
     {
         public static string GetDescription(this Enum val)

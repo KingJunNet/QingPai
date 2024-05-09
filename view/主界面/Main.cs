@@ -29,8 +29,8 @@ namespace TaskManager
     //4、首次进入判断更新
     public partial class Form1 : DevExpress.XtraBars.Ribbon.RibbonForm
     {
-        public static double curVersion = 2024.0001;
-        public static double newestVersion = 2024.0001;
+        public static double curVersion = 2024.0002;
+        public static double newestVersion = 2024.0002;
 
 
         public const string RootFolder = "轻排参数表服务器";
@@ -958,7 +958,7 @@ namespace TaskManager
             }
             ShowWaitForm();
             var strsql = $"select top 1 [file] as Expr1,name as Expr2 from FileTable where category='{category}'";
-            var dt = Sql.ExecuteQuery(strsql).Tables[0];
+            var dt = Sql.ExecuteHighCostQuery(strsql).Tables[0];
             if (dt.Rows.Count == 0)
             {
                  return result.failed("文件不存在"); ;
