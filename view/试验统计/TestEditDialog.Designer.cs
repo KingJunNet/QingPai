@@ -871,7 +871,7 @@ namespace TaskManager
             // listColumnRemove
             // 
             this.listColumnRemove.Text = "操作";
-            this.listColumnRemove.Width = 55;
+            this.listColumnRemove.Width = 52;
             // 
             // titleComboxEquipment
             // 
