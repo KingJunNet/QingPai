@@ -7,7 +7,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Web.Script.Serialization;
@@ -904,9 +903,8 @@ namespace TaskManager
 
 
             }
-
-
         }
+             
         private void timer1_Tick(object sender, EventArgs e)
         {
 
