@@ -85,6 +85,7 @@ namespace TaskManager
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.titleComboxEquip = new ExpertLib.Controls.TitleCombox();
             this.listViewUsingEquipment = new System.Windows.Forms.ListView();
+            this.listColumnOrder = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.listColumnEuipCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.listColumnEuipName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.listColumnEuipType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -826,6 +827,7 @@ namespace TaskManager
             // listViewUsingEquipment
             // 
             this.listViewUsingEquipment.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listColumnOrder,
             this.listColumnEuipCode,
             this.listColumnEuipName,
             this.listColumnEuipType,
@@ -842,15 +844,20 @@ namespace TaskManager
             this.listViewUsingEquipment.View = System.Windows.Forms.View.Details;
             this.listViewUsingEquipment.SelectedIndexChanged += new System.EventHandler(this.listViewUsingEquipment_SelectedIndexChanged);
             // 
+            // listColumnOrder
+            // 
+            this.listColumnOrder.Text = "编号";
+            this.listColumnOrder.Width = 50;
+            // 
             // listColumnEuipCode
             // 
             this.listColumnEuipCode.Text = "编号";
-            this.listColumnEuipCode.Width = 113;
+            this.listColumnEuipCode.Width = 100;
             // 
             // listColumnEuipName
             // 
             this.listColumnEuipName.Text = "名称";
-            this.listColumnEuipName.Width = 100;
+            this.listColumnEuipName.Width = 80;
             // 
             // listColumnEuipType
             // 
@@ -860,11 +867,11 @@ namespace TaskManager
             // listColumnGroup
             // 
             this.listColumnGroup.Text = "组别";
-            this.listColumnGroup.Width = 80;
             // 
             // listColumnRemove
             // 
             this.listColumnRemove.Text = "操作";
+            this.listColumnRemove.Width = 55;
             // 
             // titleComboxEquipment
             // 
@@ -937,8 +944,6 @@ namespace TaskManager
         private TitleCombox titleCombox4;
         private ExpertLib.Controls.TitleEditor.DateEdit dateEdit2;
         private ExpertLib.Controls.TitleEditor.DateEdit dateEdit1;
-        private TitleCombox titleCombox10;
-        private TitleCombox titleCombox9;
         private TitleCombox titleCombox7;
         private TitleCombox titleCombox11;
         private System.Windows.Forms.Label label5;
@@ -951,7 +956,6 @@ namespace TaskManager
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private TitleCombox titleCombox41;
         private TitleCombox titleCombox6;
-        private TitleCombox titleCombox16;
         private TitleCombox titleCombox15;
         private TitleCombox titleCombox14;
         private TitleCombox titleCombox23;
@@ -972,5 +976,9 @@ namespace TaskManager
         private TitleCombox titleComboxEquipment;
         private System.Windows.Forms.Button btnAddEquipment;
         private TitleCombox titleCombox38;
+        private System.Windows.Forms.ColumnHeader listColumnOrder;
+        private RequiredTitleCombox titleCombox10;
+        private RequiredTitleCombox titleCombox9;
+        private RequiredTitleCombox titleCombox16;
     }
 }

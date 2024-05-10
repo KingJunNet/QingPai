@@ -1136,26 +1136,9 @@ namespace TaskManager
 
         private void notifyEquipmentListViewChanged()
         {
-            if (Collections.isEmpty(this.itemEquipments))
-            {
-                return;
-            }
-            this.setListViewUsingEquipmentRowHeight();
-
-            //填充数据
-            ListViewItem[] lvs = new ListViewItem[this.itemEquipments.Count];
-            for (int index = 0; index < this.itemEquipments.Count; index++)
-            {
-                EquipmentLite curEquipment = this.itemEquipments[index];
-                lvs[index] = new ListViewItem(new string[] { curEquipment.Code, curEquipment.Name, curEquipment.Type, curEquipment.Group, "" });
-            }
-
-            //更新ui
-            this.listViewUsingEquipment.Items.Clear();
-            this.listViewUsingEquipment.Items.AddRange(lvs);
-
-            //设置删除事件
-            this.setEquipmentListViewItemRemoveButton();
+            string testGroup = ((TitleCombox)GetControlByFieldName("department")).Text.Trim();
+            UIHelp.Instance.notifyEquipmentListViewChanged(listViewUsingEquipment, btn,
+                                                             itemEquipments, testGroup);
         }
 
         private void setListViewUsingEquipmentRowHeight()
@@ -1165,53 +1148,18 @@ namespace TaskManager
             this.listViewUsingEquipment.SmallImageList = imgList;
         }
 
-        private void setEquipmentListViewItemRemoveButton()
-        {
-            //删除按钮         
-            this.btn.Size = new Size(this.listViewUsingEquipment.Items[0].SubItems[4].Bounds.Width,
-            this.listViewUsingEquipment.Items[0].SubItems[4].Bounds.Height);
-        }
-
         private void addEquipment()
         {
             string newEquipmentValue = this.titleComboxEquip.Text;
-            if (!this.equipmentMap.ContainsKey(newEquipmentValue))
-            {
-                return;
-            }
-            string newEquipmentCode = this.equipmentMap[newEquipmentValue].Code;
-            if (this.itemEquipmentMap.ContainsKey(newEquipmentCode))
-            {
-                return;
-            }
-            EquipmentBreiefViewModel newEquipment = this.equipmentMap[newEquipmentValue];
-            EquipmentLite addedEquipmentLite = newEquipment.toEquipmentLite();
-            this.itemEquipments.Add(addedEquipmentLite);
-            this.itemEquipmentMap.Add(addedEquipmentLite.Code, addedEquipmentLite);
-
-            //填充数据
-            ListViewItem lvItem = new ListViewItem(new string[] { addedEquipmentLite.Code, addedEquipmentLite.Name, addedEquipmentLite.Type, addedEquipmentLite.Group, "" });
-            //更新ui
-            this.listViewUsingEquipment.Items.Add(lvItem);
-            if (this.listViewUsingEquipment.Items.Count == 1)
-            {
-                //设置删除事件
-                this.setEquipmentListViewItemRemoveButton();
-            }
-
+            string testGroup = ((TitleCombox)GetControlByFieldName("department")).Text.Trim();
+            UIHelp.Instance.addEquipment(listViewUsingEquipment, btn,
+                itemEquipments, itemEquipmentMap, equipmentMap,
+                newEquipmentValue, testGroup);
         }
 
         private void removeEquipment(string removedEquipmentCode)
         {
-            //数据同步
-            int removedIndex = this.itemEquipments.FindIndex(item => item.Code.Equals(removedEquipmentCode));
-            this.itemEquipments.RemoveAt(removedIndex);
-            this.itemEquipmentMap.Remove(removedEquipmentCode);
-
-
-            //更新ui
-            this.listViewUsingEquipment.Items.RemoveAt(removedIndex);
-            btn.Visible = false;
+            UIHelp.Instance.removeEquipment(listViewUsingEquipment, btn, itemEquipments, itemEquipmentMap, removedEquipmentCode);
         }
 
         private void initEquipmentCombox()
@@ -1543,7 +1491,7 @@ namespace TaskManager
             DialogResult result = MessageBox.Show("确定删除吗？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                string removedEquipmentCode = this.listViewUsingEquipment.SelectedItems[0].SubItems[0].Text.Trim();
+                string removedEquipmentCode = this.listViewUsingEquipment.SelectedItems[0].SubItems[1].Text.Trim();
                 removeEquipment(removedEquipmentCode);
             }
             else
@@ -1590,7 +1538,7 @@ namespace TaskManager
         {
             if (this.listViewUsingEquipment.SelectedItems.Count > 0)
             {
-                this.btn.Location = new Point(this.listViewUsingEquipment.SelectedItems[0].SubItems[4].Bounds.Left, this.listViewUsingEquipment.SelectedItems[0].SubItems[4].Bounds.Top);
+                this.btn.Location = new Point(this.listViewUsingEquipment.SelectedItems[0].SubItems[5].Bounds.Left, this.listViewUsingEquipment.SelectedItems[0].SubItems[5].Bounds.Top);
                 this.btn.Visible = true;
             }
         }

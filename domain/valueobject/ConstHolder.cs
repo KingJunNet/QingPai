@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,5 +19,8 @@ namespace TaskManager.domain.valueobject
         /// 第三方应用配置文件名称
         /// </summary>
         public static readonly string THIRD_APP_CONFIG_FILE_NAME = "third-app-config.bin";
+
+        public static readonly Color CONST_OTHER_GROUP_EQUIPMENT_BACK_COLOR = Color.LightYellow;
+        public static readonly Color CONST_OTHER_GROUP_EQUIPMENT_FORE_COLOR = Color.Blue;
     }
 }
