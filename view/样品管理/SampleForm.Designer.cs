@@ -128,7 +128,6 @@
             // 
             // _control
             // 
-            this._control.Location = new System.Drawing.Point(0, 190);
             this._control.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this._control.Size = new System.Drawing.Size(1592, 596);
             this._control.Load += new System.EventHandler(this._control_Load);

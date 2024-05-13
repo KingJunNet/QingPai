@@ -978,8 +978,6 @@ namespace TaskManager
             {
                 Close();
             };
-
-
         }
 
         private void listViewUsingEquipment_SelectedIndexChanged(object sender, EventArgs e)
@@ -994,7 +992,6 @@ namespace TaskManager
         private void btnAddEquipment_Click(object sender, EventArgs e)
         {
             addEquipment();
-            //UIHelp.Instance.testAsyncApi();
         }
 
         private void btnCancelItemTask_Click_1(object sender, EventArgs e)

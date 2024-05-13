@@ -154,15 +154,18 @@ namespace TaskManager.controller
             listViewUsingEquipment.SmallImageList = imgList;
         }
 
-        private void testApi()
+        public void testApi()
         {
             try
             {
 
                 string url = "https://its-equ.catarc.ac.cn/api/sys/getTokenByUserNo?userNo=07358";
+                //string url = "https://its-equtest.catarc.ac.cn/api/sys/getTokenByUserNo?userNo=003884";
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "GET";
-                request.Headers.Add("Origin", "https://its-equ.catarc.ac.cn");
+                //request.Headers.Add("User-Agent", ".NET Framework Test Client");
+                request.UserAgent = ".NET Framework Test Client";
+
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 using (StreamReader streamReader = new StreamReader(response.GetResponseStream()))
                 {
@@ -182,11 +185,15 @@ namespace TaskManager.controller
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    //string url = "https://its-equ.catarc.ac.cn/api/sys/getTokenByUserNo?userNo=07358";
+                    client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
+                    //string url = "https://its-equ.catarc.ac.cn/api/sys/getTokenByUserNo?userNo=03884";
+                    string url = "https://its-equtest.catarc.ac.cn/api/sys/getTokenByUserNo?userNo=003884";
                     //string url = "https://tool.lu/comment/b/y/0/comments?type=0&page=1";
-                    string url = "http://rmyc6395.xicp.net:17099/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
+                    //string url = "http://rmyc6395.xicp.net:17099/lims/entservice/taskinfotemp/taskinfotemp!getTaskinfoList.action";
                     HttpResponseMessage httpResponse = await client.GetAsync(url);
                     var code = httpResponse.StatusCode;
+
+                   
                 }
             }
             catch (Exception ex)

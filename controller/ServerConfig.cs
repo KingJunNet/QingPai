@@ -18,12 +18,16 @@ namespace TaskManager.controller
 {
     public sealed class ServerConfig
     {
+        public static readonly string TASK_MANAGER_APP_EXE_NAME = "TaskMangerSetup.msi";
+        public static readonly string PROJECT_CODE_NAME = "轻排程序2.0.zip";
+
         private static readonly ServerConfig instance = new ServerConfig();
         /// <summary>
         /// 显式的静态构造函数⽤来告诉C#编译器在其内容实例化之前不要标记其类型
         /// </summary>
         static ServerConfig() { }
-        private ServerConfig() {
+        private ServerConfig()
+        {
             this.init();
         }
         public static ServerConfig Instance { get { return instance; } }
@@ -31,21 +35,45 @@ namespace TaskManager.controller
         private string blobServer;
         private string RootFolder = "轻排参数表服务器";
         private string paramTableFolder;
+        private string softFolder;
         private bool canConnectBlobServer;
         public string CannNotConnectBlobServerTips => $"无法连接至文件服务，该功能只支持内网环境！";
 
-        private void init() {
+        private void init()
+        {
             var sql = new DataControl();
             //文件系统服务
             blobServer = sql.BlobServer;
             paramTableFolder = $"\\\\{blobServer}\\{RootFolder}\\参数表";
+            softFolder = $"\\\\{blobServer}\\{RootFolder}\\软件更新包";
 
             //测试连接blob服务
             this.testConectBlobServer();
         }
 
-        public string ParamTableFolder {
+        public string ParamTableFolder
+        {
             get { return this.paramTableFolder; }
+        }
+
+        public string SoftFolder
+        {
+            get { return this.softFolder; }
+        }
+
+        public string AppExePath
+        {
+            get { return $"{this.softFolder}\\{TASK_MANAGER_APP_EXE_NAME}"; }
+        }
+
+        public string AppExeDirectory
+        {
+            get { return $"{this.softFolder}"; }
+        }
+
+        public string CodeDirectory
+        {
+            get { return $"\\\\{blobServer}\\{RootFolder}\\项目代码"; }
         }
 
         public bool CanConnectBlobServer
@@ -58,7 +86,13 @@ namespace TaskManager.controller
             get { return !this.canConnectBlobServer; }
         }
 
-        private void testConectBlobServer() {
+        public bool IsCanConnectBlobServer()
+        {
+            return this.testConnection(this.blobServer, 1000);
+        }
+
+        private void testConectBlobServer()
+        {
             this.canConnectBlobServer = testConnection(this.blobServer, 1000);
         }
 
@@ -73,11 +107,12 @@ namespace TaskManager.controller
                     isConnect = (reply.Status == IPStatus.Success);
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 isConnect = false;
             }
 
             return isConnect;
-        }     
+        }
     }
 }

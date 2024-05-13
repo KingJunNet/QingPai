@@ -77,7 +77,7 @@
             this.ribbon.Name = "ribbon";
             this.ribbon.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage1});
-            this.ribbon.Size = new System.Drawing.Size(1199, 190);
+            this.ribbon.Size = new System.Drawing.Size(1209, 190);
             this.ribbon.Click += new System.EventHandler(this.ribbon_Click);
             // 
             // barButtonItem1
@@ -158,7 +158,7 @@
             this.repositoryItemPictureEdit1,
             this.repositoryItemTextEdit1,
             this.repoDepartment});
-            this.gridControl1.Size = new System.Drawing.Size(1199, 421);
+            this.gridControl1.Size = new System.Drawing.Size(1209, 426);
             this.gridControl1.TabIndex = 1;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -313,7 +313,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1199, 611);
+            this.ClientSize = new System.Drawing.Size(1209, 616);
             this.Controls.Add(this.gridControl1);
             this.Controls.Add(this.ribbon);
             this.Name = "UserStructure";

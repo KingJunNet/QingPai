@@ -17,6 +17,15 @@ namespace TaskManager.Model
         WEIGHT_CLIENT = 1
     }
 
+    public enum FileCategory
+    {
+        [Description("安装包")]
+        APP_EXE = 0,
+
+        [Description("项目代码")]
+        PROJECT_CODE = 1
+    }
+
     public enum TaskType
     {
         [Description("公告")]

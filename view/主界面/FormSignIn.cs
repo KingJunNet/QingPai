@@ -26,18 +26,22 @@ namespace TaskManager
         public static User CurrentUser = new User();
         public static Dictionary<string,List<string>> UserDic = new Dictionary<string, List<string>>();
 
+        private static List<string> users = new List<string>();
+
         public static List<string> Users
         {
             get
             {
-                var value = new List<string>();
-                foreach (var item in UserDic)
-                {
-                    if(item.Value[0].ToString()!="")
-                        value.AddRange(item.Value);
-                }
+                //var value = new List<string>();
+                //foreach (var item in UserDic)
+                //{
+                //    if(item.Value[0].ToString()!="")
+                //        value.AddRange(item.Value);
+                //}
 
-                return value;
+                //return value;
+
+                return users;
             }
         }
 
@@ -133,6 +137,11 @@ namespace TaskManager
                     UserDic[department].Add(name);
                 else
                     UserDic.Add(department, new List<string> {name});
+
+                if (!users.Contains(name))
+                {
+                    users.Add(name);
+                }
             }
 
             #endregion

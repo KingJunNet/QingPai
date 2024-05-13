@@ -29,8 +29,8 @@ namespace TaskManager
     //4、首次进入判断更新
     public partial class Form1 : DevExpress.XtraBars.Ribbon.RibbonForm
     {
-        public static double curVersion = 2024.0002;
-        public static double newestVersion = 2024.0002;
+        public static double curVersion = 2024.0003;
+        public static double newestVersion = 2024.0003;
 
 
         public const string RootFolder = "轻排参数表服务器";
@@ -234,7 +234,7 @@ namespace TaskManager
             }
             return result;
         }
-        
+
         /// <summary>
         /// 判断是否包含字母
         /// </summary>
@@ -253,10 +253,10 @@ namespace TaskManager
         public static bool isExe(string str)
         {
             return Regex.Replace(str, "[\\u4e00-\\u9FA5A-Za-z0-9]", "", RegexOptions.IgnoreCase).Length > 0;
-          
+
         }
 
-        
+
         /// <summary>
         /// 更换密码
         /// </summary>
@@ -282,14 +282,14 @@ namespace TaskManager
                 return;
             }
 
-            if (!(txtNewPwd.Text.Trim().Length>=8&& IsNumber(txtNewPwd.Text.Trim()) && isLetter(txtNewPwd.Text.Trim()) && isExe(txtNewPwd.Text.Trim())))
+            if (!(txtNewPwd.Text.Trim().Length >= 8 && IsNumber(txtNewPwd.Text.Trim()) && isLetter(txtNewPwd.Text.Trim()) && isExe(txtNewPwd.Text.Trim())))
             {
                 MessageBox.Show("新密码为8位（包括）以上字符，包含数字、大小写字母、特殊字符；");
                 txtNewPwd2.Text = "";
                 txtNewPwd2.Focus();
                 return;
             }
-            
+
 
             if (!txtNewPwd.Text.Trim().Equals(txtNewPwd2.Text.Trim()))
             {
@@ -384,7 +384,7 @@ namespace TaskManager
 
 
 
- 
+
 
         /// <summary>
         /// 设备管理
@@ -537,7 +537,7 @@ namespace TaskManager
 
         private void OpenDepartmentEquipmentForm(string department)
         {
-            Log.i($"Open EquipmentForms:{department}","设备管理");
+            Log.i($"Open EquipmentForms:{department}", "设备管理");
             try
             {
                 ShowWaitForm();
@@ -568,7 +568,7 @@ namespace TaskManager
                 else
                     EquipmentForms.Add(department, form);
 
-                Log.i($"Open EquipmentForms:{department}","设备管理");
+                Log.i($"Open EquipmentForms:{department}", "设备管理");
             }
             catch (Exception ex)
             {
@@ -596,7 +596,7 @@ namespace TaskManager
             }
             else
             {
-                
+
 
                 frmUser.MdiParent = this;
                 frmUser.WindowState = FormWindowState.Maximized;
@@ -669,7 +669,7 @@ namespace TaskManager
             var info = new FileInfo(exePath);
 
             newestVersion = Sql.GetExpr1("select top 1 version as Expr1 from Version", 1000.00);
-            var count = Sql.GetExpr1("select count(*) as Expr1 from FileTable where category='安装包'", 0);
+            var count = Sql.GetExpr1("select count(*) as Expr1 from FileTable where category='APP_EXE'", 0);
             if (!(newestVersion > curVersion) || count <= 0) return;
             //if (!(NEWEST_Version > VERSION)) return;
             YNinstall = true;
@@ -705,13 +705,13 @@ namespace TaskManager
 
                 System.Environment.Exit(0);
             }
-           
-           
+
+
             //try
             //{
             //    ShowWaitForm();
 
-            //    var strsql = "select top 1 [file] as Expr1,name as Expr2 from FileTable where category='安装包'";
+            //    var strsql = "select top 1 [file] as Expr1,name as Expr2 from FileTable where category='APP_EXE'";
             //    var dt = Sql.ExecuteQuery(strsql).Tables[0];
             //    if (dt.Rows.Count == 0) return;
 
@@ -742,23 +742,34 @@ namespace TaskManager
         private void ShowInstallPath()
         {
             //是否需要下载
-            if (!this.isNeedUpdateApp()) {
+            if (!this.isNeedUpdateApp())
+            {
                 return;
             }
-            
+
             MessageBox.Show("更新方法：点击确定进行更新" +
                                 "\n版本号：" + newestVersion, "有新版本请更新");
             try
             {
-                FileDownloadResult result = this.downloadFile("安装包");
-                if (!result.IsSuccess)
+                string appFilePath = "";
+                if (ServerConfig.Instance.IsCanConnectBlobServer())
                 {
-                    MessageBox.Show($"更新包下载失败,失败原因：{result.ErrorMessage}", "错误信息", MessageBoxButtons.OK);
-                    return;
+                    appFilePath = ServerConfig.Instance.AppExePath;
                 }
-                string appFilePath = result.FilePath;
-                DialogResult downResult= MessageBox.Show("更新包已下载,开始安装");
-                if (downResult == DialogResult.OK) {
+                else
+                {
+                    FileDownloadResult result = this.downloadFile(FileCategory.APP_EXE);
+                    if (!result.IsSuccess)
+                    {
+                        MessageBox.Show($"更新包下载失败,失败原因：{result.ErrorMessage}", "错误信息", MessageBoxButtons.OK);
+                        return;
+                    }
+                    appFilePath = result.FilePath;
+                }
+
+                DialogResult downResult = MessageBox.Show("更新包已下载,开始安装");
+                if (downResult == DialogResult.OK)
+                {
                     Process.Start(appFilePath);
                 }
             }
@@ -772,7 +783,8 @@ namespace TaskManager
             }
         }
 
-        private bool isNeedUpdateApp() {
+        private bool isNeedUpdateApp()
+        {
             var strsql = $"select top 1 version,userScope from Version";
             var dt = Sql.ExecuteQuery(strsql).Tables[0];
             if (dt.Rows.Count == 0)
@@ -781,13 +793,14 @@ namespace TaskManager
             }
             newestVersion = double.Parse(dt.Rows[0]["version"].ToString());
             string userScope = DbHelper.dataColumn2String(dt.Rows[0]["userScope"]);
-            var count = Sql.GetExpr1("select count(*) as Expr1 from FileTable where category='安装包'", 0);
-            if ((curVersion >=  newestVersion) || count <= 0)
+            var count = Sql.GetExpr1("select count(*) as Expr1 from FileTable where category='APP_EXE'", 0);
+            if ((curVersion >= newestVersion) || count <= 0)
             {
                 return false;
             }
             //未设置范围
-            if (string.IsNullOrWhiteSpace(userScope)) {
+            if (string.IsNullOrWhiteSpace(userScope))
+            {
                 return true;
             }
 
@@ -831,7 +844,7 @@ namespace TaskManager
             {
                 Form1.ShowWaitForm();
                 var filePath = fileDialog.FileName;
-                Sql.ExecuteNonQuery("delete FileTable where category='安装包'");
+                Sql.ExecuteNonQuery("delete FileTable where category='APP_EXE'");
                 var stream = new FileStream(fileDialog.FileName, FileMode.Open);
                 var paras = new[] {
                         new SqlParameter("name",Path.GetFileName(filePath) ),
@@ -839,7 +852,7 @@ namespace TaskManager
                         new SqlParameter("file",stream.StreamToBytes())
                         };
                 var strsql = "insert into FileTable(name,[file],category,foreignKey) values( ";
-                strsql += "@name,@file,'安装包',@foreignKey)";
+                strsql += "@name,@file,'APP_EXE',@foreignKey)";
                 Sql.ExecuteNonQuery(strsql, paras);
                 Sql.ExecuteNonQuery("update Version set [version]=" + newestVersion);
                 MessageBox.Show("更新包提交成功", "提示", MessageBoxButtons.OK);
@@ -868,9 +881,9 @@ namespace TaskManager
             try
             {
                 Form1.ShowWaitForm();
-                string key= DateTime.Now.ToString("yyyyMMdd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                string key = DateTime.Now.ToString("yyyyMMdd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
                 var filePath = fileDialog.FileName;
-                Sql.ExecuteNonQuery("delete FileTable where category='ProjectCode'");
+                Sql.ExecuteNonQuery("delete FileTable where category='PROJECT_CODE'");
                 var stream = new FileStream(fileDialog.FileName, FileMode.Open);
                 var paras = new[] {
                         new SqlParameter("name",Path.GetFileName(filePath) ),
@@ -878,7 +891,7 @@ namespace TaskManager
                         new SqlParameter("file",stream.StreamToBytes())
                         };
                 var strsql = "insert into FileTable(name,[file],category,foreignKey) values( ";
-                strsql += "@name,@file,'ProjectCode',@foreignKey)";
+                strsql += "@name,@file,'PROJECT_CODE',@foreignKey)";
                 Sql.ExecuteNonQuery(strsql, paras);
                 MessageBox.Show("项目源代码提交成功", "提示", MessageBoxButtons.OK);
             }
@@ -894,7 +907,12 @@ namespace TaskManager
 
         private void btnDownloadExe_Click(object sender, EventArgs e)
         {
-            FileDownloadResult result = this.downloadFile("安装包");
+            if (this.downloadFromShareFolder(FileCategory.APP_EXE))
+            {
+                return;
+            }
+
+            FileDownloadResult result = this.downloadFile(FileCategory.APP_EXE);
             if (!result.IsSuccess)
             {
                 MessageBox.Show($"更新包下载失败,失败原因：{result.ErrorMessage}", "错误信息", MessageBoxButtons.OK);
@@ -902,10 +920,34 @@ namespace TaskManager
             }
             MessageBox.Show($"更新包已下载,请转至路径'{result.FilePath}'查看", "提示", MessageBoxButtons.OK);
         }
-    
+
+        private bool downloadFromShareFolder(FileCategory category)
+        {
+            if (!ServerConfig.Instance.IsCanConnectBlobServer())
+            {
+                return false;
+            }
+            try
+            {
+                this.openFileFromShareDirectory(category);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            //MessageBox.Show($"文件目录已打开，请直接拷贝文件", "提示", MessageBoxButtons.OK);
+            return true;
+        }
+
         private void btnDownloadCode_Click(object sender, EventArgs e)
         {
-            FileDownloadResult result = this.downloadFile("ProjectCode");
+            if (this.downloadFromShareFolder(FileCategory.PROJECT_CODE))
+            {
+                return;
+            }
+
+            FileDownloadResult result = this.downloadFile(FileCategory.PROJECT_CODE);
             if (!result.IsSuccess)
             {
                 MessageBox.Show($"项目源代码下载失败,失败原因：{result.ErrorMessage}", "错误信息", MessageBoxButtons.OK);
@@ -924,7 +966,7 @@ namespace TaskManager
                 return appFilePath;
             }
             ShowWaitForm();
-            var strsql = "select top 1 [file] as Expr1,name as Expr2 from FileTable where category='安装包'";
+            var strsql = "select top 1 [file] as Expr1,name as Expr2 from FileTable where category='APP_EXE'";
             var dt = Sql.ExecuteQuery(strsql).Tables[0];
             if (dt.Rows.Count == 0)
             {
@@ -945,37 +987,122 @@ namespace TaskManager
             return appFilePath;
         }
 
-        private FileDownloadResult downloadFile(string category)
+        private FileDownloadResult downloadFile(FileCategory category)
         {
             FileDownloadResult result = new FileDownloadResult();
-
-            string filePath = "";
 
             var dialog = new FolderBrowserDialog { Description = "请选择下载目标文件夹" };
             if (dialog.ShowDialog() != DialogResult.OK)
             {
                 return result.failed("未选择文件夹");
             }
+            result = this.executeDownloadFile(category, dialog.SelectedPath);
+
+            return result;
+        }
+
+        private FileDownloadResult executeDownloadFile(FileCategory category, string fileDir)
+        {
+            FileDownloadResult result = new FileDownloadResult();
+
             ShowWaitForm();
-            var strsql = $"select top 1 [file] as Expr1,name as Expr2 from FileTable where category='{category}'";
+            try
+            {
+                if (ServerConfig.Instance.IsCanConnectBlobServer())
+                {
+                    result = this.downloadFileFromShareDirectory(category, fileDir);
+                }
+                else
+                {
+                    result = this.downloadFileFromDb(category, fileDir);
+                }
+            }
+            catch (Exception ex)
+            {
+                result = result.failed(ex.Message);
+            }
+            finally
+            {
+                CloseWaitForm();
+            }
+
+            return result;
+        }
+
+        private FileDownloadResult downloadFileFromDb(FileCategory category, string fileDir)
+        {
+            FileDownloadResult result = new FileDownloadResult();
+
+            //查询文件
+            var strsql = $"select top 1 [file] as Expr1,name as Expr2 from FileTable where category='{category.ToString()}'";
             var dt = Sql.ExecuteHighCostQuery(strsql).Tables[0];
             if (dt.Rows.Count == 0)
             {
-                 return result.failed("文件不存在"); ;
+                return result.failed("文件不存在"); ;
             }
+
+            //写入文件
             var picBytes = (byte[])dt.Rows[0]["Expr1"];
             string fileName = dt.Rows[0]["Expr2"].ToString();
             //var stream0 = new FileStream(fileDialog.FileName, FileMode.Open);
             //var picBytes = stream0.StreamToBytes();
 
-            filePath = dialog.SelectedPath + $"\\{fileName}";
+            string filePath = fileDir + $"\\{fileName}";
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 stream.Write(picBytes, 0, picBytes.Length);
             }
-            CloseWaitForm();
 
             return result.success(filePath);
+        }
+
+        private FileDownloadResult downloadFileFromShareDirectory(FileCategory category, string fileDirectory)
+        {
+            FileDownloadResult result = new FileDownloadResult();
+
+            //查询文件
+            string serverFileDirectory = "";
+            string fileName = "";
+            switch (category)
+            {
+                case FileCategory.APP_EXE:
+                    serverFileDirectory = ServerConfig.Instance.AppExeDirectory;
+                    fileName = ServerConfig.TASK_MANAGER_APP_EXE_NAME;
+                    break;
+                case FileCategory.PROJECT_CODE:
+                    serverFileDirectory = ServerConfig.Instance.CodeDirectory;
+                    fileName = ServerConfig.PROJECT_CODE_NAME;
+                    break;
+                default:
+                    break;
+            }
+
+            string serverFilePath = serverFileDirectory + $"\\{fileName}";
+            string filePath = fileDirectory + $"\\{fileName}";
+            System.IO.File.Copy(serverFilePath, filePath, true);
+
+            return result.success(filePath);
+        }
+
+        private void openFileFromShareDirectory(FileCategory category)
+        {
+            //查询文件
+            string serverFileDirectory = "";
+            string fileName = "";
+            switch (category)
+            {
+                case FileCategory.APP_EXE:
+                    serverFileDirectory = ServerConfig.Instance.AppExeDirectory;
+                    fileName = ServerConfig.TASK_MANAGER_APP_EXE_NAME;
+                    break;
+                case FileCategory.PROJECT_CODE:
+                    serverFileDirectory = ServerConfig.Instance.CodeDirectory;
+                    fileName = ServerConfig.PROJECT_CODE_NAME;
+                    break;
+                default:
+                    break;
+            }
+            System.Diagnostics.Process.Start("Explorer.exe", serverFileDirectory);
         }
 
 
@@ -1067,7 +1194,7 @@ namespace TaskManager
 
                 "费用确认",
                 "胎压",
-                    
+
                 "检定地点",
                 "设备状态",
                 "设备使用状况"
@@ -1084,7 +1211,7 @@ namespace TaskManager
             }
 
             //选项名称
-            List<string> optionNames= sql.GetStringList("select distinct Name from ConfigItemTable order by Name");
+            List<string> optionNames = sql.GetStringList("select distinct Name from ConfigItemTable order by Name");
             ComboxDictionary.Add("配置项名称", optionNames);
         }
 
@@ -1154,7 +1281,7 @@ namespace TaskManager
         private void barRemainder_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             timer1_Tick(null, null);
-        
+
         }
 
 
@@ -1169,7 +1296,7 @@ namespace TaskManager
 
             WebsiteBind(网址链接);
 
-        
+
 
             Filter.filterText = "";
             //accordionControlElement23.Elements.Add();
@@ -1292,7 +1419,7 @@ namespace TaskManager
             {
                 MessageBox.Show("模板不存在");
             }
-            
+
 
         }
 
@@ -1323,7 +1450,7 @@ namespace TaskManager
             {
                 MessageBox.Show("模板不存在");
             }
-            
+
 
         }
         public void 试验统计_ElementClick(object sender, EventArgs e)
@@ -1353,7 +1480,7 @@ namespace TaskManager
             {
                 MessageBox.Show("模板不存在");
             }
-           
+
 
         }
         public void 项目报价_ElementClick(object sender, EventArgs e)
@@ -1379,10 +1506,11 @@ namespace TaskManager
                     // _control._view.Columns[Templatecolumn.column[i]].VisibleIndex = i;
                 }
             }
-            else{
+            else
+            {
                 MessageBox.Show("模板不存在");
             }
-            
+
         }
 
         #endregion
@@ -1402,7 +1530,7 @@ namespace TaskManager
         {
             try
             {
-                Log.i("进入任务管理模块","任务管理");
+                Log.i("进入任务管理模块", "任务管理");
                 ShowWaitForm();
 
                 if (taskForm == null || taskForm.IsDisposed)
@@ -1431,7 +1559,7 @@ namespace TaskManager
             }
             finally
             {
-                
+
                 Log.e("OpenForm Finish");
                 CloseWaitForm();
                 this.Text = "默认模板";
@@ -1461,7 +1589,7 @@ namespace TaskManager
         {
             try
             {
-                Log.i("进入样品信息模块","样品信息");
+                Log.i("进入样品信息模块", "样品信息");
                 ShowWaitForm();
 
                 if (sampleForm == null || sampleForm.IsDisposed)
@@ -1514,10 +1642,10 @@ namespace TaskManager
         /// <param name="e"></param>
         private void accordionControlElement44_Click(object sender, EventArgs e)
         {
-         
+
             try
             {
-                Log.i("进入试验统计模块","试验统计");
+                Log.i("进入试验统计模块", "试验统计");
                 ShowWaitForm();
 
                 if (teststatistic == null || teststatistic.IsDisposed)
@@ -1573,7 +1701,7 @@ namespace TaskManager
         {
             try
             {
-                Log.i("进入项目报价模块","项目报价");
+                Log.i("进入项目报价模块", "项目报价");
                 ShowWaitForm();
 
                 if (projectprice == null || projectprice.IsDisposed)
@@ -1620,13 +1748,13 @@ namespace TaskManager
 
         private FormLog formlog;
 
-       
+
         public bool Authority;
         private void accordionControlElement1_Click(object sender, EventArgs e)
         {
-        
+
             //Authority = Sql.AuthorityCheck2("系统维护", "用户管理");
-            if (FormSignIn.CurrentUser.Department=="体系组" || FormSignIn.CurrentUser.Department == "系统维护")
+            if (FormSignIn.CurrentUser.Department == "体系组" || FormSignIn.CurrentUser.Department == "系统维护")
             {
                 formlog = new FormLog();
                 formlog.ShowDialog();
@@ -1635,7 +1763,7 @@ namespace TaskManager
             {
                 MessageBox.Show("您没有权限查看系统日志，请联系管理员");
             }
-           
+
         }
 
         private UserStructure Userstructure;
@@ -1672,7 +1800,7 @@ namespace TaskManager
             {
                 accordionControl1.Visible = false;
             }
-            
+
         }
 
         private void backstageViewTabItem2_SelectedChanged(object sender, DevExpress.XtraBars.Ribbon.BackstageViewItemEventArgs e)
@@ -1690,23 +1818,23 @@ namespace TaskManager
             {
                 DirectoryInfo info0 = new DirectoryInfo(Application.StartupPath);
                 string debugpath = info0.Parent.FullName + "\\PVE测试管理系统\\PVE测试管理系统.exe";
-     
+
                 Process.Start(debugpath);
             }
             catch
             {
                 MessageBox.Show("请将PVE测试管理系统安装包放到D盘根目录下,并将文件夹命名为'PVE测试管理系统'", "提示");
             }
-           
+
         }
 
         #region 系统网址
         private void accordionControlElement6_Click(object sender, EventArgs e)
         {
-            
+
         }
 
-     
+
         /// <summary>
         /// 系统网址
         /// </summary>
@@ -1725,7 +1853,7 @@ namespace TaskManager
             WebsiteBind(网址链接);
         }
 
-        public  void WebsiteBind(AccordionControlElement name)
+        public void WebsiteBind(AccordionControlElement name)
         {
             name.Elements.Clear();
             string sql = $"select distinct name,index1 from SystemWebsite order by index1";
@@ -1746,7 +1874,7 @@ namespace TaskManager
             }
 
         }
-        public  void 系统网址_ElementClick(object sender, EventArgs e)
+        public void 系统网址_ElementClick(object sender, EventArgs e)
         {
             //accordionControlElement42_Click(accordionControlElement42, e);
             string sql = $"select address from SystemWebsite where name ='{((AccordionControlElement)sender).Text}'";
@@ -1755,9 +1883,9 @@ namespace TaskManager
             {
                 try
                 {
-                    
+
                     System.Diagnostics.Process.Start(da.Rows[0][0].ToString());
-                    
+
 
                 }
                 catch
@@ -1784,47 +1912,47 @@ namespace TaskManager
             {
                 e.Cancel = true;
             }
-        //}
+            //}
 
             ////将程序从任务栏移除显示
 
-                //this.ShowInTaskbar = false;
+            //this.ShowInTaskbar = false;
 
-                ////隐藏窗口
+            ////隐藏窗口
 
-                //this.Visible = false;
+            //this.Visible = false;
 
-                ////显示托盘图标
+            ////显示托盘图标
 
-                //notifyIcon1.Visible = true;
-                //e.Cancel = true;
+            //notifyIcon1.Visible = true;
+            //e.Cancel = true;
         }
 
 
         public void judgeEquip()
         {
-            
-            
+
+
             string sql = $"select alert  from EquipmentTable where group1='{FormSignIn.CurrentUser.Department}'";
             DataTable data = SqlHelper.GetList(sql);
             Boolean bool1 = true;
-            foreach(DataRow row in data.Rows)
+            foreach (DataRow row in data.Rows)
             {
                 if (row[0].ToString() == "是")
                 {
                     baralert.Caption = "有设备快到有效期，请及时送检！";
-               
+
                     baralert.ImageOptions.Image = Resources.红;
-                    
+
                 }
             }
 
-           
-             
-           
-               
+
+
+
+
         }
-        private int alertnum=0;
+        private int alertnum = 0;
         private void timer2_Tick(object sender, EventArgs e)
         {
             if (alertnum == 0)
@@ -1833,8 +1961,8 @@ namespace TaskManager
                 baralert.Caption = "";
             }
             alertnum++;
-        
-            
+
+
             if (alertnum == 2)
             {
                 //judgeEquip();
@@ -1895,7 +2023,8 @@ namespace TaskManager
             StartApp(appPath);
         }
 
-        private void startThirdAppBack(string appName) {
+        private void startThirdAppBack(string appName)
+        {
             string appPath = GetAppPathFromBinFile(appName);
             if (string.IsNullOrEmpty(appPath) || !System.IO.File.Exists(appPath))
             {
@@ -1909,7 +2038,8 @@ namespace TaskManager
             StartApp(appPath);
         }
 
-        private bool resetAppPath(string appName,out string appPath) {
+        private bool resetAppPath(string appName, out string appPath)
+        {
             appPath = XtraInputBox.Show("请输入应用的安装路径", "应用路径输入", "");
             if (string.IsNullOrEmpty(appPath) || !System.IO.File.Exists(appPath))
             {
@@ -1923,8 +2053,8 @@ namespace TaskManager
                     return false;
                 }
             }
-             SaveAppPathToBinFile(appName, appPath);
-             return true;
+            SaveAppPathToBinFile(appName, appPath);
+            return true;
         }
 
         private void StartApp(string appPath)
@@ -1952,17 +2082,17 @@ namespace TaskManager
 
             return thirdAppCfgItemMap[appName].Path;
         }
-     
-        private void SaveAppPathToBinFile(string appName,string appPath)
+
+        private void SaveAppPathToBinFile(string appName, string appPath)
         {
-            ThirdAppCfgItem cfgItem= new ThirdAppCfgItem(appName, appPath);
+            ThirdAppCfgItem cfgItem = new ThirdAppCfgItem(appName, appPath);
             if (this.thirdAppCfgItemMap.ContainsKey(appName))
             {
                 this.thirdAppCfgItemMap[appName] = cfgItem;
             }
             else
             {
-                this.thirdAppCfgItemMap.Add(appName,cfgItem);
+                this.thirdAppCfgItemMap.Add(appName, cfgItem);
             }
             thirdAppCfgItemMap.WriteSerializable(ConstHolder.THIRD_APP_CONFIG_FILE_NAME);
         }
@@ -1979,10 +2109,10 @@ namespace TaskManager
             string errorMessage = ex != null ? $"{message}: {ex.Message}" : message;
             MessageBox.Show(errorMessage, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-      
+
         private void ribbonControl1_Click(object sender, EventArgs e)
         {
-    
+
         }
 
         private void tabItemConfig_Click(object sender, EventArgs e)
@@ -2041,7 +2171,8 @@ namespace TaskManager
         //}
     }
 
-    class FileDownloadResult {
+    class FileDownloadResult
+    {
         /// <summary>
         /// 是否成功
         /// </summary>      
@@ -2057,7 +2188,8 @@ namespace TaskManager
         /// </summary>      
         public string FilePath { get; set; }
 
-        public FileDownloadResult failed(string errorMessage) {
+        public FileDownloadResult failed(string errorMessage)
+        {
             this.IsSuccess = false;
             this.ErrorMessage = errorMessage;
             this.FilePath = "";
