@@ -146,7 +146,7 @@ namespace TaskManager
             this.titleMutiComboxGroup.Margin = new System.Windows.Forms.Padding(4);
             this.titleMutiComboxGroup.Name = "titleMutiComboxGroup";
             this.titleMutiComboxGroup.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.titleMutiComboxGroup.Size = new System.Drawing.Size(506, 116);
+            this.titleMutiComboxGroup.Size = new System.Drawing.Size(506, 178);
             this.titleMutiComboxGroup.TabIndex = 106;
             this.titleMutiComboxGroup.Title = "组别";
             this.titleMutiComboxGroup.ViewModels = null;

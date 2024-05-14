@@ -115,7 +115,7 @@ namespace ExpertLib.Controls
 
             CheckedListBox.Width = ComboBox.Width;
             CheckedListBox.ItemHeight = ComboBox.ItemHeight;
-            CheckedListBox.Size = new Size(ComboBox.DropDownWidth, CheckedListBox.Items.Count * 18);
+            //CheckedListBox.Size = new Size(ComboBox.DropDownWidth, CheckedListBox.Items.Count * 10);
             CheckedListBox.Location = new Point(ComboBox.Left, ComboBox.Height);
             this.Controls.Add(CheckedListBox);
             CheckedListBox.Visible = true;
