@@ -34,29 +34,14 @@ namespace TaskManager
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.listViewUsingEquipment = new System.Windows.Forms.ListView();
-            this.listColumnEuipCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.listColumnEuipName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.listColumnEuipType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.listColumnGroup = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.listColumnRemove = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.btnAddEquipment = new System.Windows.Forms.Button();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnSaveItemTask = new System.Windows.Forms.Button();
-            this.btnCancelItemTask = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.listColumnOrder = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.titleComboxGroup = new ExpertLib.Controls.TitleCombox();
             this.titleComboxArea = new ExpertLib.Controls.TitleCombox();
             this.titleComboxLocationNo = new ExpertLib.Controls.TitleCombox();
             this.titleComboxUser = new ExpertLib.Controls.TitleCombox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.titleComboxSampleType = new ExpertLib.Controls.RequiredTitleCombox();
             this.titleComboxVin = new ExpertLib.Controls.RequiredTitleCombox();
-            this.titleComboxSampleType = new ExpertLib.Controls.TitleCombox();
             this.titleComboxCarType = new ExpertLib.Controls.TitleCombox();
             this.titleComboxCarModel = new ExpertLib.Controls.TitleCombox();
             this.titleComboxProducer = new ExpertLib.Controls.TitleCombox();
@@ -69,6 +54,10 @@ namespace TaskManager
             this.titleComboxFuelType = new ExpertLib.Controls.TitleCombox();
             this.titleComboxRoz = new ExpertLib.Controls.TitleCombox();
             this.titleComboxTirepressure = new ExpertLib.Controls.TitleCombox();
+            this.titleComboxCanisterCode = new ExpertLib.Controls.TitleCombox();
+            this.titleComboxCanisterType = new ExpertLib.Controls.TitleCombox();
+            this.titleComboxCanisterProductor = new ExpertLib.Controls.TitleCombox();
+            this.label7 = new System.Windows.Forms.Label();
             this.titleComboxItemType = new ExpertLib.Controls.RequiredTitleCombox();
             this.titleComboxItemBrief = new ExpertLib.Controls.RequiredTitleCombox();
             this.titleComboxBeginTime = new ExpertLib.Controls.TitleEditor.DateEdit();
@@ -77,7 +66,20 @@ namespace TaskManager
             this.titleComboxTaskCode = new ExpertLib.Controls.TitleCombox();
             this.titleComboxTaskCodeRemark = new ExpertLib.Controls.TitleCombox();
             this.titleComboxSecurityLevel = new ExpertLib.Controls.TitleCombox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.listViewUsingEquipment = new System.Windows.Forms.ListView();
+            this.listColumnOrder = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listColumnEuipCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listColumnEuipName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listColumnEuipType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listColumnGroup = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listColumnRemove = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btnAddEquipment = new System.Windows.Forms.Button();
             this.titleComboxEquipment = new ExpertLib.Controls.TitleCombox();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnSaveItemTask = new System.Windows.Forms.Button();
+            this.btnCancelItemTask = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -113,8 +115,8 @@ namespace TaskManager
             this.flowLayoutPanel1.Controls.Add(this.label5);
             this.flowLayoutPanel1.Controls.Add(this.label1);
             this.flowLayoutPanel1.Controls.Add(this.label2);
-            this.flowLayoutPanel1.Controls.Add(this.titleComboxVin);
             this.flowLayoutPanel1.Controls.Add(this.titleComboxSampleType);
+            this.flowLayoutPanel1.Controls.Add(this.titleComboxVin);
             this.flowLayoutPanel1.Controls.Add(this.titleComboxCarType);
             this.flowLayoutPanel1.Controls.Add(this.titleComboxCarModel);
             this.flowLayoutPanel1.Controls.Add(this.titleComboxProducer);
@@ -127,6 +129,9 @@ namespace TaskManager
             this.flowLayoutPanel1.Controls.Add(this.titleComboxFuelType);
             this.flowLayoutPanel1.Controls.Add(this.titleComboxRoz);
             this.flowLayoutPanel1.Controls.Add(this.titleComboxTirepressure);
+            this.flowLayoutPanel1.Controls.Add(this.titleComboxCanisterCode);
+            this.flowLayoutPanel1.Controls.Add(this.titleComboxCanisterType);
+            this.flowLayoutPanel1.Controls.Add(this.titleComboxCanisterProductor);
             this.flowLayoutPanel1.Controls.Add(this.label7);
             this.flowLayoutPanel1.Controls.Add(this.titleComboxItemType);
             this.flowLayoutPanel1.Controls.Add(this.titleComboxItemBrief);
@@ -139,173 +144,12 @@ namespace TaskManager
             this.flowLayoutPanel1.Controls.Add(this.label6);
             this.flowLayoutPanel1.Controls.Add(this.tableLayoutPanel1);
             this.flowLayoutPanel1.Controls.Add(this.tableLayoutPanel2);
-            this.flowLayoutPanel1.Controls.Add(this.label3);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(10, 10);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(1321, 933);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(1321, 969);
             this.flowLayoutPanel1.TabIndex = 2;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1290, 134);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 15);
-            this.label1.TabIndex = 60;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(1296, 134);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(0, 15);
-            this.label2.TabIndex = 61;
-            // 
-            // label7
-            // 
-            this.label7.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label7.Location = new System.Drawing.Point(3, 451);
-            this.label7.Margin = new System.Windows.Forms.Padding(3, 12, 3, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(1278, 30);
-            this.label7.TabIndex = 105;
-            this.label7.Text = "项目信息";
-            // 
-            // label6
-            // 
-            this.label6.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label6.Location = new System.Drawing.Point(3, 646);
-            this.label6.Margin = new System.Windows.Forms.Padding(3, 12, 3, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(1281, 30);
-            this.label6.TabIndex = 110;
-            this.label6.Text = "使用设备";
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6.914546F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 519F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 544F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 113F));
-            this.tableLayoutPanel1.Controls.Add(this.titleComboxEquipment, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.listViewUsingEquipment, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btnAddEquipment, 3, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 679);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1279, 148);
-            this.tableLayoutPanel1.TabIndex = 111;
-            // 
-            // listViewUsingEquipment
-            // 
-            this.listViewUsingEquipment.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.listColumnOrder,
-            this.listColumnEuipCode,
-            this.listColumnEuipName,
-            this.listColumnEuipType,
-            this.listColumnGroup,
-            this.listColumnRemove});
-            this.listViewUsingEquipment.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewUsingEquipment.FullRowSelect = true;
-            this.listViewUsingEquipment.HideSelection = false;
-            this.listViewUsingEquipment.Location = new System.Drawing.Point(106, 3);
-            this.listViewUsingEquipment.Name = "listViewUsingEquipment";
-            this.listViewUsingEquipment.Size = new System.Drawing.Size(513, 142);
-            this.listViewUsingEquipment.TabIndex = 20;
-            this.listViewUsingEquipment.UseCompatibleStateImageBehavior = false;
-            this.listViewUsingEquipment.View = System.Windows.Forms.View.Details;
-            this.listViewUsingEquipment.SelectedIndexChanged += new System.EventHandler(this.listViewUsingEquipment_SelectedIndexChanged);
-            // 
-            // listColumnEuipCode
-            // 
-            this.listColumnEuipCode.Text = "编号";
-            this.listColumnEuipCode.Width = 100;
-            // 
-            // listColumnEuipName
-            // 
-            this.listColumnEuipName.Text = "名称";
-            this.listColumnEuipName.Width = 100;
-            // 
-            // listColumnEuipType
-            // 
-            this.listColumnEuipType.Text = "型号";
-            this.listColumnEuipType.Width = 100;
-            // 
-            // listColumnGroup
-            // 
-            this.listColumnGroup.Text = "组别";
-            this.listColumnGroup.Width = 70;
-            // 
-            // listColumnRemove
-            // 
-            this.listColumnRemove.Text = "";
-            this.listColumnRemove.Width = 88;
-            // 
-            // btnAddEquipment
-            // 
-            this.btnAddEquipment.Location = new System.Drawing.Point(1169, 3);
-            this.btnAddEquipment.Name = "btnAddEquipment";
-            this.btnAddEquipment.Size = new System.Drawing.Size(107, 34);
-            this.btnAddEquipment.TabIndex = 19;
-            this.btnAddEquipment.Text = "添加";
-            this.btnAddEquipment.UseVisualStyleBackColor = true;
-            this.btnAddEquipment.Click += new System.EventHandler(this.btnAddEquipment_Click);
-            // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.ColumnCount = 3;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 195F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 163F));
-            this.tableLayoutPanel2.Controls.Add(this.btnSaveItemTask, 2, 0);
-            this.tableLayoutPanel2.Controls.Add(this.btnCancelItemTask, 1, 0);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 833);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(1281, 64);
-            this.tableLayoutPanel2.TabIndex = 112;
-            // 
-            // btnSaveItemTask
-            // 
-            this.btnSaveItemTask.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnSaveItemTask.Location = new System.Drawing.Point(1121, 3);
-            this.btnSaveItemTask.Name = "btnSaveItemTask";
-            this.btnSaveItemTask.Size = new System.Drawing.Size(157, 47);
-            this.btnSaveItemTask.TabIndex = 0;
-            this.btnSaveItemTask.Text = "保存";
-            this.btnSaveItemTask.UseVisualStyleBackColor = true;
-            this.btnSaveItemTask.Click += new System.EventHandler(this.btnSaveItemTask_Click);
-            // 
-            // btnCancelItemTask
-            // 
-            this.btnCancelItemTask.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnCancelItemTask.Location = new System.Drawing.Point(926, 3);
-            this.btnCancelItemTask.Name = "btnCancelItemTask";
-            this.btnCancelItemTask.Size = new System.Drawing.Size(156, 47);
-            this.btnCancelItemTask.TabIndex = 1;
-            this.btnCancelItemTask.Text = "取消";
-            this.btnCancelItemTask.UseVisualStyleBackColor = true;
-            this.btnCancelItemTask.Click += new System.EventHandler(this.btnCancelItemTask_Click_1);
-            // 
-            // label3
-            // 
-            this.label3.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label3.Location = new System.Drawing.Point(3, 912);
-            this.label3.Margin = new System.Windows.Forms.Padding(3, 12, 3, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(1281, 10);
-            this.label3.TabIndex = 113;
-            this.label3.Click += new System.EventHandler(this.label3_Click);
-            // 
-            // listColumnOrder
-            // 
-            this.listColumnOrder.Text = "序号";
-            this.listColumnOrder.Width = 50;
             // 
             // titleComboxGroup
             // 
@@ -359,31 +203,47 @@ namespace TaskManager
             this.titleComboxUser.Title = "登记人";
             this.titleComboxUser.ViewModels = null;
             // 
-            // titleComboxVin
+            // label1
             // 
-            this.titleComboxVin.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.titleComboxVin.LabelWidth = 100;
-            this.titleComboxVin.Location = new System.Drawing.Point(4, 180);
-            this.titleComboxVin.Margin = new System.Windows.Forms.Padding(4);
-            this.titleComboxVin.Name = "titleComboxVin";
-            this.titleComboxVin.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.titleComboxVin.Size = new System.Drawing.Size(420, 41);
-            this.titleComboxVin.TabIndex = 64;
-            this.titleComboxVin.Title = "VIN";
-            this.titleComboxVin.ViewModels = null;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(1290, 134);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(0, 15);
+            this.label1.TabIndex = 60;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(1296, 134);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(0, 15);
+            this.label2.TabIndex = 61;
             // 
             // titleComboxSampleType
             // 
             this.titleComboxSampleType.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.titleComboxSampleType.LabelWidth = 100;
-            this.titleComboxSampleType.Location = new System.Drawing.Point(432, 181);
-            this.titleComboxSampleType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.titleComboxSampleType.Location = new System.Drawing.Point(4, 180);
+            this.titleComboxSampleType.Margin = new System.Windows.Forms.Padding(4);
             this.titleComboxSampleType.Name = "titleComboxSampleType";
             this.titleComboxSampleType.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.titleComboxSampleType.Size = new System.Drawing.Size(420, 41);
             this.titleComboxSampleType.TabIndex = 86;
             this.titleComboxSampleType.Title = "样本类型";
             this.titleComboxSampleType.ViewModels = null;
+            // 
+            // titleComboxVin
+            // 
+            this.titleComboxVin.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.titleComboxVin.LabelWidth = 100;
+            this.titleComboxVin.Location = new System.Drawing.Point(432, 181);
+            this.titleComboxVin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.titleComboxVin.Name = "titleComboxVin";
+            this.titleComboxVin.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.titleComboxVin.Size = new System.Drawing.Size(420, 41);
+            this.titleComboxVin.TabIndex = 64;
+            this.titleComboxVin.Title = "VIN";
+            this.titleComboxVin.ViewModels = null;
             // 
             // titleComboxCarType
             // 
@@ -541,11 +401,60 @@ namespace TaskManager
             this.titleComboxTirepressure.Title = "胎压";
             this.titleComboxTirepressure.ViewModels = null;
             // 
+            // titleComboxCanisterCode
+            // 
+            this.titleComboxCanisterCode.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.titleComboxCanisterCode.LabelWidth = 100;
+            this.titleComboxCanisterCode.Location = new System.Drawing.Point(864, 392);
+            this.titleComboxCanisterCode.Margin = new System.Windows.Forms.Padding(4);
+            this.titleComboxCanisterCode.Name = "titleComboxCanisterCode";
+            this.titleComboxCanisterCode.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.titleComboxCanisterCode.Size = new System.Drawing.Size(420, 41);
+            this.titleComboxCanisterCode.TabIndex = 114;
+            this.titleComboxCanisterCode.Title = "碳罐编号";
+            this.titleComboxCanisterCode.ViewModels = null;
+            // 
+            // titleComboxCanisterType
+            // 
+            this.titleComboxCanisterType.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.titleComboxCanisterType.LabelWidth = 100;
+            this.titleComboxCanisterType.Location = new System.Drawing.Point(5, 444);
+            this.titleComboxCanisterType.Margin = new System.Windows.Forms.Padding(5);
+            this.titleComboxCanisterType.Name = "titleComboxCanisterType";
+            this.titleComboxCanisterType.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.titleComboxCanisterType.Size = new System.Drawing.Size(420, 41);
+            this.titleComboxCanisterType.TabIndex = 115;
+            this.titleComboxCanisterType.Title = "碳罐型号";
+            this.titleComboxCanisterType.ViewModels = null;
+            // 
+            // titleComboxCanisterProductor
+            // 
+            this.titleComboxCanisterProductor.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.titleComboxCanisterProductor.LabelWidth = 100;
+            this.titleComboxCanisterProductor.Location = new System.Drawing.Point(435, 444);
+            this.titleComboxCanisterProductor.Margin = new System.Windows.Forms.Padding(5);
+            this.titleComboxCanisterProductor.Name = "titleComboxCanisterProductor";
+            this.titleComboxCanisterProductor.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.titleComboxCanisterProductor.Size = new System.Drawing.Size(420, 41);
+            this.titleComboxCanisterProductor.TabIndex = 116;
+            this.titleComboxCanisterProductor.Title = "碳罐生产厂";
+            this.titleComboxCanisterProductor.ViewModels = null;
+            // 
+            // label7
+            // 
+            this.label7.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label7.Location = new System.Drawing.Point(3, 502);
+            this.label7.Margin = new System.Windows.Forms.Padding(3, 12, 3, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(1278, 30);
+            this.label7.TabIndex = 105;
+            this.label7.Text = "项目信息";
+            // 
             // titleComboxItemType
             // 
             this.titleComboxItemType.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.titleComboxItemType.LabelWidth = 100;
-            this.titleComboxItemType.Location = new System.Drawing.Point(5, 486);
+            this.titleComboxItemType.Location = new System.Drawing.Point(5, 537);
             this.titleComboxItemType.Margin = new System.Windows.Forms.Padding(5);
             this.titleComboxItemType.Name = "titleComboxItemType";
             this.titleComboxItemType.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
@@ -558,7 +467,7 @@ namespace TaskManager
             // 
             this.titleComboxItemBrief.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.titleComboxItemBrief.LabelWidth = 100;
-            this.titleComboxItemBrief.Location = new System.Drawing.Point(435, 486);
+            this.titleComboxItemBrief.Location = new System.Drawing.Point(435, 537);
             this.titleComboxItemBrief.Margin = new System.Windows.Forms.Padding(5);
             this.titleComboxItemBrief.Name = "titleComboxItemBrief";
             this.titleComboxItemBrief.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
@@ -571,7 +480,7 @@ namespace TaskManager
             // 
             this.titleComboxBeginTime.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.titleComboxBeginTime.LabelWidth = 100;
-            this.titleComboxBeginTime.Location = new System.Drawing.Point(865, 486);
+            this.titleComboxBeginTime.Location = new System.Drawing.Point(865, 537);
             this.titleComboxBeginTime.Margin = new System.Windows.Forms.Padding(5);
             this.titleComboxBeginTime.Name = "titleComboxBeginTime";
             this.titleComboxBeginTime.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
@@ -584,7 +493,7 @@ namespace TaskManager
             // 
             this.titleComboxStandard.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.titleComboxStandard.LabelWidth = 100;
-            this.titleComboxStandard.Location = new System.Drawing.Point(5, 537);
+            this.titleComboxStandard.Location = new System.Drawing.Point(5, 588);
             this.titleComboxStandard.Margin = new System.Windows.Forms.Padding(5);
             this.titleComboxStandard.Name = "titleComboxStandard";
             this.titleComboxStandard.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
@@ -597,7 +506,7 @@ namespace TaskManager
             // 
             this.titleComboxItemRemark.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.titleComboxItemRemark.LabelWidth = 100;
-            this.titleComboxItemRemark.Location = new System.Drawing.Point(434, 536);
+            this.titleComboxItemRemark.Location = new System.Drawing.Point(434, 587);
             this.titleComboxItemRemark.Margin = new System.Windows.Forms.Padding(4);
             this.titleComboxItemRemark.Name = "titleComboxItemRemark";
             this.titleComboxItemRemark.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -610,7 +519,7 @@ namespace TaskManager
             // 
             this.titleComboxTaskCode.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.titleComboxTaskCode.LabelWidth = 100;
-            this.titleComboxTaskCode.Location = new System.Drawing.Point(862, 537);
+            this.titleComboxTaskCode.Location = new System.Drawing.Point(862, 588);
             this.titleComboxTaskCode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.titleComboxTaskCode.Name = "titleComboxTaskCode";
             this.titleComboxTaskCode.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -623,7 +532,7 @@ namespace TaskManager
             // 
             this.titleComboxTaskCodeRemark.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.titleComboxTaskCodeRemark.LabelWidth = 100;
-            this.titleComboxTaskCodeRemark.Location = new System.Drawing.Point(5, 588);
+            this.titleComboxTaskCodeRemark.Location = new System.Drawing.Point(5, 639);
             this.titleComboxTaskCodeRemark.Margin = new System.Windows.Forms.Padding(5);
             this.titleComboxTaskCodeRemark.Name = "titleComboxTaskCodeRemark";
             this.titleComboxTaskCodeRemark.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
@@ -636,7 +545,7 @@ namespace TaskManager
             // 
             this.titleComboxSecurityLevel.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.titleComboxSecurityLevel.LabelWidth = 100;
-            this.titleComboxSecurityLevel.Location = new System.Drawing.Point(434, 587);
+            this.titleComboxSecurityLevel.Location = new System.Drawing.Point(434, 638);
             this.titleComboxSecurityLevel.Margin = new System.Windows.Forms.Padding(4);
             this.titleComboxSecurityLevel.Name = "titleComboxSecurityLevel";
             this.titleComboxSecurityLevel.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -644,6 +553,93 @@ namespace TaskManager
             this.titleComboxSecurityLevel.TabIndex = 109;
             this.titleComboxSecurityLevel.Title = "保密级别";
             this.titleComboxSecurityLevel.ViewModels = null;
+            // 
+            // label6
+            // 
+            this.label6.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label6.Location = new System.Drawing.Point(3, 697);
+            this.label6.Margin = new System.Windows.Forms.Padding(3, 12, 3, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(1281, 30);
+            this.label6.TabIndex = 110;
+            this.label6.Text = "使用设备";
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 4;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6.914546F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 519F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 544F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 113F));
+            this.tableLayoutPanel1.Controls.Add(this.listViewUsingEquipment, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnAddEquipment, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.titleComboxEquipment, 2, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 730);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1279, 148);
+            this.tableLayoutPanel1.TabIndex = 111;
+            // 
+            // listViewUsingEquipment
+            // 
+            this.listViewUsingEquipment.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listColumnOrder,
+            this.listColumnEuipCode,
+            this.listColumnEuipName,
+            this.listColumnEuipType,
+            this.listColumnGroup,
+            this.listColumnRemove});
+            this.listViewUsingEquipment.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewUsingEquipment.FullRowSelect = true;
+            this.listViewUsingEquipment.HideSelection = false;
+            this.listViewUsingEquipment.Location = new System.Drawing.Point(106, 3);
+            this.listViewUsingEquipment.Name = "listViewUsingEquipment";
+            this.listViewUsingEquipment.Size = new System.Drawing.Size(513, 142);
+            this.listViewUsingEquipment.TabIndex = 20;
+            this.listViewUsingEquipment.UseCompatibleStateImageBehavior = false;
+            this.listViewUsingEquipment.View = System.Windows.Forms.View.Details;
+            this.listViewUsingEquipment.SelectedIndexChanged += new System.EventHandler(this.listViewUsingEquipment_SelectedIndexChanged);
+            // 
+            // listColumnOrder
+            // 
+            this.listColumnOrder.Text = "序号";
+            this.listColumnOrder.Width = 50;
+            // 
+            // listColumnEuipCode
+            // 
+            this.listColumnEuipCode.Text = "编号";
+            this.listColumnEuipCode.Width = 100;
+            // 
+            // listColumnEuipName
+            // 
+            this.listColumnEuipName.Text = "名称";
+            this.listColumnEuipName.Width = 100;
+            // 
+            // listColumnEuipType
+            // 
+            this.listColumnEuipType.Text = "型号";
+            this.listColumnEuipType.Width = 100;
+            // 
+            // listColumnGroup
+            // 
+            this.listColumnGroup.Text = "组别";
+            this.listColumnGroup.Width = 70;
+            // 
+            // listColumnRemove
+            // 
+            this.listColumnRemove.Text = "";
+            this.listColumnRemove.Width = 88;
+            // 
+            // btnAddEquipment
+            // 
+            this.btnAddEquipment.Location = new System.Drawing.Point(1169, 3);
+            this.btnAddEquipment.Name = "btnAddEquipment";
+            this.btnAddEquipment.Size = new System.Drawing.Size(107, 34);
+            this.btnAddEquipment.TabIndex = 19;
+            this.btnAddEquipment.Text = "添加";
+            this.btnAddEquipment.UseVisualStyleBackColor = true;
+            this.btnAddEquipment.Click += new System.EventHandler(this.btnAddEquipment_Click);
             // 
             // titleComboxEquipment
             // 
@@ -658,9 +654,46 @@ namespace TaskManager
             this.titleComboxEquipment.Title = "设备";
             this.titleComboxEquipment.ViewModels = null;
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 3;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 195F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 163F));
+            this.tableLayoutPanel2.Controls.Add(this.btnSaveItemTask, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnCancelItemTask, 1, 0);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 884);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 1;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(1281, 64);
+            this.tableLayoutPanel2.TabIndex = 112;
+            // 
+            // btnSaveItemTask
+            // 
+            this.btnSaveItemTask.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnSaveItemTask.Location = new System.Drawing.Point(1121, 3);
+            this.btnSaveItemTask.Name = "btnSaveItemTask";
+            this.btnSaveItemTask.Size = new System.Drawing.Size(157, 47);
+            this.btnSaveItemTask.TabIndex = 0;
+            this.btnSaveItemTask.Text = "保存";
+            this.btnSaveItemTask.UseVisualStyleBackColor = true;
+            this.btnSaveItemTask.Click += new System.EventHandler(this.btnSaveItemTask_Click);
+            // 
+            // btnCancelItemTask
+            // 
+            this.btnCancelItemTask.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnCancelItemTask.Location = new System.Drawing.Point(926, 3);
+            this.btnCancelItemTask.Name = "btnCancelItemTask";
+            this.btnCancelItemTask.Size = new System.Drawing.Size(156, 47);
+            this.btnCancelItemTask.TabIndex = 1;
+            this.btnCancelItemTask.Text = "取消";
+            this.btnCancelItemTask.UseVisualStyleBackColor = true;
+            this.btnCancelItemTask.Click += new System.EventHandler(this.btnCancelItemTask_Click_1);
+            // 
             // CreateTaskForm
             // 
-            this.ClientSize = new System.Drawing.Size(1341, 953);
+            this.ClientSize = new System.Drawing.Size(1341, 989);
             this.Controls.Add(this.flowLayoutPanel1);
             this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(6);
@@ -685,7 +718,7 @@ namespace TaskManager
         private TitleCombox titleComboxLocationNo;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private TitleCombox titleComboxSampleType;
+        private RequiredTitleCombox titleComboxSampleType;
         private TitleCombox titleComboxCarType;
         private TitleCombox titleComboxCarModel;
         private TitleCombox titleComboxProducer;
@@ -718,10 +751,12 @@ namespace TaskManager
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button btnSaveItemTask;
         private System.Windows.Forms.Button btnCancelItemTask;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ColumnHeader listColumnOrder;
         private RequiredTitleCombox titleComboxVin;
         private RequiredTitleCombox titleComboxItemType;
         private RequiredTitleCombox titleComboxItemBrief;
+        private TitleCombox titleComboxCanisterCode;
+        private TitleCombox titleComboxCanisterType;
+        private TitleCombox titleComboxCanisterProductor;
     }
 }

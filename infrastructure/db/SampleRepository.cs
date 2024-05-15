@@ -90,14 +90,16 @@ namespace TaskManager.infrastructure.db
         /// 查询制定vin的样本简要信息
         /// </summary>
         /// <param name="vin">vin</param>
+        /// <param name="sampleType">样本类型</param>
         /// <returns>样本简要信息</returns>
-        public SampleBrief selectByVin(string vin)
+        public SampleBrief selectByVin(string vin, string sampleType)
         {
             SampleBrief result = null;
 
-            string sql = $"select * from SampleTable where VIN=@vin";
+            string sql = $"select * from SampleTable where VIN=@vin and SampleType=@SampleType";
             var dt = this.dbProvider.ExecuteQuery(sql, new[] {
-                    new SqlParameter("vin",vin)
+                    new SqlParameter("vin",vin),
+                    new SqlParameter("SampleType",sampleType)
                 }).Tables[0];
 
             if (dt.Rows.Count == 0)

@@ -67,14 +67,25 @@ namespace TaskManager.application.service
         }
 
         /// <summary>
-        /// 获取所有的win
+        /// 获取所有整车的win
         /// </summary>
         /// <param name="vin">vin</param>
         /// <returns>样本信息</returns>
-        public List<string> allSampleVins()
+        public List<string> allCarSampleVins()
         {
+            return this.allSampleVins("整车");
+        }
+
+        public List<string> allCanisterSampleVins()
+        {
+            return this.allSampleVins("碳罐");
+        }
+
+        private List<string> allSampleVins(string sampleType)
+        {
+
             //执行数据库查询
-            String sql = "SELECT VIN FROM SampleTable WHERE VIN IS NOT NULL ";
+            String sql = $"SELECT VIN FROM SampleTable WHERE VIN IS NOT NULL AND SampleType = '{sampleType}'";
             List<string> vins = this.dbProvider.GetStringList(sql);
 
             //过滤
@@ -95,14 +106,17 @@ namespace TaskManager.application.service
             return results;
         }
 
+
+
         /// <summary>
         /// 获取vin对应的样本信息
         /// </summary>
         /// <param name="vin">vin</param>
+        /// <param name="sampleType">样本类型</param>
         /// <returns>样本信息</returns>
-        public SampleOfVinViewModel samplesOfVin(string vin)
+        public SampleOfVinViewModel samplesOfVin(string vin, string sampleType)
         {
-            SampleBrief sampleFromSample = this.sampleRepository.selectByVin(vin);
+            SampleBrief sampleFromSample = this.sampleRepository.selectByVin(vin,sampleType);
             SampleBrief sampleFromStatistic = this.testStatisticRepository.selectLatestSampleVin(vin);
             if (sampleFromSample == null && sampleFromStatistic == null)
             {

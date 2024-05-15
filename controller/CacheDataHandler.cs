@@ -30,35 +30,62 @@ namespace TaskManager.controller
 
         private IEquipmentQueryService equipmentQueryService;
 
-        private List<string> vins;
+        private List<string> carVins;
 
-        private bool isLoadVinData = false;
+        private bool isLoadCarVinData = false;
+
+        private List<string> canisterVins;
+
+        private bool isLoadCanisterVinData = false;
 
         private List<EquipmentBreiefViewModel> equipmentBreiefViewModels;
 
         private bool isLoadEquipmentData = false;
 
-        public List<string> getVins()
+        public List<string> getCarVins()
         {
-            if (isLoadVinData)
+            if (isLoadCarVinData)
             {
-                return this.vins;
+                return this.carVins;
             }
 
-            return reloadVins();
+            return reloadCarVins();
         }
 
-        public List<string> reloadVins()
+        public List<string> reloadCarVins()
         {
-            this.vins = this.sampleQueryService.allSampleVins();
-            this.isLoadVinData = true;
-            return this.vins;
+            this.carVins = this.sampleQueryService.allCarSampleVins();
+            this.isLoadCarVinData = true;
+            return this.carVins;
         }
 
-        public void loadVins()
+        public void loadCarVins()
         {
-            this.vins = this.sampleQueryService.allSampleVins();
-            this.isLoadVinData = true;
+            this.carVins = this.sampleQueryService.allCarSampleVins();
+            this.isLoadCarVinData = true;
+        }
+
+        public List<string> getCanisterVins()
+        {
+            if (isLoadCanisterVinData)
+            {
+                return this.canisterVins;
+            }
+
+            return reloadCanisterVins();
+        }
+
+        public List<string> reloadCanisterVins()
+        {
+            this.canisterVins = this.sampleQueryService.allCanisterSampleVins();
+            this.isLoadCanisterVinData = true;
+            return this.canisterVins;
+        }
+
+        public void loadCanisterVins()
+        {
+            this.canisterVins = this.sampleQueryService.allCanisterSampleVins();
+            this.isLoadCanisterVinData = true;
         }
 
         public List<EquipmentBreiefViewModel> getCurUserEquipments()
@@ -78,22 +105,22 @@ namespace TaskManager.controller
         }
 
         public void asyncLoadVins() {
-            Thread exportWordThread = new Thread(loadVins);
+            Thread exportWordThread = new Thread(loadCarVins);
             exportWordThread.IsBackground = true;
             exportWordThread.Start();
         }
 
         public void addVin(string vin) {
-            if (!this.vins.Contains(vin)) {
-                this.vins.Add(vin);
+            if (!this.carVins.Contains(vin)) {
+                this.carVins.Add(vin);
             }
         }
 
         public void removeVin(string vin)
         {
-            if (this.vins.Contains(vin))
+            if (this.carVins.Contains(vin))
             {
-                this.vins.Remove(vin);
+                this.carVins.Remove(vin);
             }
         }
 

@@ -12,14 +12,17 @@ namespace TaskManager.application.Iservice
     /// </summary>
     interface ISampleQueryService
     {
-        List<string> allSampleVins();
+        List<string> allCarSampleVins();
+
+        List<string> allCanisterSampleVins();
 
         /// <summary>
         /// 获取vin对应的样本信息
         /// </summary>
         /// <param name="vin">vin</param>
+        /// <param name="sampleType">样本类型</param>
         /// <returns>样本信息</returns>
-        SampleOfVinViewModel samplesOfVin(string vin);
+        SampleOfVinViewModel samplesOfVin(string vin,string sampleType);
 
  
     }

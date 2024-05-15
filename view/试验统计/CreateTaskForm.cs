@@ -46,10 +46,12 @@ namespace TaskManager
         private IUserStructureRepository userStructureRepository;
         private ITaskRepository taskRepository;
 
+        private List<string> carVins;
+        private List<string> canisterVins;
         private List<string> vins;
-
         private List<string> inTimeVins=new List<string>();
 
+       
         private List<UserStructureLite> userStructureLites;
         private List<string> groups;
         private List<string> experimentSites;
@@ -108,6 +110,8 @@ namespace TaskManager
         private List<TaskBrief> taskBriefs;
         private Dictionary<string, TaskBrief> taskBriefMap=new Dictionary<string, TaskBrief>();
 
+        private string sampleType;
+
         public CreateTaskForm(CreateTestTaskFrom from)
         {
             InitializeComponent();
@@ -154,7 +158,8 @@ namespace TaskManager
         private void initData()
         {
             UseHolder.Instance.CurrentUser = FormSignIn.CurrentUser;
-            this.vins = CacheDataHandler.Instance.getVins();
+            this.carVins = CacheDataHandler.Instance.getCarVins();
+            this.canisterVins = CacheDataHandler.Instance.getCanisterVins();
             this.equipmentBreiefViewModels = CacheDataHandler.Instance.getCurUserEquipments();
             this.equipmentMap = new Dictionary<string, EquipmentBreiefViewModel>();
             this.equipmentBreiefViewModels.ForEach(item =>
@@ -240,6 +245,7 @@ namespace TaskManager
             //样本vin
             if (this.baseTestStatistic == null)
             {
+                this.vins = this.carVins;
                 titleComboxVin.SetItems(this.vins);
             }
             else {
@@ -391,13 +397,23 @@ namespace TaskManager
             this.afterVinChanged(vin);
         }
 
+        private void SampleTypeChangeHandler(object sender, EventArgs e)
+        {
+            if (this.sampleType.Equals(titleComboxSampleType.Text.Trim()))
+            {
+                return;
+            }
+            this.sampleType = titleComboxSampleType.Text.Trim();
+            this.afterSampleTypeChanged(this.sampleType);
+        }
+
         private void VinTextUpdateBack(object sender, EventArgs e)
         {
             try
             {
                 this.titleComboxVin.comboBox1.Items.Clear();
                 this.inTimeVins.Clear();
-                foreach (var item in this.vins)
+                foreach (var item in this.carVins)
                 {
                     if (item.Contains(this.titleComboxVin.comboBox1.Text))
                     {
@@ -483,7 +499,8 @@ namespace TaskManager
                 return;
             }
 
-            this.sampleOfVin = this.sampleQueryService.samplesOfVin(vin);
+            this.sampleType = titleComboxSampleType.Text.Trim();
+            this.sampleOfVin = this.sampleQueryService.samplesOfVin(vin,this.sampleType);
             if (sampleOfVin == null)
             {
                 notExistVinHnadler();
@@ -497,7 +514,7 @@ namespace TaskManager
                 isVinFromStatistic = true;
             }
             //更新ui
-            titleComboxSampleType.SetValue(sample.SampleType);
+            //titleComboxSampleType.SetValue(sample.SampleType);
             titleComboxCarType.SetValue(sample.CarType);
             titleComboxCarModel.SetValue(sample.CarModel);
             titleComboxProducer.SetValue(sample.Producer);
@@ -513,6 +530,33 @@ namespace TaskManager
             //
         }
 
+        private void afterSampleTypeChanged(string sampleType)
+        {
+            //vin列表重新加载
+            this.updateVinsAfterSampleTypeChanged(sampleType);
+
+            //vin清空，样本信息清空
+            this.resetAllSampleInfoValues();
+        }
+
+        private void updateVinsAfterSampleTypeChanged(string sampleType)
+        {
+            if (string.IsNullOrEmpty(sampleType))
+            {
+                this.vins = new List<string>();
+            }
+            //vin列表重新加载
+            else if (sampleType.Equals("整车"))
+            {
+                this.vins = this.carVins;
+            }
+            else if (sampleType.Equals("碳罐"))
+            {
+                this.vins = this.canisterVins;
+            }
+            titleComboxVin.SetItems(this.vins);
+        }
+
         private void notExistVinHnadler() {
             //resetSampleTitleComboxs();
             isVinFromStatistic = false;
@@ -520,6 +564,23 @@ namespace TaskManager
 
         private void resetSampleTitleComboxs() {
             titleComboxSampleType.SetValue("");
+            titleComboxCarType.SetValue("");
+            titleComboxCarModel.SetValue("");
+            titleComboxProducer.SetValue("");
+            titleComboxEngineType.SetValue("");
+            titleComboxEngineModel.SetValue("");
+            titleComboxEngineProducer.SetValue("");
+            titleComboxYNDirect.SetValue("");
+            titleComboxTransType.SetValue("");
+            titleComboxDriverType.SetValue("");
+            titleComboxFuelType.SetValue("");
+            titleComboxRoz.SetValue("");
+            titleComboxTirepressure.SetValue("");
+        }
+
+        private void resetAllSampleInfoValues()
+        {
+            titleComboxVin.SetValue("");
             titleComboxCarType.SetValue("");
             titleComboxCarModel.SetValue("");
             titleComboxProducer.SetValue("");
@@ -612,6 +673,7 @@ namespace TaskManager
             titleComboxArea.SetValue(this.experimentSites[0]);
             titleComboxLocationNo.SetValue(this.locationNumbers[0]);
             titleComboxSampleType.SetValue("整车");
+            this.sampleType = "整车";
             this.initComboxBeginTime();
         }
 

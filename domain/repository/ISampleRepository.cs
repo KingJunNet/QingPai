@@ -17,8 +17,9 @@ namespace TaskManager.domain.repository
         /// 查询制定vin的样本简要信息
         /// </summary>
         /// <param name="vin">vin</param>
+        /// <param name="sampleType">样本类型</param>
         /// <returns>样本简要信息</returns>
-        SampleBrief selectByVin(string vin);
+        SampleBrief selectByVin(string vin, string sampleType);
 
         /// <summary>
         /// 保存样本

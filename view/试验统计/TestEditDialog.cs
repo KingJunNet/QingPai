@@ -947,7 +947,7 @@ namespace TaskManager
             this.testStatisticId = int.Parse(getValue("ID"));
             this.loadTestTaskSampleId();
             UseHolder.Instance.CurrentUser = FormSignIn.CurrentUser;
-            this.vins = CacheDataHandler.Instance.getVins();
+            this.vins = CacheDataHandler.Instance.getCarVins();
             this.equipmentBreiefViewModels = CacheDataHandler.Instance.getCurUserEquipments();
             this.equipmentMap = new Dictionary<string, EquipmentBreiefViewModel>();
             this.equipmentBreiefViewModels.ForEach(item => {
