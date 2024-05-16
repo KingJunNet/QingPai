@@ -19,6 +19,7 @@ using DevExpress.XtraSplashScreen;
 using LabSystem.DAL;
 using Newtonsoft.Json.Linq;
 using TaskManager.common.utils;
+using TaskManager.controller;
 using TaskManager.Model;
 using Xfrog.Net;
 
@@ -26,21 +27,20 @@ namespace TaskManager
 {
     public partial class NewTaskForm : BaseForm
     {
-        public static readonly string LIMS_API_HOST_LAN = "http://10.12.48.2";
-        public static readonly string LIMS_API_HOST_NET = "http://rmyc6395.xicp.net:17099";
+
 
         private string limsApiHost;
 
         public NewTaskForm()
         {
             InitializeComponent();
-            this.limsApiHost = LIMS_API_HOST_LAN;
+            this.limsApiHost = ServerConfig.Instance.LimsApiHost;
         }
 
         public NewTaskForm(FormType formType, string selectedDept) : base(formType, selectedDept)
         {
             InitializeComponent();
-            this.limsApiHost = LIMS_API_HOST_NET;
+            this.limsApiHost = ServerConfig.Instance.LimsApiHost;
         }
 
 
@@ -52,7 +52,10 @@ namespace TaskManager
 
             textYear.Visibility = BarItemVisibility.Never;
             comboxState.Visibility = BarItemVisibility.Never;
-
+            if (!FormSignIn.CurrentUser.Name.Equals("赵红星"))
+            {
+                btnSyncLims.Visibility = BarItemVisibility.Never;
+            }
 
             textYear.EditValue = year;
             comboxState.EditValue = "所有";
@@ -896,85 +899,87 @@ namespace TaskManager
                     _control._view.SetRowCellValue(_control._view.FocusedRowHandle, "consistent", DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
 
                     _control._view.MoveLast();
-
-
-
                 }
-
 
             }
         }
-             
+
         private void timer1_Tick(object sender, EventArgs e)
         {
-
-            if ((DateTime.Now.ToString("HH") == "02") && FormSignIn.CurrentUser.Name == "赵红星")
+            string action = "拉取最近一年任务数据任务";
+            LogHandler.Instance.info("System", "任务管理", $"{action}定时器启动");
+            if (!((DateTime.Now.ToString("HH") == "02") && FormSignIn.CurrentUser.Name == "赵红星"))
             {
-                int monthcount = 0;
+                return;
+            }
+            this.executeUpdateLatestYearTasks();
+        }
 
-                for (int i = 0; i < 12; i++)
+        private void timer1_TickBack(object sender, EventArgs e)
+        {
+            string action = "拉取最近一年任务数据任务";
+            LogHandler.Instance.info("System", "任务管理", $"{action}定时器启动");
+            this.executeUpdateLatestYearTasks();
+        }
+
+        private void updateLatestYearTasks()
+        {
+            int monthcount = 0;
+
+            for (int i = 0; i < 12; i++)
+            {
+                //_control.SaveSource();
+                // _control.SetSaveStatus(true);
+                _control.SaveClick();
+
+                startdate.EditValue = DateTime.Now.AddMonths(monthcount - 1).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                enddate.EditValue = DateTime.Now.AddMonths(monthcount).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+
+                _control.RefreshClick(_year, startdate.EditValue.ToString().Trim(), enddate.EditValue.ToString().Trim(), _finishState, _group);
+
+                SplashScreenManager.ShowForm(typeof(WaitForm1));
+                try
                 {
-                    //_control.SaveSource();
-                    // _control.SetSaveStatus(true);
-                    _control.SaveClick();
+                    //GetLimsData(DateTime.Now.AddMonths(monthcount - 2).ToString("yyyy-MM-dd"), DateTime.Now.AddMonths(monthcount).ToString("yyyy-MM-dd"));
+                    GetLimsData(Convert.ToDateTime(_startdate).ToString("yyyy-MM-dd"), Convert.ToDateTime(_enddate).ToString("yyyy-MM-dd"));
 
-                    startdate.EditValue = DateTime.Now.AddMonths(monthcount - 1).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                    enddate.EditValue = DateTime.Now.AddMonths(monthcount).ToString("yyyy/MM/dd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-
-                    _control.RefreshClick(_year, startdate.EditValue.ToString().Trim(), enddate.EditValue.ToString().Trim(), _finishState, _group);
-
-                    SplashScreenManager.ShowForm(typeof(WaitForm1));
-                    try
+                    for (int j = 0; j < _control._view.RowCount; j++)
                     {
-                        //GetLimsData(DateTime.Now.AddMonths(monthcount - 2).ToString("yyyy-MM-dd"), DateTime.Now.AddMonths(monthcount).ToString("yyyy-MM-dd"));
-                        GetLimsData(Convert.ToDateTime(_startdate).ToString("yyyy-MM-dd"), Convert.ToDateTime(_enddate).ToString("yyyy-MM-dd"));
-
-                        for (int j = 0; j < _control._view.RowCount; j++)
+                        string taskcode = _control._view.GetRowCellValue(j, "Taskcode").ToString();
+                        this.taskcode = taskcode;
+                        if (taskcode == "")
                         {
-                            string taskcode = _control._view.GetRowCellValue(j, "Taskcode").ToString();
-                            this.taskcode = taskcode;
-                            if (taskcode == "")
-                            {
-                                return;
-                            }
-                            string json = "{'deptid': 15,'page': 1,'pageSize': 100,'taskCode': '" + this.taskcode + "'}";
-                            GetLimsData(json, j, 0);
+                            return;
                         }
-                    }
-                    catch
-                    {
-
-                    }
-                    finally
-                    {
-
-                        SplashScreenManager.CloseForm();
-                        _control.SaveClick();
-
-
-                        monthcount = monthcount - 1;
-
+                        string json = "{'deptid': 15,'page': 1,'pageSize': 100,'taskCode': '" + this.taskcode + "'}";
+                        GetLimsData(json, j, 0);
                     }
                 }
+                catch
+                {
 
-            };
+                }
+                finally
+                {
+
+                    SplashScreenManager.CloseForm();
+                    _control.SaveClick();
+
+
+                    monthcount = monthcount - 1;
+
+                }
+            }
         }
 
         private void timerUpdateCurDay_Tick(object sender, EventArgs e)
         {
-            try
-            {
-                this.updateTodayTaskData();
-            }
-            catch (Exception ex)
-            {
-                Log.e($"Update Today Task Data Error: {ex}");
-            }
+            this.executeUpdateTodayTaskData();
         }
 
-        private void updateTodayTaskData()
+        private void executeUpdateTodayTaskData()
         {
-         if (FormSignIn.CurrentUser.Name != "赵红星")
+            if (FormSignIn.CurrentUser.Name != "赵红星")
             {
                 return;
             }
@@ -983,6 +988,37 @@ namespace TaskManager
             {
                 return;
             }
+
+            string action = "拉取最近一天任务数据任务";
+            try
+            {
+                LogHandler.Instance.info("System", "任务管理", $"开始执行{action}");
+                this.updateTodayTaskData();
+                LogHandler.Instance.info("System", "任务管理", $"{action}执行成功");
+            }
+            catch (Exception ex)
+            {
+                LogHandler.Instance.info("System", "任务管理", $"执行{action}发生错误，错误原因:{ex.Message}");
+            }
+        }
+
+        private void executeUpdateLatestYearTasks()
+        {
+            string action = "拉取近最近一年任务数据任务";
+            try
+            {
+                LogHandler.Instance.info("System", "任务管理", $"开始执行{action}");
+                this.updateLatestYearTasks();
+                LogHandler.Instance.info("System", "任务管理", $"{action}执行成功");
+            }
+            catch (Exception ex)
+            {
+                LogHandler.Instance.info("System", "任务管理", $"执行{action}发生错误，错误原因:{ex.Message}");
+            }
+        }
+
+        private void updateTodayTaskData()
+        {
             //DateTime startTime = DateTime.Today.AddDays(-90);
             //DateTime endTime = DateTime.Today.AddDays(1);
 
@@ -999,6 +1035,12 @@ namespace TaskManager
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void barButtonItem9_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            //this.updateLatestDayTasks();
+            this.executeUpdateLatestYearTasks();
+        }
+
+        private void updateLatestDayTasks()
         {
             //DateTime startTime = DateTime.Today.AddDays(-20);
             //DateTime endTime = DateTime.Today.AddDays(1);
@@ -1046,8 +1088,8 @@ namespace TaskManager
             MessageBox.Show("更新Lims数据成功");
 
             SplashScreenManager.CloseForm();
-
         }
+
 
         private SelectTemplate selectTemplate;
         /// <summary>
@@ -1308,7 +1350,7 @@ namespace TaskManager
             return state;
         }
 
-        private void fixTaskFinishDate(JToken obj,out string finishDate)
+        private void fixTaskFinishDate(JToken obj, out string finishDate)
         {
             DateTime date = Convert.ToDateTime("2000-01-01 00:00");
             for (int j = 0; j < obj["tcList"].Count(); j++)
@@ -1648,6 +1690,237 @@ namespace TaskManager
 
         }
 
-      
+        public void FetchEquipmentData()
+        {
+            string token = GetToken();
+            GetEquipmentDate(token);
+        }
+
+        public string GetToken()
+        {
+            string url = $"{ServerConfig.EQUIPMENT_API_HOST_NET}/api/sys/getTokenByUserNo?userNo=03357";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            request.UserAgent = ".NET Framework Test Client";
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            string responseData = "";
+            using (StreamReader streamReader = new StreamReader(response.GetResponseStream()))
+            {
+                responseData = streamReader.ReadToEnd();
+            }
+
+            JObject jsonObj = JObject.Parse(responseData);
+            string token = (string)jsonObj["result"];
+            return token;
+        }
+
+        private static JObject GetJsonObj(string Token)
+        {
+            string strURL = $"{ServerConfig.EQUIPMENT_API_HOST_NET}/api/external/listEquipmentByLightEmissions";
+            //创建一个HTTP请求 
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(strURL);
+            //Get请求方式  
+            request.Method = "Get";
+            //请求头
+            request.UserAgent = ".NET Framework Test Client";
+            request.Headers.Add("X-Access-Token", Token);
+
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            string responseData = "";
+            using (StreamReader streamReader = new StreamReader(response.GetResponseStream()))
+            {
+                responseData = streamReader.ReadToEnd();
+            }
+            JObject jsonObj = JObject.Parse(responseData);
+            return jsonObj;
+        }
+
+        public void GetEquipmentDate(string Token)
+        {
+            JObject jsonObj = GetJsonObj(Token);
+            string updateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            for (int i = 0; i < jsonObj["result"].Count(); i++)
+            {
+                try
+                {
+                    //string companyCheckTel = obj["otherVo"]["companyCheckTel"] != null ? obj["otherVo"]["companyCheckTel"].ToString() : "";//电话。
+                    var obj = jsonObj["result"][i];
+                    //string GroupName = (string)obj["GroupName"];//组别（不存在）
+                    string equipCode = (string)obj["equipmentNumber"];//设备编号
+                    string equipName = (string)obj["name"];//设备名称
+                    string equipType = (string)obj["specificationAndModel"];//规格型号
+                    equipType = equipType.Replace("'", " ");
+                    string equipProducer = (string)obj["manufacturer"];//生产厂家
+                    string department = (string)obj["userDepartmentName"];//使用部门
+                    string owner = (string)obj["equipmentPrincipal"];//设备负责人
+                    string groupName = UserHelper.Instance.calculateUserGroupName(owner);
+                    string state = (string)obj["deviceStatus_dictText"];//设备状态
+                    string baseSite = (string)obj["useBase_dictText"];//所属医院
+                    string remark = (string)obj["remarks"];//设备备注
+                    string traceabilityState = (string)obj["traceStatus"];//溯源状态
+
+                    string traceabilityMode = "";
+                    string measurementField = "";
+                    string measuringRange = "";
+                    string accuracy = "";
+                    string standardAccuracy = "";
+                    string calibrationParameters = "";
+                    string calibrationSpot = "";
+                    string calibrationCycle = "";
+                    string calibrationDate = "";
+                    string expireDate = "";
+                    if (obj["traceabilityList"] != null && obj["traceabilityList"].Count() > 0)
+                    {
+                        var traceabilityObj = obj["traceabilityList"][0];
+                        traceabilityMode = (string)traceabilityObj["tracingWay_dictText"];//溯源方式
+                        measurementField = (string)traceabilityObj["measurementField"];//计量领域
+                        measuringRange = (string)traceabilityObj["measuringRange"];//测量范围
+                        accuracy = (string)traceabilityObj["accuracy"];//准确度
+                        standardAccuracy = (string)traceabilityObj["calibrationParametersAccuracy"];//标准要求准确度
+                        calibrationParameters = (string)traceabilityObj["calibrationParameters"];//校准参量
+                        calibrationSpot = (string)traceabilityObj["calibrationPoints"];//校准点
+                        calibrationCycle = (string)traceabilityObj["calibrationCycle"];//校准周期(月)
+                        calibrationDate = (string)traceabilityObj["calibrationTime"];//校准日期
+                        expireDate = (string)traceabilityObj["validityTime"];//有效期
+                    }
+
+
+                    string sql = "";
+                    bool equipCodeExists = CheckEquipCodeExists(equipCode);
+                    if (equipCodeExists)
+                    {
+                        sql = $"UPDATE NewEquipmentTable " +
+                              "SET " +
+                              $"GroupName='{groupName}', " +
+                              $"UpdateTime='{updateTime}', " +
+                              $"EquipName='{equipName}', " +
+                              $"EquipType='{equipType}', " +
+                              $"EquipProducer='{equipProducer}', " +
+                              $"Department='{department}', " +
+                              $"Owner='{owner}', " +
+                              $"State='{state}', " +
+                              $"BaseSite='{baseSite}', " +
+                              $"Remark='{remark}', " +
+                              $"TraceabilityState='{traceabilityState}', " +
+                              $"TraceabilityMode='{traceabilityMode}', " +
+                              $"MeasurementField='{measurementField}', " +
+                              $"MeasuringRange='{measuringRange}', " +
+                              $"Accuracy='{accuracy}', " +
+                              $"StandardAccuracy='{standardAccuracy}', " +
+                              $"CalibrationParameters='{calibrationParameters}', " +
+                              $"CalibrationSpot='{calibrationSpot}', " +
+                              $"CalibrationCycle='{calibrationCycle}', " +
+                              $"CalibrationDate='{calibrationDate}', " +
+                              $"ExpireDate='{expireDate}'" +
+                              $"WHERE EquipCode='{equipCode}'";
+
+                    }
+                    else
+                    {
+                        sql = $"INSERT INTO NewEquipmentTable (" +
+                                $"GroupName, " +
+                                $"UpdateTime, " +
+                                $"EquipCode, " +
+                                $"EquipName, " +
+                                $"EquipType, " +
+                                $"EquipProducer, " +
+                                $"Department, " +
+                                $"Owner, " +
+                                $"State, " +
+                                $"BaseSite, " +
+                                $"Remark, " +
+                                $"TraceabilityState, " +
+                                $"TraceabilityMode, " +
+                                $"MeasurementField, " +
+                                $"MeasuringRange, " +
+                                $"Accuracy, " +
+                                $"StandardAccuracy, " +
+                                $"CalibrationParameters, " +
+                                $"CalibrationSpot, " +
+                                $"CalibrationCycle, " +
+                                $"CalibrationDate, " +
+                                $"ExpireDate" +
+                                $") VALUES (" +
+                                $"'{groupName}', " +
+                                $"'{updateTime}', " +
+                                $"'{equipCode}', " +
+                                $"'{equipName}', " +
+                                $"'{equipType}', " +
+                                $"'{equipProducer}', " +
+                                $"'{department}', " +
+                                $"'{owner}', " +
+                                $"'{state}', " +
+                                $"'{baseSite}', " +
+                                $"'{remark}', " +
+                                $"'{traceabilityState}', " +
+                                $"'{traceabilityMode}', " +
+                                $"'{measurementField}', " +
+                                $"'{measuringRange}', " +
+                                $"'{accuracy}', " +
+                                $"'{standardAccuracy}', " +
+                                $"'{calibrationParameters}', " +
+                                $"'{calibrationSpot}', " +
+                                $"'{calibrationCycle}', " +
+                                $"'{calibrationDate}', " +
+                                $"'{expireDate}'" +
+                                $")";
+                    }
+
+                    //执行数据库操作
+                    SqlHelper.ExecuteNonquery(sql, CommandType.Text);
+                }
+                catch (Exception ex)
+                {
+                    Log.e($" Error: {ex}");
+                }
+
+            }
+        }
+
+        private bool CheckEquipCodeExists(string equipCode)
+        {
+            string sql = "SELECT COUNT(*)FROM NewEquipmentTable WHERE EquipCode = @EquipCode";
+            SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("EquipCode", DbHelper.ValueOrDBNullIfNull(equipCode))
+                };
+            int count = (int)SqlHelper.ExcuteScalar(sql, parameters);
+            return count > 0;
+        }
+
+        private void timerUpdateEquipment_Tick(object sender, EventArgs e)
+        {
+            this.executeUpdateAllEquipmentTaskData();
+        }
+
+        private void executeUpdateAllEquipmentTaskData()
+        {
+            if (FormSignIn.CurrentUser.Name != "赵红星")
+            {
+                return;
+            }
+            int hour = DateTime.Now.Hour;
+            if (hour >= 0 && hour < 6)
+            {
+                return;
+            }
+
+            string action = "拉取所有设备数据任务";
+            try
+            {
+                LogHandler.Instance.info("System", "设备管理", $"开始执行{action}");
+                this.updateAllEquipmentTaskData();
+                LogHandler.Instance.info("System", "设备管理", $"{action}执行成功");
+            }
+            catch (Exception ex)
+            {
+                LogHandler.Instance.info("System", "设备管理", $"执行{action}发生错误，错误原因:{ex.Message}");
+            }
+        }
+
+        private void updateAllEquipmentTaskData()
+        {
+            this.FetchEquipmentData();
+        }
     }
 }

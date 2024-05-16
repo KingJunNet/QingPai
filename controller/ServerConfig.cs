@@ -21,6 +21,10 @@ namespace TaskManager.controller
         public static readonly string TASK_MANAGER_APP_EXE_NAME = "TaskMangerSetup.msi";
         public static readonly string PROJECT_CODE_NAME = "轻排程序2.0.zip";
 
+        public static readonly string LIMS_API_HOST_LAN = "http://10.12.48.2";
+        public static readonly string LIMS_API_HOST_NET = "http://rmyc6395.xicp.net:17099";
+        public static readonly string EQUIPMENT_API_HOST_NET = "https://its-equ.catarc.ac.cn";
+
         private static readonly ServerConfig instance = new ServerConfig();
         /// <summary>
         /// 显式的静态构造函数⽤来告诉C#编译器在其内容实例化之前不要标记其类型
@@ -38,6 +42,7 @@ namespace TaskManager.controller
         private string softFolder;
         private bool canConnectBlobServer;
         public string CannNotConnectBlobServerTips => $"无法连接至文件服务，该功能只支持内网环境！";
+        private string limsApiHost;
 
         private void init()
         {
@@ -49,6 +54,9 @@ namespace TaskManager.controller
 
             //测试连接blob服务
             this.testConectBlobServer();
+
+            //配置任务服务api
+            this.limsApiHost = LIMS_API_HOST_LAN;
         }
 
         public string ParamTableFolder
@@ -84,6 +92,11 @@ namespace TaskManager.controller
         public bool CanNotConnectBlobServer
         {
             get { return !this.canConnectBlobServer; }
+        }
+
+        public string LimsApiHost
+        {
+            get { return this.limsApiHost; }
         }
 
         public bool IsCanConnectBlobServer()
