@@ -41,7 +41,7 @@
             this.ribbonPageGroup4 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.barButtonItem7 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem8 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem9 = new DevExpress.XtraBars.BarButtonItem();
+            this.btnSyncLims = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem12 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem10 = new DevExpress.XtraBars.BarButtonItem();
             this.timerUpdateAllTask = new System.Windows.Forms.Timer(this.components);
@@ -72,6 +72,7 @@
             this.gridColumn7 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn9 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.timerUpdateCurDay = new System.Windows.Forms.Timer(this.components);
+            this.timerUpdateEquipment = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
@@ -110,7 +111,7 @@
             this.barButtonItem6,
             this.barButtonItem7,
             this.barButtonItem8,
-            this.barButtonItem9,
+            this.btnSyncLims,
             this.barButtonItem10,
             this.barButtonItem12,
             this.barButtonItem13,
@@ -221,7 +222,7 @@
             // 
             this.ribbonPageGroup4.ItemLinks.Add(this.barButtonItem7);
             this.ribbonPageGroup4.ItemLinks.Add(this.barButtonItem8);
-            this.ribbonPageGroup4.ItemLinks.Add(this.barButtonItem9);
+            this.ribbonPageGroup4.ItemLinks.Add(this.btnSyncLims);
             this.ribbonPageGroup4.ItemLinks.Add(this.barButtonItem12);
             this.ribbonPageGroup4.ItemLinks.Add(this.barButtonItem10);
             this.ribbonPageGroup4.Name = "ribbonPageGroup4";
@@ -246,14 +247,14 @@
             this.barButtonItem8.Visibility = DevExpress.XtraBars.BarItemVisibility.Never;
             this.barButtonItem8.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem8_ItemClick);
             // 
-            // barButtonItem9
+            // btnSyncLims
             // 
-            this.barButtonItem9.Caption = "LIMS数据";
-            this.barButtonItem9.Id = 55;
-            this.barButtonItem9.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItem9.ImageOptions.Image")));
-            this.barButtonItem9.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItem9.ImageOptions.LargeImage")));
-            this.barButtonItem9.Name = "barButtonItem9";
-            this.barButtonItem9.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem9_ItemClick);
+            this.btnSyncLims.Caption = "LIMS数据";
+            this.btnSyncLims.Id = 55;
+            this.btnSyncLims.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnSyncLims.ImageOptions.Image")));
+            this.btnSyncLims.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnSyncLims.ImageOptions.LargeImage")));
+            this.btnSyncLims.Name = "btnSyncLims";
+            this.btnSyncLims.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem9_ItemClick);
             // 
             // barButtonItem12
             // 
@@ -502,8 +503,14 @@
             // timerUpdateCurDay
             // 
             this.timerUpdateCurDay.Enabled = true;
-            this.timerUpdateCurDay.Interval = 60000;
+            this.timerUpdateCurDay.Interval = 120000;
             this.timerUpdateCurDay.Tick += new System.EventHandler(this.timerUpdateCurDay_Tick);
+            // 
+            // timerUpdateEquipment
+            // 
+            this.timerUpdateEquipment.Enabled = true;
+            this.timerUpdateEquipment.Interval = 600000;
+            this.timerUpdateEquipment.Tick += new System.EventHandler(this.timerUpdateEquipment_Tick);
             // 
             // NewTaskForm
             // 
@@ -562,7 +569,7 @@
         private DevExpress.XtraBars.BarButtonItem barButtonItem8;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup4;
         private System.Windows.Forms.Timer timerUpdateAllTask;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem9;
+        private DevExpress.XtraBars.BarButtonItem btnSyncLims;
         private DevExpress.XtraBars.BarButtonItem barButtonItem10;
         private DevExpress.XtraBars.BarButtonItem barButtonItem12;
         private System.Windows.Forms.ToolStripMenuItem 样品信息ToolStripMenuItem;
@@ -593,5 +600,6 @@
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn7;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn9;
         private System.Windows.Forms.Timer timerUpdateCurDay;
+        private System.Windows.Forms.Timer timerUpdateEquipment;
     }
 }

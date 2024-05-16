@@ -45,5 +45,23 @@ namespace TaskManager.controller
             });
             this.isLoadUsers = true;
         }
+
+        public string calculateUserGroupName(string owner)
+        {
+            string groupName = "";
+
+            if (string.IsNullOrWhiteSpace(owner))
+            {
+                return groupName;
+            }
+            //反推组别信息
+            loadUsers();
+            if (UserMap.ContainsKey(owner))
+            {
+                groupName = UserMap[owner].Department;
+            }
+
+            return groupName;
+        }
     }
 }
