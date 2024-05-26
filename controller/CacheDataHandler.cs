@@ -9,6 +9,7 @@ using TaskManager.application.service;
 using TaskManager.application.viewmodel;
 using TaskManager.domain.entity;
 using TaskManager.domain.repository;
+using TaskManager.domain.valueobject;
 using TaskManager.infrastructure.db;
 
 namespace TaskManager.controller
@@ -110,24 +111,45 @@ namespace TaskManager.controller
             exportWordThread.Start();
         }
 
-        public void addVin(string vin) {
-            if (!this.carVins.Contains(vin)) {
-                this.carVins.Add(vin);
-            }
-        }
-
-        public void removeVin(string vin)
-        {
-            if (this.carVins.Contains(vin))
+        public void addVin(string sampleType,string vin) {
+            if (sampleType.Equals(SampleTypeChn.整车.ToString()))
             {
-                this.carVins.Remove(vin);
+                if (!this.carVins.Contains(vin))
+                {
+                    this.carVins.Add(vin);
+                }
+            }
+            else if (sampleType.Equals(SampleTypeChn.碳罐.ToString()))
+            {
+                if (!this.canisterVins.Contains(vin))
+                {
+                    this.canisterVins.Add(vin);
+                }
             }
         }
 
-        public void replaceVin(string oriVin,string newVin)
+        public void removeVin(string sampleType, string vin)
         {
-            this.removeVin(oriVin);
-            this.addVin(newVin);
+            if (sampleType.Equals(SampleTypeChn.整车.ToString()))
+            {
+                if (this.carVins.Contains(vin))
+                {
+                    this.carVins.Remove(vin);
+                }
+            }
+            else if (sampleType.Equals(SampleTypeChn.碳罐.ToString()))
+            {
+                if (this.canisterVins.Contains(vin))
+                {
+                    this.canisterVins.Remove(vin);
+                }
+            }
+        }
+
+        public void replaceVin(string sampleType, string oriVin,string newVin)
+        {
+            this.removeVin(sampleType,oriVin);
+            this.addVin(sampleType,newVin);
         }
     }
 }

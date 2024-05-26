@@ -24,8 +24,9 @@ namespace TaskManager.domain.repository
         /// 查询指定的vin的最新的样本简要信息
         /// </summary>
         /// <param name="vin">vin</param>
+        /// <param name="sampleType">样本类型</param>
         /// <returns>样本简要信息</returns>
-        SampleBrief selectLatestSampleVin(string vin);
+        SampleBrief selectLatestSampleVin(string vin, string sampleType);
 
         /// <summary>
         /// 查询指定的id的试验部分属性

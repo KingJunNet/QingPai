@@ -261,8 +261,8 @@ namespace TaskManager.domain.entity
 
         public SampleEntity fromBrief(SampleBrief brief)
         {
-            this.VIN = brief.Vin;
             this.SampleType = brief.SampleType;
+            this.VIN = brief.Vin;
             this.CarType = brief.CarType;
             this.VehicleModel = brief.CarModel;
             this.SampleProducter = brief.Producer;
@@ -276,6 +276,10 @@ namespace TaskManager.domain.entity
             this.FuelLabel = brief.Roz;
             this.FetalPressureParameter = brief.Tirepressure;
 
+            //碳罐信息
+            this.CarbonCanisterNum1 = brief.CanisterCode;
+            this.CarbonCanisterForm1 = brief.CanisterType;
+            this.CarbonCanisterProductor1 = brief.CanisterProductor;
 
             return this;
         }

@@ -36,8 +36,7 @@
             // dateEdit1
             // 
             this.dateEdit1.EditValue = null;
-            this.dateEdit1.Location = new System.Drawing.Point(161, 2);
-            this.dateEdit1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dateEdit1.Location = new System.Drawing.Point(132, 2);
             this.dateEdit1.Name = "dateEdit1";
             this.dateEdit1.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -51,16 +50,15 @@
             this.dateEdit1.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
             this.dateEdit1.Properties.Mask.EditMask = "yyyy/MM/dd HH:mm";
             this.dateEdit1.Properties.VistaDisplayMode = DevExpress.Utils.DefaultBoolean.True;
-            this.dateEdit1.Size = new System.Drawing.Size(367, 28);
+            this.dateEdit1.Size = new System.Drawing.Size(300, 24);
             this.dateEdit1.TabIndex = 1;
             // 
             // DateEdit
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 17F);
             this.Controls.Add(this.dateEdit1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "DateEdit";
-            this.Size = new System.Drawing.Size(568, 35);
+            this.Size = new System.Drawing.Size(438, 28);
             this.Controls.SetChildIndex(this.dateEdit1, 0);
             ((System.ComponentModel.ISupportInitialize)(this.dateEdit1.Properties.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dateEdit1.Properties)).EndInit();

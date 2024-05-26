@@ -38,5 +38,12 @@ namespace TaskManager.domain.valueobject
         报废 = 16,
     }
 
-   
+    public enum SampleTypeChn
+    {
+        整车 = 0,
+
+        碳罐 = 1
+    }
+
+
 }

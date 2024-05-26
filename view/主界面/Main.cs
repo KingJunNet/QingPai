@@ -20,6 +20,8 @@ using TaskManager.domain.valueobject;
 using TaskManager.controller;
 using TaskManager.common.utils;
 using TaskManager.Model;
+using TaskManager.domain.entity;
+using System.Linq;
 
 namespace TaskManager
 {
@@ -1134,7 +1136,7 @@ namespace TaskManager
         /// <summary>
         /// 初始化下拉框备选项
         /// </summary>
-        public static void InitComboxDictionary()
+        public static void InitComboxDictionaryBack()
         {
             var sql = new DataControl();
             var formats = new[]
@@ -1213,6 +1215,133 @@ namespace TaskManager
             //选项名称
             List<string> optionNames = sql.GetStringList("select distinct Name from ConfigItemTable order by Name");
             ComboxDictionary.Add("配置项名称", optionNames);
+        }
+
+        public static void InitComboxDictionary()
+        {
+            //选项名称
+            //List<string> optionNames = dbProvider.GetStringList("select distinct Name from ConfigItemTable order by Name");
+
+            //加载所有配置项
+            List<ConfigItemEntity> configItems = loadAllConfigItems();
+
+            //选项名称
+            List<string> optionNames = configItems.Select(item => item.Name).Distinct().OrderBy(name => name).ToList();
+
+            //过滤符合条件的配置项
+            string groupName = FormSignIn.CurrentUser.Department;
+            configItems= configItems.FindAll(item => item.isValid() && item.isMatchGroup(groupName)).ToList();
+            List<IGrouping<string, ConfigItemEntity>> groupByNameConfigItemMap = configItems.GroupBy(item => item.Name).ToList();
+
+            List<string> oriOptionNames = new List<string>() {  "报告类型",
+                "国环视同",
+                "任务备注",
+                "任务类型简称",
+                "项目经理",
+                "项目经理：初校状态",
+                "项目经理：个人备注",
+
+                "车辆类型",
+
+                "定位编号",
+                "实验地点",
+                "是否报国环",
+                "数据合格状态",
+                "项目类型",
+
+                "完成状态",
+                "变速器形式",
+                "发动机生产厂",
+                "燃油标号",
+                "生产厂家",
+
+                "检验依据1",
+                "项目名称",
+                "标准阶段",
+                "项目简称",
+                "动力类型",
+                "是否直喷",
+                "样品类型",
+                "燃料类型",
+                "供油种类",
+                "驱动形式",
+                "项目备注",
+
+
+                "标准",
+                "检定方式",
+                "排放限值档",
+                "情况等级",            
+                //"设备状态",
+          
+                "试验项目",
+                "数据状态",
+                "转鼓",
+
+                "项目代码",
+                "试验里程数",
+                "预处理里程数",
+                "价格单位",
+                "单价",
+                "测试周期",
+
+                "费用确认",
+                "胎压",
+
+                "检定地点",
+                "设备状态",
+                "设备使用状况",
+            };
+            List<string> allOptionNames = oriOptionNames.Union(optionNames).ToList();
+
+            //遍历添加配置项
+            foreach (var optionName in allOptionNames)
+            {
+                List<string> curValues = new List<string>();
+                if (groupByNameConfigItemMap.Exists(item => item.Key.Equals(optionName)))
+                {
+                    curValues = groupByNameConfigItemMap
+                       .FirstOrDefault(item => item.Key.Equals(optionName))
+                       .ToList()
+                       .Select(config => config.Value)
+                       .Distinct().ToList();
+                }
+                ComboxDictionary.Add(optionName, curValues);
+            }
+
+            //补充配置项名称
+            ComboxDictionary.Add("配置项名称", optionNames);
+        }
+
+
+        private static List<ConfigItemEntity> loadAllConfigItems()
+        {
+            var dbProvider = new DataControl();
+
+            //加载所有配置项
+            List<ConfigItemEntity> configItems = new List<ConfigItemEntity>();
+
+            string sql = $" SELECT Name,Value,GroupName FROM ConfigItemTable";
+            SqlParameter[] sqlParameters = new SqlParameter[0];
+            var dt = dbProvider.ExecuteQuery(sql, sqlParameters).Tables[0];
+            foreach (DataRow row in dt.Rows)
+            {
+                ConfigItemEntity configItem = dataRow2ConfigItem(row);
+                configItems.Add(configItem);
+            }
+
+            return configItems;
+
+        }
+
+        private static ConfigItemEntity dataRow2ConfigItem(DataRow row)
+        {
+            ConfigItemEntity configItem = new ConfigItemEntity();
+            configItem.Name = DbHelper.dataColumn2String(row["Name"]);
+            configItem.Value = DbHelper.dataColumn2String(row["Value"]);
+            configItem.GroupName = DbHelper.dataColumn2String(row["GroupName"]);
+
+            return configItem;
         }
 
         /// <summary>
@@ -1465,7 +1594,7 @@ namespace TaskManager
                 string columns = da.Rows[0][0].ToString();
                 string[] column = columns.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 Templatecolumn.column = column;
-
+                teststatistic.IsFromCustomTemplate = true;
                 for (int j = 1; j < teststatistic._control._view.Columns.Count; j++)
                 {
                     teststatistic._control._view.Columns[j].Visible = false;

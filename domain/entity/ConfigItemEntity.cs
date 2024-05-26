@@ -55,6 +55,18 @@ namespace TaskManager.domain.entity
         /// </summary>
         public string Registrant { get; set; }
 
+        public ConfigItemEntity()
+        {
+
+        }
+
+        public ConfigItemEntity(string name, string value, string groupName)
+        {
+            Name = name;
+            Value = value;
+            GroupName = groupName;
+        }
+
         override
         protected string dataTableName()
         {
@@ -86,10 +98,25 @@ namespace TaskManager.domain.entity
             return parameters;
         }
 
-       
-         
-         
-          
-        
+        public bool isValid()
+        {
+            return !string.IsNullOrWhiteSpace(this.Name)
+                 && !string.IsNullOrWhiteSpace(this.Value);
+        }
+
+        public bool isMatchGroup(string groupName)
+        {
+            if (string.IsNullOrWhiteSpace(this.GroupName))
+            {
+                return true;
+            }
+
+            return this.GroupNames().Contains(groupName);
+        }
+
+        private List<string> GroupNames()
+        {
+            return this.GroupName.Split(',').ToList();
+        }
     }
 }

@@ -60,6 +60,7 @@
             this.repoEquipmentManageState = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repoEquipmentTraceabilityState = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repoConfigItemName = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
+            this.repoConformanceName = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repoNumber = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repoVerification = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repoInspection = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
@@ -122,6 +123,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repoEquipmentManageState)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoEquipmentTraceabilityState)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoConfigItemName)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repoConformanceName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoVerification)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoInspection)).BeginInit();
@@ -208,6 +210,7 @@
             this.repoEquipmentManageState,
             this.repoEquipmentTraceabilityState,
             this.repoConfigItemName,
+            this.repoConformanceName,
             this.repoNumber,
             this.repoVerification,
             this.repoInspection,
@@ -503,6 +506,14 @@
             this.repoConfigItemName.Name = "repoConfigItemName";
 
             // 
+            // repoConformanceName
+            // 
+            this.repoConformanceName.AutoHeight = false;
+            this.repoConformanceName.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repoConformanceName.Name = "repoConformanceName";
+
+            // 
             // repoNumber
             // 
             this.repoNumber.AutoHeight = false;
@@ -793,6 +804,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repoEquipmentManageState)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoEquipmentTraceabilityState)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoConfigItemName)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repoConformanceName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoNumber)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoVerification)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repoInspection)).EndInit();
@@ -866,6 +878,7 @@
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoEquipmentManageState;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoEquipmentTraceabilityState;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoConfigItemName;
+        private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoConformanceName;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoNumber;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoVerification;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repoInspection;

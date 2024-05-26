@@ -77,7 +77,11 @@ namespace TaskManager.infrastructure.db
             "PowerType",
             "EngineModel",
             "EngineProducter",
-            "DirectInjection"
+            "DirectInjection",
+
+            "CarbonCanisterNum1",
+            "CarbonCanisterForm1",
+            "CarbonCanisterProductor1"
              };
 
         public SampleRepository()
@@ -167,6 +171,11 @@ namespace TaskManager.infrastructure.db
             new SqlParameter("EngineModel",DbHelper.ValueOrDBNullIfNull(sampleBrief.EngineModel)),
             new SqlParameter("EngineProducter",DbHelper.ValueOrDBNullIfNull(sampleBrief.EngineProducer)),
             new SqlParameter("DirectInjection",DbHelper.ValueOrDBNullIfNull(sampleBrief.YNDirect)),
+
+            new SqlParameter("CarbonCanisterNum1",DbHelper.ValueOrDBNullIfNull(sampleBrief.CanisterCode)),
+            new SqlParameter("CarbonCanisterForm1",DbHelper.ValueOrDBNullIfNull(sampleBrief.CanisterType)),
+            new SqlParameter("CarbonCanisterProductor1",DbHelper.ValueOrDBNullIfNull(sampleBrief.CanisterProductor)),
+
               new SqlParameter("id",sampleBrief.Id)
             };
 
@@ -191,6 +200,10 @@ namespace TaskManager.infrastructure.db
             sampleBrief.FuelType = row["FuelType"].ToString().Trim();
             sampleBrief.Roz = row["FuelLabel"].ToString().Trim();
             sampleBrief.Tirepressure = row["FetalPressureParameter"].ToString().Trim();
+
+            sampleBrief.CanisterCode = DbHelper.dataColumn2StringNoNull(row["CarbonCanisterNum1"])??"";
+            sampleBrief.CanisterType = DbHelper.dataColumn2StringNoNull(row["CarbonCanisterForm1"]);
+            sampleBrief.CanisterProductor = DbHelper.dataColumn2StringNoNull(row["CarbonCanisterProductor1"]);
 
             return sampleBrief;
         }

@@ -42,6 +42,11 @@ namespace TaskManager.common.utils
             return dataValue.ToString().Trim();
         }
 
+        public static string dataColumn2StringNoNull(object dataValue)
+        {
+            return dataValue.ToString().Trim();
+        }
+
         public static DateTime dataColumn2DateTime(object dataValue)
         {
             if (!(dataValue is DBNull))

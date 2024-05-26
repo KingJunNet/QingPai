@@ -480,8 +480,13 @@ public class DataControl
     /// <returns></returns>
     public List<DataField> InitDataFields(FormTable table)
     {
+        string tableName = "FieldDefinitionTable";
+        if (table.Type.Equals(FormType.Test)|| table.Type.Equals(FormType.Sample))
+        {
+            tableName = "FieldDefinitionProTable";
+        }
         var fields = new List<DataField>();
-        var strsql = $"select * from FieldDefinitionTable where category='{table.Category}' order by tableIndex";
+        var strsql = $"select * from {tableName} where category='{table.Category}' order by tableIndex";
         var dt = ExecuteQuery(strsql).Tables[0];
         foreach (DataRow row in dt.Rows)
         {

@@ -52,7 +52,7 @@ namespace TaskManager
         private void AlertTemplate_Load(object sender, EventArgs e)
         {
 
-            string sql = $"select chs from FieldDefinitionTable where category = '{moudle}' order by tableIndex";
+            string sql = $"select chs from FieldDefinitionProTable where category = '{moudle}' order by tableIndex";
             DataTable da = SqlHelper.GetList(sql);
             foreach (DataRow row in da.Rows)
             {
@@ -68,7 +68,7 @@ namespace TaskManager
                 string[] column = columns.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < column.Length; i++)
                 {
-                    string sql0 = $"select chs from FieldDefinitionTable where category='{moudle}' and eng ='{column[i].ToString()}'";
+                    string sql0 = $"select chs from FieldDefinitionProTable where category='{moudle}' and eng ='{column[i].ToString()}'";
 
                     checkedListBoxControl2.Items.Add(SqlHelper.GetList(sql0).Rows[0][0].ToString());
                 }
@@ -97,7 +97,7 @@ namespace TaskManager
             string column = "";
             for (int i=0; i<checkedListBoxControl2.Items.Count; i++)
             {
-                string sql0 = $"select eng from FieldDefinitionTable where category='{moudle}' and chs ='{checkedListBoxControl2.Items[i].ToString()}'";
+                string sql0 = $"select eng from FieldDefinitionProTable where category='{moudle}' and chs ='{checkedListBoxControl2.Items[i].ToString()}'";
                 
                 column += SqlHelper.GetList(sql0).Rows[0][0].ToString()+",";
             }
@@ -135,7 +135,7 @@ namespace TaskManager
                     checkedListBoxControl2.Items.Add(checkedListBoxControl1.CheckedItems[i].ToString());
                 }
                 
-                //string sql0 = $"select eng from FieldDefinitionTable where category='{moudle}' and chs ='{checkedListBoxControl1.CheckedItems[i].ToString()}'";
+                //string sql0 = $"select eng from FieldDefinitionProTable where category='{moudle}' and chs ='{checkedListBoxControl1.CheckedItems[i].ToString()}'";
 
                 //column += SqlHelper.GetList(sql0).Rows[0][0].ToString() + ",";
             }

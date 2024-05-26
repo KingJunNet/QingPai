@@ -169,6 +169,7 @@
     <Compile Include="controller\CacheDataHandler.cs" />
     <Compile Include="controller\UserHelper.cs" />
     <Compile Include="domain\entity\ConfigItemEntity.cs" />
+    <Compile Include="domain\entity\Removed.cs" />
     <Compile Include="domain\service\RoleManager.cs" />
     <Compile Include="domain\service\LogHandler.cs" />
     <Compile Include="view\系统管理\AuthorityForm.cs">

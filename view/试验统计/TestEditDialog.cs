@@ -24,7 +24,7 @@ namespace TaskManager
 {
     public partial class TestEditDialog : BaseEditDialog
     {
-       
+        private static readonly string INPUT_ITEM_PRICE_TIP_TEXT = "填写费用如100.0";
 
         private readonly bool IsAllocateTask;
 
@@ -39,8 +39,10 @@ namespace TaskManager
         private ITaskRepository taskRepository;
 
         private int testStatisticId;
-        private List<string> vins;
 
+        private List<string> carVins;
+        private List<string> canisterVins;
+        private List<string> vins;
         private List<string> inTimeVins = new List<string>();
 
         private List<UserStructureLite> userStructureLites;
@@ -110,12 +112,18 @@ namespace TaskManager
         private string sampleModel;
 
         private List<TaskBrief> taskBriefs;
-        private Dictionary<string, TaskBrief> taskBriefMap=new Dictionary<string, TaskBrief>();
+        private Dictionary<string, TaskBrief> taskBriefMap = new Dictionary<string, TaskBrief>();
 
+        private TitleCombox titleComboxSampleType;
         private TitleCombox titleComboxVin;
+        private TitleCombox titleComboxPriceDetail;
+        private TitleCombox titleComboxProjectTotal;
 
         private SampleBrief testTaskSample = null;
         private int testTaskSampleId = -1;
+
+        private string oriSampleType;
+        private string sampleType;
 
         private TestEditDialog() : base()
         {
@@ -123,11 +131,12 @@ namespace TaskManager
         }
 
         public TestEditDialog(bool authorityEdit, GridView theView, int theHand, List<DataField> fields, FormType Type1,
-            bool isAllocateTask)
+            bool isAllocateTask,bool isFromCustomTemplate)
             : base(authorityEdit, theView, theHand, fields, Type1)
         {
             InitializeComponent();
             IsAllocateTask = isAllocateTask;
+            this.isFromCustomTemplate = isFromCustomTemplate;
 
             this.sampleQueryService = new SampleQueryService();
             this.sampleCommandService = new SampleCommandService();
@@ -173,7 +182,8 @@ namespace TaskManager
             this.initView();
         }
 
-        public int getId() {
+        public int getId()
+        {
             return this.testStatisticId;
         }
 
@@ -194,69 +204,41 @@ namespace TaskManager
             }
             if (FormSignIn.CurrentUser.Department != "体系组")
             {
-                titleCombox41.SetReadOnly(true);
+                //非体系组不能编辑费用确认信息
+                ((TitleCombox)GetControlByFieldName("MoneySure")).SetReadOnly(true);
             }
 
             if (FormSignIn.CurrentUser.Department == "体系组")
             {
-                titleCombox1.SetReadOnly(true);
-                titleCombox2.SetReadOnly(true);
-                titleCombox3.SetReadOnly(true);
-                titleCombox40.SetReadOnly(true);
+                //所有信息不可编辑
+                this.setAllControlsUnEditabled();
 
-                titleCombox7.SetReadOnly(true);
-                dateEdit1.SetReadOnly(true);
-                dateEdit2.SetReadOnly(true);
-                titleCombox9.SetReadOnly(true);
-                titleCombox10.SetReadOnly(true);
-                titleCombox11.SetReadOnly(true);
-
-                titleCombox4.SetReadOnly(true);
-                titleCombox5.SetReadOnly(true);
-                titleCombox8.SetReadOnly(true);
-                titleCombox12.SetReadOnly(true);
-                titleCombox13.SetReadOnly(true);
-                titleCombox33.SetReadOnly(true);
-                titleCombox17.SetReadOnly(true);
-
-                titleCombox38.SetReadOnly(true);
-                titleCombox22.SetReadOnly(true);
-
-                titleCombox24.SetReadOnly(true);
-                titleCombox25.SetReadOnly(true);
-                titleCombox26.SetReadOnly(true);
-                titleCombox27.SetReadOnly(true);
-                titleCombox28.SetReadOnly(true);
-                titleCombox29.SetReadOnly(true);
-                titleCombox30.SetReadOnly(true);
-                titleCombox31.SetReadOnly(true);
-                titleCombox32.SetReadOnly(true);
-                titleCombox34.SetReadOnly(true);
-                titleCombox35.SetReadOnly(true);
-                titleCombox36.SetReadOnly(true);
-                titleCombox37.SetReadOnly(true);
-
-                titleCombox16.SetReadOnly(true);
-                titleCombox15.SetReadOnly(true);
-                titleCombox6.SetReadOnly(true);
-                titleCombox14.SetReadOnly(true);
-
-                //titleCombox39.SetReadOnly(true);
-                titleCombox18.SetReadOnly(true);
-                titleCombox19.SetReadOnly(true);
-                titleCombox20.SetReadOnly(true);
-                titleCombox21.SetReadOnly(true);
-                titleCombox23.SetReadOnly(true);
-
-                titleCombox42.SetReadOnly(true);
-
+                //费用确认信息可编辑
+                ((TitleCombox)GetControlByFieldName("MoneySure")).SetReadOnly(false);
             }
             else
             {
-                titleCombox22.comboBox1.SelectAll();
-                titleCombox24.comboBox1.SelectAll();
-                titleCombox28.comboBox1.SelectAll();
+                //TODO:有啥用呢
+                //Tirepressure
+                ((TitleCombox)GetControlByFieldName("Tirepressure")).comboBox1.SelectAll();
+                //FuelType
+                ((TitleCombox)GetControlByFieldName("FuelType")).comboBox1.SelectAll();
+                //ProjectTotal
+                ((TitleCombox)GetControlByFieldName("ProjectTotal")).comboBox1.SelectAll();
             }
+        }
+
+        private void setAllControlsUnEditabled()
+        {
+            //所有信息不可编辑
+            this.setControlsEditabled(false);
+            this.titleComboxPriceItem.SetReadOnly(true);
+            this.textBoxItemPrice.ReadOnly = true;
+            this.btnAddPriceDetails.Enabled = false;
+            
+
+            this.titleComboxEquip.SetReadOnly(true);
+            this.btnAddEquipment.Enabled = false;
         }
 
         private void setWindowSize()
@@ -343,13 +325,13 @@ namespace TaskManager
                 //项目设备同步策略
                 this.syncItemEquipmentStrategy();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show("更新试验计划失败！", "错误信息", MessageBoxButtons.OK);
                 return;
             }
-
-            //是否需要将新增替换为更新
-            if (this.isAddSample&&this.testTaskSampleId>0)
+            //是否需要将新增替换为更新，目的完善样本的vin信息，触发条件:1.样本为新增；2.样本类型未变化，vin变化;3.原样本记录存在
+            if (this.isAddSample && StringUtils.Equals(this.oriSampleType, this.sampleType) && this.testTaskSampleId > 0)
             {
                 string msg = $"您输入的是一个新的样本vin，您是否仅仅需要修改当前实验项目的样本信息，而不是创建一个新的样本信息";
                 DialogResult result = MessageBox.Show(msg, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -369,7 +351,7 @@ namespace TaskManager
                     this.isUpdateSample = true;
                 }
             }
-            //是否需要更新样本
+            //是否需要更新项目设备
             if (this.isNeedUpdateItemEquipments)
             {
                 DialogResult result = MessageBox.Show("检测到该项目的使用设备信息有变化，需要将该项目使用设备信息更新至数据库么", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -395,7 +377,8 @@ namespace TaskManager
             }
         }
 
-        private void sampleAddOperationChangeToUpdate() {
+        private void sampleAddOperationChangeToUpdate()
+        {
             this.updatedSampleBrief.Id = this.testTaskSampleId;
             if (this.sampleOfVin == null)
             {
@@ -482,55 +465,152 @@ namespace TaskManager
             return true;
         }
 
+        private void buildOriTestStatisticEntity()
+        {
+            this.oriTestStatisticEntity = new TestStatisticEntity();
+            this.oriTestStatisticEntity.Id = int.Parse(this.getValue("ID"));
+
+            this.oriTestStatisticEntity.Department = this.getValue("department");
+            this.oriTestStatisticEntity.ExperimentalSite = this.getValue("ExperimentalSite");
+            this.oriTestStatisticEntity.LocationNumber = this.getValue("LocationNumber");
+            this.oriTestStatisticEntity.Registrant = this.getValue("Registrant");
+
+            this.oriTestStatisticEntity.ItemType = this.getValue("ItemType");
+            this.oriTestStatisticEntity.ItemBrief = this.getValue("ItemBrief");
+            this.oriTestStatisticEntity.Taskcode = this.getValue("Taskcode");
+            this.oriTestStatisticEntity.Taskcode2 = this.getValue("Taskcode2");
+            this.oriTestStatisticEntity.StandardStage = this.getValue("StandardStage");
+            this.oriTestStatisticEntity.YNcountry = this.getValue("YNcountry");
+            this.oriTestStatisticEntity.Confidentiality = this.getValue("Confidentiality");
+            this.oriTestStatisticEntity.ProjectPrice = this.string2Double(this.getValue("ProjectPrice"));
+
+            this.oriTestStatisticEntity.SampleType = this.getValue("SampleType");
+            this.oriTestStatisticEntity.CarVin = this.getValue("Carvin");
+            this.oriTestStatisticEntity.CarType = this.getValue("CarType");
+            this.oriTestStatisticEntity.SampleModel = this.getValue("SampleModel");
+            this.oriTestStatisticEntity.Producer = this.getValue("Producer");
+            this.oriTestStatisticEntity.PowerType = this.getValue("PowerType");
+            this.oriTestStatisticEntity.EngineModel = this.getValue("EngineModel");
+            this.oriTestStatisticEntity.EngineProduct = this.getValue("EngineProduct");
+            this.oriTestStatisticEntity.YNDirect = this.getValue("YNDirect");
+            this.oriTestStatisticEntity.TransmissionType = this.getValue("TransmissionType");
+            this.oriTestStatisticEntity.DriverType = this.getValue("Drivertype");
+            this.oriTestStatisticEntity.FuelType = this.getValue("FuelType");
+            this.oriTestStatisticEntity.FuelLabel = this.getValue("FuelLabel");
+            this.oriTestStatisticEntity.TirePressure = this.getValue("Tirepressure");
+            this.oriTestStatisticEntity.CanisterCode = this.getValue("CanisterCode");
+            this.oriTestStatisticEntity.CanisterType = this.getValue("CanisterType");
+            this.oriTestStatisticEntity.CanisterProductor = this.getValue("CanisterProductor");
+
+            this.oriTestStatisticEntity.CanisterTotalWeight = this.getValue("CanisterTotalWeight");
+            this.oriTestStatisticEntity.ActivatedCarbonTotalWeight = this.getValue("ActivatedCarbonTotalWeight");
+            this.oriTestStatisticEntity.ActivatedCarbonVolumeActual = this.getValue("ActivatedCarbonVolumeActual");
+            this.oriTestStatisticEntity.CanisterEffectiveVolumeActual = this.getValue("CanisterEffectiveVolumeActual");
+            this.oriTestStatisticEntity.CanisterEffectiveVolumePublic = this.getValue("CanisterEffectiveVolumePublic");
+            this.oriTestStatisticEntity.CanisterEffectiveVolumeConformance = this.getValue("CanisterEffectiveVolumeConformance");
+            this.oriTestStatisticEntity.CanisterEffectiveAdsorptionActual = this.getValue("CanisterEffectiveAdsorptionActual");
+            this.oriTestStatisticEntity.CanisterEffectiveAdsorptionPublic = this.getValue("CanisterEffectiveAdsorptionPublic");
+            this.oriTestStatisticEntity.CanisterEffectiveAdsorptionConformance = this.getValue("CanisterEffectiveAdsorptionConformance");
+            this.oriTestStatisticEntity.CanisterWorkingAbilityActual = this.getValue("CanisterWorkingAbilityActual");
+            this.oriTestStatisticEntity.CanisterWorkingAbilityPublic = this.getValue("CanisterWorkingAbilityPublic");
+            this.oriTestStatisticEntity.CanisterWorkingAbilityConformance = this.getValue("CanisterWorkingAbilityConformance");
+
+            this.oriTestStatisticEntity.TestStartDate = this.string2DateTime(this.getValue("TestStartDate"));
+            this.oriTestStatisticEntity.TestEndDate = this.string2DateTime(this.getValue("TestEndDate"));
+            this.oriTestStatisticEntity.TestTime = this.getValue("Testtime");
+            this.oriTestStatisticEntity.StartMileage = this.getValue("StartMileage");
+            this.oriTestStatisticEntity.EndMileage = this.getValue("EndMileage");
+            this.oriTestStatisticEntity.TotalMileage = this.getValue("TotalMileage");
+            this.oriTestStatisticEntity.NationalFive = this.getValue("NationalFive");
+            this.oriTestStatisticEntity.NationalSix = this.getValue("NationalSix");
+            this.oriTestStatisticEntity.Oil = this.getValue("Oil");
+            this.oriTestStatisticEntity.QualificationStatus = this.getValue("QualificationStatus");
+            this.oriTestStatisticEntity.Finishstate = this.getValue("Finishstate");
+            this.oriTestStatisticEntity.Remark = this.getValue("Remark");
+            this.oriTestStatisticEntity.LogisticsInformation = this.getValue("LogisticsInformation");
+            this.oriTestStatisticEntity.Contacts = this.getValue("Contacts");
+            this.oriTestStatisticEntity.PhoneNum = this.getValue("phoneNum");
+            this.oriTestStatisticEntity.Email = this.getValue("Email");
+            this.oriTestStatisticEntity.ProjectTotal = this.string2Double(this.getValue("ProjectTotal"));
+            this.oriTestStatisticEntity.PriceDetail = this.getValue("PriceDetail");
+            this.oriTestStatisticEntity.MoneySure = this.getValue("MoneySure");
+
+            this.oriTestStatisticEntity.RegistrationDate = this.getValue("RegistrationDate");
+            this.oriTestStatisticEntity.Question = this.getValue("question");
+            this.oriTestStatisticEntity.Equipments = this.getValue("Equipments");
+        }
+
         private TestStatisticEntity extractDataFromUi()
         {
             this.testStatisticEntity = new TestStatisticEntity();
-
             this.testStatisticEntity.Id = int.Parse(this.getValue("ID"));
+
             this.testStatisticEntity.Department = ((TitleCombox)GetControlByFieldName("department")).Text;
             this.testStatisticEntity.ExperimentalSite = ((TitleCombox)GetControlByFieldName("ExperimentalSite")).Text;
             this.testStatisticEntity.LocationNumber = ((TitleCombox)GetControlByFieldName("LocationNumber")).Text;
             this.testStatisticEntity.Registrant = ((TitleCombox)GetControlByFieldName("Registrant")).Text;
-            this.testStatisticEntity.Taskcode = ((TitleCombox)GetControlByFieldName("Taskcode")).Text;
-            this.testStatisticEntity.Taskcode2 = ((TitleCombox)GetControlByFieldName("Taskcode2")).Text;
-            this.testStatisticEntity.CarType = ((TitleCombox)GetControlByFieldName("CarType")).Text;
+
             this.testStatisticEntity.ItemType = ((TitleCombox)GetControlByFieldName("ItemType")).Text;
             this.testStatisticEntity.ItemBrief = ((TitleCombox)GetControlByFieldName("ItemBrief")).Text;
+            this.testStatisticEntity.Taskcode = ((TitleCombox)GetControlByFieldName("Taskcode")).Text;
+            this.testStatisticEntity.Taskcode2 = ((TitleCombox)GetControlByFieldName("Taskcode2")).Text;
+            this.testStatisticEntity.StandardStage = ((TitleCombox)GetControlByFieldName("StandardStage")).Text;
+            this.testStatisticEntity.YNcountry = ((TitleCombox)GetControlByFieldName("YNcountry")).Text;
+            this.testStatisticEntity.Confidentiality = ((TitleCombox)GetControlByFieldName("Confidentiality")).Text;
+            this.testStatisticEntity.ProjectPrice = this.string2Double((((TitleCombox)GetControlByFieldName("ProjectPrice"))).Text);
+
+            this.testStatisticEntity.SampleType = ((TitleCombox)GetControlByFieldName("SampleType")).Text;
+            this.testStatisticEntity.CarVin = ((TitleCombox)GetControlByFieldName("Carvin")).Text;
+            this.testStatisticEntity.CarType = ((TitleCombox)GetControlByFieldName("CarType")).Text;
+            this.testStatisticEntity.SampleModel = ((TitleCombox)GetControlByFieldName("SampleModel")).Text;
+            this.testStatisticEntity.Producer = ((TitleCombox)GetControlByFieldName("Producer")).Text;
+            this.testStatisticEntity.PowerType = ((TitleCombox)GetControlByFieldName("PowerType")).Text;
+            this.testStatisticEntity.EngineModel = ((TitleCombox)GetControlByFieldName("EngineModel")).Text;
+            this.testStatisticEntity.EngineProduct = ((TitleCombox)GetControlByFieldName("EngineProduct")).Text;
+            this.testStatisticEntity.YNDirect = ((TitleCombox)GetControlByFieldName("YNDirect")).Text;
+            this.testStatisticEntity.TransmissionType = ((TitleCombox)GetControlByFieldName("TransmissionType")).Text;
+            this.testStatisticEntity.DriverType = ((TitleCombox)GetControlByFieldName("Drivertype")).Text;
+            this.testStatisticEntity.FuelType = ((TitleCombox)GetControlByFieldName("FuelType")).Text;
+            this.testStatisticEntity.FuelLabel = ((TitleCombox)GetControlByFieldName("FuelLabel")).Text;
+            this.testStatisticEntity.TirePressure = ((TitleCombox)GetControlByFieldName("Tirepressure")).Text;
+            this.testStatisticEntity.CanisterCode = ((TitleCombox)GetControlByFieldName("CanisterCode")).Text;
+            this.testStatisticEntity.CanisterType = ((TitleCombox)GetControlByFieldName("CanisterType")).Text;
+            this.testStatisticEntity.CanisterProductor = ((TitleCombox)GetControlByFieldName("CanisterProductor")).Text;
+
+            this.testStatisticEntity.CanisterTotalWeight = ((TitleCombox)GetControlByFieldName("CanisterTotalWeight")).Text;
+            this.testStatisticEntity.ActivatedCarbonTotalWeight = ((TitleCombox)GetControlByFieldName("ActivatedCarbonTotalWeight")).Text;
+            this.testStatisticEntity.ActivatedCarbonVolumeActual = ((TitleCombox)GetControlByFieldName("ActivatedCarbonVolumeActual")).Text;
+            this.testStatisticEntity.CanisterEffectiveVolumeActual = ((TitleCombox)GetControlByFieldName("CanisterEffectiveVolumeActual")).Text;
+            this.testStatisticEntity.CanisterEffectiveVolumePublic = ((TitleCombox)GetControlByFieldName("CanisterEffectiveVolumePublic")).Text;
+            this.testStatisticEntity.CanisterEffectiveVolumeConformance = ((TitleCombox)GetControlByFieldName("CanisterEffectiveVolumeConformance")).Text;
+            this.testStatisticEntity.CanisterEffectiveAdsorptionActual = ((TitleCombox)GetControlByFieldName("CanisterEffectiveAdsorptionActual")).Text;
+            this.testStatisticEntity.CanisterEffectiveAdsorptionPublic = ((TitleCombox)GetControlByFieldName("CanisterEffectiveAdsorptionPublic")).Text;
+            this.testStatisticEntity.CanisterEffectiveAdsorptionConformance = ((TitleCombox)GetControlByFieldName("CanisterEffectiveAdsorptionConformance")).Text;
+            this.testStatisticEntity.CanisterWorkingAbilityActual = ((TitleCombox)GetControlByFieldName("CanisterWorkingAbilityActual")).Text;
+            this.testStatisticEntity.CanisterWorkingAbilityPublic = ((TitleCombox)GetControlByFieldName("CanisterWorkingAbilityPublic")).Text;
+            this.testStatisticEntity.CanisterWorkingAbilityConformance = ((TitleCombox)GetControlByFieldName("CanisterWorkingAbilityConformance")).Text;
+
+
             this.testStatisticEntity.TestStartDate = ((DateEdit)GetControlByFieldName("TestStartDate")).Date;
             this.testStatisticEntity.TestEndDate = ((DateEdit)GetControlByFieldName("TestEndDate")).Date;
             this.testStatisticEntity.TestTime = ((TitleCombox)GetControlByFieldName("Testtime")).Text;
-            this.testStatisticEntity.SampleModel = ((TitleCombox)GetControlByFieldName("SampleModel")).Text;
-            this.testStatisticEntity.Producer = ((TitleCombox)GetControlByFieldName("Producer")).Text;
-            this.testStatisticEntity.CarVin = ((TitleCombox)GetControlByFieldName("Carvin")).Text;
-            this.testStatisticEntity.Confidentiality = ((TitleCombox)GetControlByFieldName("Confidentiality")).Text;
-            this.testStatisticEntity.YNDirect = ((TitleCombox)GetControlByFieldName("YNDirect")).Text;
-            this.testStatisticEntity.PowerType = ((TitleCombox)GetControlByFieldName("PowerType")).Text;
-            this.testStatisticEntity.TransmissionType = ((TitleCombox)GetControlByFieldName("TransmissionType")).Text;
-            this.testStatisticEntity.EngineModel = ((TitleCombox)GetControlByFieldName("EngineModel")).Text;
-            this.testStatisticEntity.EngineProduct = ((TitleCombox)GetControlByFieldName("EngineProduct")).Text;
-            this.testStatisticEntity.DriverType = ((TitleCombox)GetControlByFieldName("Drivertype")).Text;
-            this.testStatisticEntity.TirePressure = ((TitleCombox)GetControlByFieldName("Tirepressure")).Text;
-            this.testStatisticEntity.NationalFive = ((TitleCombox)GetControlByFieldName("Tirepressure")).Text;
-            this.testStatisticEntity.NationalSix = ((TitleCombox)GetControlByFieldName("NationalSix")).Text;
             this.testStatisticEntity.StartMileage = ((TitleCombox)GetControlByFieldName("StartMileage")).Text;
             this.testStatisticEntity.EndMileage = ((TitleCombox)GetControlByFieldName("EndMileage")).Text;
             this.testStatisticEntity.TotalMileage = ((TitleCombox)GetControlByFieldName("TotalMileage")).Text;
-            this.testStatisticEntity.FuelType = ((TitleCombox)GetControlByFieldName("FuelType")).Text;
+            this.testStatisticEntity.NationalFive = ((TitleCombox)GetControlByFieldName("NationalFive")).Text;
+            this.testStatisticEntity.NationalSix = ((TitleCombox)GetControlByFieldName("NationalSix")).Text;
             this.testStatisticEntity.Oil = ((TitleCombox)GetControlByFieldName("Oil")).Text;
-            this.testStatisticEntity.FuelLabel = ((TitleCombox)GetControlByFieldName("FuelLabel")).Text;
-            this.testStatisticEntity.StandardStage = ((TitleCombox)GetControlByFieldName("StandardStage")).Text;
-            this.testStatisticEntity.YNcountry = ((TitleCombox)GetControlByFieldName("YNcountry")).Text;
-            this.testStatisticEntity.ProjectPrice = this.string2Double((((TitleCombox)GetControlByFieldName("ProjectPrice"))).Text);
-            this.testStatisticEntity.ProjectTotal = this.string2Double((((TitleCombox)GetControlByFieldName("ProjectTotal"))).Text);
-            this.testStatisticEntity.PriceDetail = ((TitleCombox)GetControlByFieldName("PriceDetail")).Text;
-            this.testStatisticEntity.Finishstate = ((TitleCombox)GetControlByFieldName("Finishstate")).Text;
             this.testStatisticEntity.QualificationStatus = ((TitleCombox)GetControlByFieldName("QualificationStatus")).Text;
-            this.testStatisticEntity.LogisticsInformation = ((TitleCombox)GetControlByFieldName("LogisticsInformation")).Text;
+            this.testStatisticEntity.Finishstate = ((TitleCombox)GetControlByFieldName("Finishstate")).Text;
             this.testStatisticEntity.Remark = ((TitleCombox)GetControlByFieldName("Remark")).Text;
+            this.testStatisticEntity.LogisticsInformation = ((TitleCombox)GetControlByFieldName("LogisticsInformation")).Text;
             this.testStatisticEntity.Contacts = ((TitleCombox)GetControlByFieldName("Contacts")).Text;
             this.testStatisticEntity.PhoneNum = ((TitleCombox)GetControlByFieldName("phoneNum")).Text;
             this.testStatisticEntity.Email = ((TitleCombox)GetControlByFieldName("Email")).Text;
+            this.testStatisticEntity.ProjectTotal = this.string2Double((((TitleCombox)GetControlByFieldName("ProjectTotal"))).Text);
+            this.testStatisticEntity.PriceDetail = ((TitleCombox)GetControlByFieldName("PriceDetail")).Text;
             this.testStatisticEntity.MoneySure = ((TitleCombox)GetControlByFieldName("MoneySure")).Text;
+
             this.testStatisticEntity.RegistrationDate = this.oriTestStatisticEntity.RegistrationDate;
             this.testStatisticEntity.Question = this.oriTestStatisticEntity.Question;
             this.testStatisticEntity.setEquipments(this.itemEquipments);
@@ -539,7 +619,6 @@ namespace TaskManager
             this.testStatisticEntity.CreateUser = this.oriTestStatisticEntity.CreateUser;
             this.testStatisticEntity.CreateTime = this.oriTestStatisticEntity.CreateTime;
             this.testStatisticEntity.UpdateTime = DateTime.Now;
-
 
             return testStatisticEntity;
         }
@@ -575,15 +654,23 @@ namespace TaskManager
         {
             //构造样本信息
             this.updatedSampleBrief = this.testStatisticEntity.sampleBriefInfo();
-            this.updatedSampleBrief.SampleType = "整车";
+            //this.updatedSampleBrief.SampleType = titleComboxSampleType.Text;
             if (this.sampleOfVin == null || this.sampleOfVin.FromSampleTable == null)
             {
                 this.isAddSample = true;
                 return;
             }
+
+            //样本类型和vin变化了，则为新增，这种情况理论上不存在
+            if (!this.sampleOfVin.FromSampleTable.equalsSameSample(this.updatedSampleBrief))
+            {
+                this.isAddSample = true;
+                return;
+            }
+
             this.updatedSampleBrief.Id = this.sampleOfVin.FromSampleTable.Id;
-            this.updatedSampleBrief.SampleType = this.sampleOfVin.FromSampleTable.SampleType;
-            this.isNeedUpdateSample = !this.sampleOfVin.FromSampleTable.equals(this.updatedSampleBrief,out this.updateSampleChangedStates);
+            //this.updatedSampleBrief.SampleType = this.sampleOfVin.FromSampleTable.SampleType;
+            this.isNeedUpdateSample = !this.sampleOfVin.FromSampleTable.equals(this.updatedSampleBrief, out this.updateSampleChangedStates);
         }
 
         private void syncItemEquipmentStrategyOld()
@@ -607,8 +694,9 @@ namespace TaskManager
             List<string> itemOriEquipmentCodes = this.itemOriEquipmentsMap[this.itemGroupLocationKey].Select(item => item.Code).ToList();
 
             //原始记录的项目，组别，定位编号
-            if (StringUtils.isEquals(this.itemGroupLocationKey, this.oriItemGroupLocationKey)) {
-                itemOriEquipmentCodes =this.oriItemEquipments.Select(item => item.Code).ToList();
+            if (StringUtils.isEquals(this.itemGroupLocationKey, this.oriItemGroupLocationKey))
+            {
+                itemOriEquipmentCodes = this.oriItemEquipments.Select(item => item.Code).ToList();
             }
             if (Collections.isEmpty(itemOriEquipmentCodes))
             {
@@ -660,14 +748,13 @@ namespace TaskManager
                 this.updateEquipmentUsageRecordrRemark();
             }
 
-
             //更新样本信息
             if (isAddSample)
             {
                 this.sampleCommandService.createByBrief(this.updatedSampleBrief);
                 //更新内存中的样本数据
                 this.updateCurFromSampleTable();
-                CacheDataHandler.Instance.addVin(this.updatedSampleBrief.Vin);
+                CacheDataHandler.Instance.addVin(this.sampleType, this.updatedSampleBrief.Vin);
             }
             else if (isUpdateSample)
             {
@@ -675,9 +762,9 @@ namespace TaskManager
                 //更新内存中的样本数据
                 if (!StringUtils.isEquals(this.sampleOfVin.FromSampleTable.Vin, this.updatedSampleBrief.Vin))
                 {
-                    CacheDataHandler.Instance.replaceVin(this.sampleOfVin.FromSampleTable.Vin, this.updatedSampleBrief.Vin);
+                    CacheDataHandler.Instance.replaceVin(this.sampleType, this.sampleOfVin.FromSampleTable.Vin, this.updatedSampleBrief.Vin);
                 }
-               
+
                 this.sampleOfVin.FromSampleTable.copyFrom(this.updatedSampleBrief);
             }
 
@@ -761,8 +848,8 @@ namespace TaskManager
         private void ProjectPriceHandler(object sender, EventArgs e)
         {
 
-           if (!(GetControlByFieldName("ProjectPrice") is TitleCombox ProjectPrice) ||
-              !(GetControlByFieldName("ProjectTotal") is TitleCombox ProjectTotal))
+            if (!(GetControlByFieldName("ProjectPrice") is TitleCombox ProjectPrice) ||
+               !(GetControlByFieldName("ProjectTotal") is TitleCombox ProjectTotal))
                 return;
             if (ProjectTotal.Value() == "")
             {
@@ -866,60 +953,7 @@ namespace TaskManager
         }
 
 
-        private void buildOriTestStatisticEntity()
-        {
-            this.oriTestStatisticEntity = new TestStatisticEntity();
-            this.oriTestStatisticEntity.Id = int.Parse(this.getValue("ID"));
 
-            this.oriTestStatisticEntity.Department = this.getValue("department");
-
-            this.oriTestStatisticEntity.ExperimentalSite = this.getValue("ExperimentalSite");
-            this.oriTestStatisticEntity.LocationNumber = this.getValue("LocationNumber");
-            this.oriTestStatisticEntity.Registrant = this.getValue("Registrant");
-            this.oriTestStatisticEntity.Taskcode = this.getValue("Taskcode");
-            this.oriTestStatisticEntity.Taskcode2 = this.getValue("Taskcode2");
-            this.oriTestStatisticEntity.CarType = this.getValue("CarType");
-            this.oriTestStatisticEntity.ItemType = this.getValue("ItemType");
-            this.oriTestStatisticEntity.ItemBrief = this.getValue("ItemBrief");
-            this.oriTestStatisticEntity.TestStartDate = this.string2DateTime(this.getValue("TestStartDate"));
-            this.oriTestStatisticEntity.TestEndDate = this.string2DateTime(this.getValue("TestEndDate"));
-            this.oriTestStatisticEntity.TestTime = this.getValue("Testtime");
-            this.oriTestStatisticEntity.SampleModel = this.getValue("SampleModel");
-            this.oriTestStatisticEntity.Producer = this.getValue("Producer");
-            this.oriTestStatisticEntity.CarVin = this.getValue("Carvin");
-            this.oriTestStatisticEntity.Confidentiality = this.getValue("Confidentiality");
-            this.oriTestStatisticEntity.YNDirect = this.getValue("YNDirect");
-            this.oriTestStatisticEntity.PowerType = this.getValue("PowerType");
-            this.oriTestStatisticEntity.TransmissionType = this.getValue("TransmissionType");
-            this.oriTestStatisticEntity.EngineModel = this.getValue("EngineModel");
-            this.oriTestStatisticEntity.EngineProduct = this.getValue("EngineProduct");
-            this.oriTestStatisticEntity.DriverType = this.getValue("Drivertype");
-            this.oriTestStatisticEntity.TirePressure = this.getValue("Tirepressure");
-            this.oriTestStatisticEntity.NationalFive = this.getValue("Tirepressure");
-            this.oriTestStatisticEntity.NationalSix = this.getValue("NationalSix");
-            this.oriTestStatisticEntity.StartMileage = this.getValue("StartMileage");
-            this.oriTestStatisticEntity.EndMileage = this.getValue("EndMileage");
-            this.oriTestStatisticEntity.TotalMileage = this.getValue("TotalMileage");
-            this.oriTestStatisticEntity.FuelType = this.getValue("FuelType");
-            this.oriTestStatisticEntity.Oil = this.getValue("Oil");
-            this.oriTestStatisticEntity.FuelLabel = this.getValue("FuelLabel");
-            this.oriTestStatisticEntity.StandardStage = this.getValue("StandardStage");
-            this.oriTestStatisticEntity.YNcountry = this.getValue("YNcountry");
-            this.oriTestStatisticEntity.ProjectPrice = this.string2Double(this.getValue("ProjectPrice"));
-            this.oriTestStatisticEntity.ProjectTotal = this.string2Double(this.getValue("ProjectTotal"));
-            this.oriTestStatisticEntity.PriceDetail = this.getValue("PriceDetail");
-            this.oriTestStatisticEntity.Finishstate = this.getValue("Finishstate");
-            this.oriTestStatisticEntity.QualificationStatus = this.getValue("QualificationStatus");
-            this.oriTestStatisticEntity.LogisticsInformation = this.getValue("LogisticsInformation");
-            this.oriTestStatisticEntity.Remark = this.getValue("Remark");
-            this.oriTestStatisticEntity.Contacts = this.getValue("Contacts");
-            this.oriTestStatisticEntity.PhoneNum = this.getValue("phoneNum");
-            this.oriTestStatisticEntity.Email = this.getValue("Email");
-            this.oriTestStatisticEntity.MoneySure = this.getValue("MoneySure");
-            this.oriTestStatisticEntity.RegistrationDate = this.getValue("RegistrationDate");
-            this.oriTestStatisticEntity.Question = this.getValue("question");
-            this.oriTestStatisticEntity.Equipments = this.getValue("Equipments");
-        }
 
         private DateTime string2DateTime(string content)
         {
@@ -947,10 +981,22 @@ namespace TaskManager
             this.testStatisticId = int.Parse(getValue("ID"));
             this.loadTestTaskSampleId();
             UseHolder.Instance.CurrentUser = FormSignIn.CurrentUser;
-            this.vins = CacheDataHandler.Instance.getCarVins();
+            this.carVins = CacheDataHandler.Instance.getCarVins();
+            this.canisterVins = CacheDataHandler.Instance.getCanisterVins();
+            this.oriSampleType = this.oriTestStatisticEntity.SampleType;
+            this.sampleType = this.oriTestStatisticEntity.SampleType;
+            if (sampleType.Equals(SampleTypeChn.整车.ToString()))
+            {
+                this.vins = this.carVins;
+            }
+            else if (sampleType.Equals(SampleTypeChn.碳罐.ToString()))
+            {
+                this.vins = this.canisterVins;
+            }
             this.equipmentBreiefViewModels = CacheDataHandler.Instance.getCurUserEquipments();
             this.equipmentMap = new Dictionary<string, EquipmentBreiefViewModel>();
-            this.equipmentBreiefViewModels.ForEach(item => {
+            this.equipmentBreiefViewModels.ForEach(item =>
+            {
                 if (!equipmentMap.ContainsKey(item.ToString()))
                 {
                     equipmentMap.Add(item.ToString(), item);
@@ -960,7 +1006,7 @@ namespace TaskManager
 
             //查询实验任务的设备信息
             this.testEquipments = this.equipmentUsageRecordRepository.litesOfTestTask(this.testStatisticId);
-            this.itemEquipments = this.testEquipments.Select(item=>item.toEquipmentLite()).ToList();
+            this.itemEquipments = this.testEquipments.Select(item => item.toEquipmentLite()).ToList();
             this.oriTestEquipmentCodes = this.itemEquipments.Select(item => item.Code).ToList();
             this.itemName = getValue("ItemBrief");
             if (!string.IsNullOrWhiteSpace(this.itemName))
@@ -973,14 +1019,16 @@ namespace TaskManager
 
                 //记住原始数据
                 this.oriItemGroupLocationKey = $"{this.itemName}&{group}&{locationNumber}";
-                this.oriItemEquipments = this.equipmentQueryService.equipmentsOfItem(this.itemName, group, locationNumber);    
+                this.oriItemEquipments = this.equipmentQueryService.equipmentsOfItem(this.itemName, group, locationNumber);
             }
         }
 
-        private void loadTestTaskSampleId() {
+        private void loadTestTaskSampleId()
+        {
             //TODO:并不完全严肃
-            SampleOfVinViewModel curTaskSample = this.sampleQueryService.samplesOfVin(oriTestStatisticEntity.CarVin);
-            if (curTaskSample != null && curTaskSample.FromSampleTable != null) {
+            SampleOfVinViewModel curTaskSample = this.sampleQueryService.samplesOfVin(oriTestStatisticEntity.CarVin, oriTestStatisticEntity.SampleType);
+            if (curTaskSample != null && curTaskSample.FromSampleTable != null)
+            {
                 this.testTaskSample = curTaskSample.FromSampleTable;
                 this.testTaskSampleId = this.testTaskSample.Id;
             }
@@ -1027,7 +1075,7 @@ namespace TaskManager
         private void initView()
         {
             this.Text = "编辑试验计划";
-            this.btnAddEquipment.Enabled =!string.IsNullOrWhiteSpace(((TitleCombox)GetControlByFieldName("ItemBrief")).Text.Trim()) ;
+            this.btnAddEquipment.Enabled = !string.IsNullOrWhiteSpace(((TitleCombox)GetControlByFieldName("ItemBrief")).Text.Trim());
             this.initUsingEquipmentListView();
             this.initCombox();
             this.initViewValue();
@@ -1035,22 +1083,31 @@ namespace TaskManager
 
         private void initCombox()
         {
+            this.titleComboxSampleType = ((TitleCombox)GetControlByFieldName("SampleType"));
             this.titleComboxVin = ((TitleCombox)GetControlByFieldName("Carvin"));
+            this.titleComboxPriceDetail = ((TitleCombox)GetControlByFieldName("PriceDetail"));
+            this.titleComboxProjectTotal = ((TitleCombox)GetControlByFieldName("ProjectTotal"));
 
             titleCombox3.SetItems(FormSignIn.UserDic.Keys);
             titleCombox1.SetItems(this.locationNumbers);
+            this.titleComboxSampleType.SetItems(Form1.ComboxDictionary["样品类型"]);
             this.titleComboxVin.SetItems(this.vins);
+            this.titleComboxPriceItem.SetItems(Form1.ComboxDictionary["费用名称"]);
             this.initEquipmentCombox();
+            this.titleComboxSampleType.SetTextChange(SampleTypeChangeHandler);
             this.titleComboxVin.SetTextChange(VinChangeHandler);
             ((TitleCombox)GetControlByFieldName("ItemBrief")).SetTextChange(itemChangeHandler);
             ((TitleCombox)GetControlByFieldName("department")).SetTextChange(itemChangeHandler);
             ((TitleCombox)GetControlByFieldName("LocationNumber")).SetTextChange(itemChangeHandler);
             ((TitleCombox)GetControlByFieldName("SampleModel")).SetTextChange(sampleModelChangeHandler);
-             ((TitleCombox)GetControlByFieldName("Taskcode")).SetTextChange(taskCodeChangeHandler);
+            ((TitleCombox)GetControlByFieldName("Taskcode")).SetTextChange(taskCodeChangeHandler);
             ((TitleCombox)GetControlByFieldName("Confidentiality")).SetTextChange(confidentialityChangeHandler);
 
             this.titleComboxVin.SetTextUpdate(VinTextUpdate);
             titleComboxEquip.SetTextUpdate(EquipmentTextUpdate);
+
+            //样本类型只可选
+            //this.titleComboxSampleType.SetNotAllowInput();
         }
 
         private void initViewValue()
@@ -1101,7 +1158,7 @@ namespace TaskManager
             }
             else
             {
-                this.itemEquipments = this.equipmentQueryService.equipmentsOfItem(this.itemName, group,locationNumber);
+                this.itemEquipments = this.equipmentQueryService.equipmentsOfItem(this.itemName, group, locationNumber);
                 this.itemOriEquipmentsMap.Add(this.itemGroupLocationKey, this.itemEquipments.Select(item => item.copy()).ToList());
             }
 
@@ -1126,8 +1183,10 @@ namespace TaskManager
 
             //当前项目的设备code和设备的字典
             this.itemEquipmentMap = new Dictionary<string, EquipmentLite>();
-            this.itemEquipments.ForEach(item => {
-                if (!itemEquipmentMap.ContainsKey(item.Code)) {
+            this.itemEquipments.ForEach(item =>
+            {
+                if (!itemEquipmentMap.ContainsKey(item.Code))
+                {
                     itemEquipmentMap.Add(item.Code, item);
                 }
             });
@@ -1226,13 +1285,24 @@ namespace TaskManager
             }
         }
 
+        private void SampleTypeChangeHandler(object sender, EventArgs e)
+        {
+            string sampleTypeValue = this.titleComboxSampleType.Text.Trim();
+            if (this.sampleType.Equals(sampleTypeValue))
+            {
+                return;
+            }
+            this.sampleType = sampleTypeValue;
+            this.afterSampleTypeChanged(this.sampleType);
+        }
+
         private void VinChangeHandler(object sender, EventArgs e)
         {
             string vin = ((TitleCombox)GetControlByFieldName("Carvin")).Text;
 
             //更新nation信息
             this.updateNationalAfterVinChanged(vin);
-        
+
             this.afterVinChanged(vin);
         }
 
@@ -1240,35 +1310,34 @@ namespace TaskManager
         {
             if (string.IsNullOrWhiteSpace(vin))
             {
-                titleCombox25.SetItems(new List<string>());
-                titleCombox26.SetItems(new List<string>());
-
+                titleComboxNationalFive.SetItems(new List<string>());
+                titleComboxNationalSix.SetItems(new List<string>());
                 return;
             }
 
             string sql0 = $"select NationalFive,NationalSix from teststatistic where Carvin ='{vin}'";
-            List<string> list1 = new List<string>();
-            //list1 = null;
-            List<string> list2 = new List<string>();
-            //list2 = null;
+            List<string> nationalFiveItems = new List<string>();
+            List<string> nationalSixItems = new List<string>();
             foreach (DataRow row in SqlHelper.GetList(sql0).Rows)
             {
-                if (row[0].ToString() != "")
+                string nationalFive = row[0].ToString();
+                string nationalSix = row[1].ToString();
+                if (nationalFive != ""&& !nationalFiveItems.Contains(nationalFive))
                 {
-                    list1.Add(row[0].ToString());
+                    nationalFiveItems.Add(nationalFive);
                 }
-                if (row[1].ToString() != "")
+                if (nationalSix != ""&& !nationalSixItems.Contains(nationalSix))
                 {
-                    list2.Add(row[1].ToString());
+                    nationalSixItems.Add(nationalSix);
                 }
             }
-            if (list1 != null)
+            if (nationalFiveItems != null)
             {
-                titleCombox25.SetItems(list1);
+                titleComboxNationalFive.SetItems(nationalFiveItems);
             }
-            if (list2 != null)
+            if (nationalSixItems != null)
             {
-                titleCombox26.SetItems(list2);
+                titleComboxNationalSix.SetItems(nationalSixItems);
             }
         }
 
@@ -1286,7 +1355,7 @@ namespace TaskManager
                 }
                 taskCodes.Add(item.TaskCode);
             });
-            titleCombox11.SetItems(taskCodes);
+            titleComboxTaskCode.SetItems(taskCodes);
 
             //更新任务单号内容
             string taskCode = GetControlByFieldName("Taskcode").Value().Trim();
@@ -1340,6 +1409,37 @@ namespace TaskManager
             this.setComboxValue("FuelType", sample.FuelType);
             this.setComboxValue("FuelLabel", sample.Roz);
             this.setComboxValue("Tirepressure", sample.Tirepressure);
+
+            this.setComboxValue("CanisterCode", sample.CanisterCode);
+            this.setComboxValue("CanisterType", sample.CanisterType);
+            this.setComboxValue("CanisterProductor", sample.CanisterProductor);
+        }
+
+        private void afterSampleTypeChanged(string sampleType)
+        {
+            //vin列表重新加载
+            this.updateVinsAfterSampleTypeChanged(sampleType);
+
+            //vin清空，样本信息清空
+            this.resetAllSampleInfoValues();
+        }
+
+        private void updateVinsAfterSampleTypeChanged(string sampleType)
+        {
+            if (string.IsNullOrEmpty(sampleType))
+            {
+                this.vins = new List<string>();
+            }
+            //vin列表重新加载
+            else if (sampleType.Equals("整车"))
+            {
+                this.vins = this.carVins;
+            }
+            else if (sampleType.Equals("碳罐"))
+            {
+                this.vins = this.canisterVins;
+            }
+            titleComboxVin.SetItems(this.vins);
         }
 
         private void notExistVinHnadler()
@@ -1362,18 +1462,32 @@ namespace TaskManager
             this.setComboxValue("FuelType", "");
             this.setComboxValue("FuelLabel", "");
             this.setComboxValue("Tirepressure", "");
+
+            //碳罐
+            this.setComboxValue("CanisterCode", "");
+            this.setComboxValue("CanisterType", "");
+            this.setComboxValue("CanisterProductor", "");
         }
 
-        private void updateEquipmentUsageRecordrRemark() {
+        private void resetAllSampleInfoValues()
+        {
+            titleComboxVin.SetValue("");
+            this.resetSampleTitleComboxs();
+        }
+
+        private void updateEquipmentUsageRecordrRemark()
+        {
             List<EquipmentUsageRecordLite> needUpdateRemarkRecords = new List<EquipmentUsageRecordLite>();
 
             //保密级别由A变为其他的
             if (StringUtils.isEquals(oriTestStatisticEntity.Confidentiality, "A")
-                && !StringUtils.isEquals(testStatisticEntity.Confidentiality, "A")) {
+                && !StringUtils.isEquals(testStatisticEntity.Confidentiality, "A"))
+            {
                 testEquipments.ForEach(item =>
                 {
-                    if (item.Remark.Contains(ConstHolder.SECURITY_LEVEL_A_REAMRK_TEXT)) {
-                        item.Remark=item.Remark.Replace(ConstHolder.SECURITY_LEVEL_A_REAMRK_TEXT, "");
+                    if (item.Remark.Contains(ConstHolder.SECURITY_LEVEL_A_REAMRK_TEXT))
+                    {
+                        item.Remark = item.Remark.Replace(ConstHolder.SECURITY_LEVEL_A_REAMRK_TEXT, "");
                         needUpdateRemarkRecords.Add(item);
                     }
                 });
@@ -1405,7 +1519,8 @@ namespace TaskManager
                 return null;
             }
 
-            this.sampleOfVin = this.sampleQueryService.samplesOfVin(vin);
+            this.sampleType = titleComboxSampleType.Text.Trim();
+            this.sampleOfVin = this.sampleQueryService.samplesOfVin(vin, this.sampleType);
             if (sampleOfVin == null)
             {
                 return null;
@@ -1520,7 +1635,7 @@ namespace TaskManager
         {
             label4.Width = this.Width;
             label5.Width = this.Width;
-            label6.Width = this.Width;
+            labelTestParam.Width = this.Width;
             label7.Width = this.Width;
         }
 
@@ -1545,6 +1660,72 @@ namespace TaskManager
 
         private void label4_Click(object sender, EventArgs e)
         {
+
+        }
+
+        private void textBoxItemPrice_Enter(object sender, EventArgs e)
+        {
+            if (textBoxItemPrice.Text.Trim() == INPUT_ITEM_PRICE_TIP_TEXT)
+            {
+                textBoxItemPrice.Text = "";
+            }
+        }
+
+        private void textBoxItemPrice_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(textBoxItemPrice.Text))
+            {
+                textBoxItemPrice.Text = INPUT_ITEM_PRICE_TIP_TEXT;
+            }
+        }
+
+        private void btnAddPriceDetails_Click(object sender, EventArgs e)
+        {
+            string priceItem = titleComboxPriceItem.Text.Trim();
+            if (string.IsNullOrWhiteSpace(priceItem))
+            {
+                MessageBox.Show("费用明细名称为空！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
+                return;
+            }
+            string price = textBoxItemPrice.Text.Trim();
+            if (string.IsNullOrWhiteSpace(price) || StringUtils.Equals(price, INPUT_ITEM_PRICE_TIP_TEXT))
+            {
+                MessageBox.Show("费用为空！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
+                return;
+            }
+            double priceValue = 0;
+            if (!double.TryParse(price, out priceValue))
+            {
+                MessageBox.Show("您输入的费用格式有误！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //设置费用明细
+            string priceDetail = this.titleComboxPriceDetail.Text.Trim();
+            string itemPriceText = $"{priceItem}{priceValue}元";
+            if (priceDetail.Contains(itemPriceText))
+            {
+                MessageBox.Show("该费用明细已添加！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            string splitChar = ((string.IsNullOrWhiteSpace(priceDetail))|| (priceDetail.ElementAt(priceDetail.Length-1).Equals('；'))) ? "" : "；";
+            priceDetail = $"{priceDetail}{splitChar}{itemPriceText}";
+            this.titleComboxPriceDetail.SetValue(priceDetail);
+
+            //设置总价
+            string totalPrice = this.titleComboxProjectTotal.Text.Trim();
+            if (string.IsNullOrWhiteSpace(totalPrice))
+            {
+                totalPrice = "0";
+            }
+            double totalPriceValue = 0;
+            if (!double.TryParse(totalPrice, out totalPriceValue))
+            {
+                MessageBox.Show("费用总计的格式有误，请您尽快纠正！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            totalPriceValue += priceValue;
+            this.titleComboxProjectTotal.SetValue(totalPriceValue.ToString());
 
         }
     }

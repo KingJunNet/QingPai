@@ -16,16 +16,16 @@ namespace TaskManager.domain.valueobject
         public int Id { get; set; }
 
         /// <summary>
-        /// Id
-        /// </summary>
-        /// <value>The id.</value>
-        public String Vin { get; set; }
-
-        /// <summary>
-        /// Id
+        /// 样本类型
         /// </summary>
         /// <value>The id.</value>
         public string SampleType { get; set; }
+
+        /// <summary>
+        /// vin
+        /// </summary>
+        /// <value>The id.</value>
+        public string Vin { get; set; }
 
         /// <summary>
         /// Id
@@ -100,6 +100,25 @@ namespace TaskManager.domain.valueobject
         /// <value>The id.</value>
         public string Tirepressure { get; set; }
 
+        /// <summary>
+        /// Id
+        /// </summary>
+        /// <value>The id.</value>
+        public string CanisterCode { get; set; }
+
+        /// <summary>
+        /// Id
+        /// </summary>
+        /// <value>The id.</value>
+        public string CanisterType { get; set; }
+
+        /// <summary>
+        /// Id
+        /// </summary>
+        /// <value>The id.</value>
+        public string CanisterProductor { get; set; }
+
+
         public bool equalsBack(SampleBrief another)
         {
             return another.Vin.Equals(this.Vin) &&
@@ -120,8 +139,8 @@ namespace TaskManager.domain.valueobject
 
         public void copyFrom(SampleBrief another)
         {
-            this.Vin = another.Vin;
             this.SampleType = another.SampleType;
+            this.Vin = another.Vin;
             this.CarType = another.CarType;
             this.CarModel = another.CarModel;
             this.Producer = another.Producer;
@@ -134,20 +153,23 @@ namespace TaskManager.domain.valueobject
             this.FuelType = another.FuelType;
             this.Roz = another.Roz;
             this.Tirepressure = another.Tirepressure;
+
+            this.CanisterCode = another.CanisterCode;
+            this.CanisterType = another.CanisterType;
+            this.CanisterProductor = another.CanisterProductor;
         }
 
         public bool equals(SampleBrief another, out List<FieldChangedState> changedStates)
         {
             changedStates = new List<FieldChangedState>();
 
-            if (!another.Vin.Equals(this.Vin))
-            {
-                changedStates.Add(new FieldChangedState("Vin", this.Vin, another.Vin));
-            }
-
             if (!another.SampleType.Equals(this.SampleType))
             {
                 changedStates.Add(new FieldChangedState("样本类型", this.SampleType, another.SampleType));
+            }
+            if (!another.Vin.Equals(this.Vin))
+            {
+                changedStates.Add(new FieldChangedState("Vin", this.Vin, another.Vin));
             }
             if (!another.CarType.Equals(this.CarType))
             {
@@ -194,8 +216,35 @@ namespace TaskManager.domain.valueobject
                 changedStates.Add(new FieldChangedState("燃油标号", this.Roz, another.Roz));
             }
 
+            if (!another.CanisterCode.Equals(this.CanisterCode))
+            {
+                changedStates.Add(new FieldChangedState("碳罐编号", this.CanisterCode, another.CanisterCode));
+            }
+            if (!another.CanisterType.Equals(this.CanisterType))
+            {
+                changedStates.Add(new FieldChangedState("碳罐型号", this.CanisterType, another.CanisterType));
+            }
+            if (!another.CanisterProductor.Equals(this.CanisterProductor))
+            {
+                changedStates.Add(new FieldChangedState("碳罐生产厂", this.CanisterProductor, another.CanisterProductor));
+            }
+
 
             return Collections.isEmpty(changedStates);
+        }
+
+        public bool equalsSameSample(SampleBrief another)
+        {
+            if (!another.SampleType.Equals(this.SampleType))
+            {
+                return false;
+            }
+            if (!another.Vin.Equals(this.Vin))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

@@ -291,6 +291,7 @@ namespace TaskManager
 
             //配置项类型
             repoConfigItemName.Items.AddRange(Form1.ComboxDictionary["配置项名称"]);
+            repoConformanceName.Items.AddRange(Form1.ComboxDictionary["符合性判定"]);
 
             foreach (GridColumn col in _view.Columns)
             {
@@ -413,6 +414,8 @@ namespace TaskManager
                     col.ColumnEdit = repoEquipmentTraceabilityState;
                 else if (field.Format.Equals("配置项名称"))
                     col.ColumnEdit = repoConfigItemName;
+                else if (field.Format.Equals("符合性判定"))
+                    col.ColumnEdit = repoConformanceName;
             }
         }
 

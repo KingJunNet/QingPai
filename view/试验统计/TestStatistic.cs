@@ -37,11 +37,13 @@ namespace TaskManager
         private List<int> savedIds = new List<int>();
 
         private List<int> removedIds = new List<int>();
+        
+        public bool IsFromCustomTemplate { get; set; }
 
         private static readonly List<string> READ_ONLY_COLUMNS = new List<string> { "Carvin", "ItemBrief", "Taskcode", "Equipments",
                 "CarType","SampleModel","Producer","YNDirect","PowerType","TransmissionType",
                 "EngineModel","EngineProduct","Drivertype","FuelType","FuelLabel",
-              "RegistrationDate","question", "MoneySure"};
+              "RegistrationDate","question", "MoneySure","SampleType","CanisterCode","CanisterType","CanisterProductor"};
 
         public TestStatistic()
         {
@@ -565,7 +567,7 @@ namespace TaskManager
             {
                 Log.e("OpenEditForm");
                 var isAllocateTask = false;
-                var dialog = new TestEditDialog(FormTable.Edit, view, hand, fields, FormType.Test, isAllocateTask);
+                var dialog = new TestEditDialog(FormTable.Edit, view, hand, fields, FormType.Test, isAllocateTask,this.IsFromCustomTemplate);
                 result = dialog.ShowDialog();
                 if (result == DialogResult.OK)
                 {
@@ -607,10 +609,11 @@ namespace TaskManager
             if (id == null) {
                 return null;
             }
+            var sampleType = view.GetRowCellValue(hand, "SampleType");
             var vin = view.GetRowCellValue(hand, "Carvin");
             var itemType = view.GetRowCellValue(hand, "ItemType");
             var itemBrief = view.GetRowCellValue(hand, "ItemBrief");
-            TestStatisticEntity curTestStatistic = new TestStatisticEntity().lite(int.Parse(id.ToString()), vin.ToString(), itemType.ToString(), itemBrief.ToString());
+            TestStatisticEntity curTestStatistic = new TestStatisticEntity().lite(int.Parse(id.ToString()),sampleType.ToString(), vin.ToString(), itemType.ToString(), itemBrief.ToString());
 
             return curTestStatistic;
         }

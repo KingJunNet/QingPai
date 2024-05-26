@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using DevExpress.XtraEditors.Repository;
@@ -29,6 +30,8 @@ namespace TaskManager
         protected OperationType operation;
 
         protected int recordId;
+
+        protected bool isFromCustomTemplate = false;
 
         public BaseEditDialog(bool authorityEdit, GridView theView, int theHand, List<DataField> fields, FormType Type1)
         {
@@ -284,6 +287,13 @@ namespace TaskManager
         protected void SetControlField(TitleControl titleControl, DataField field)
         {
             var value = view.GetRowCellValue(hand, field.Eng);
+            
+            //自定义模版字段着重显示
+            bool fieldVisible = view.Columns[field.Eng].Visible;
+            if (this.isFromCustomTemplate && fieldVisible)
+            {
+                titleControl.ForeColor = Color.Red;
+            }
 
             titleControl.Title = field.Chs;
             titleControl.Tag = field.Eng;

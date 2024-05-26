@@ -26,56 +26,80 @@ namespace TaskManager.infrastructure.db
         /// </summary>
         private DataControl dbProvider;
 
-        private List<string> columns = new List<string> {  "department"
-      ,"ExperimentalSite"
-      ,"LocationNumber"
-      ,"Registrant"
-      ,"Taskcode"
-      ,"Taskcode2"
-      ,"CarType"
-      ,"ItemType"
-      ,"ItemBrief"
-      ,"TestStartDate"
-      ,"TestEndDate"
-      ,"Testtime"
-      ,"SampleModel"
-      ,"Producer"
-      ,"Carvin"
-      ,"Confidentiality"
-      ,"YNDirect"
-      ,"PowerType"
-      ,"TransmissionType"
-      ,"EngineModel"
-      ,"EngineProduct"
-      ,"Drivertype"
-      ,"Tirepressure"
-      ,"NationalFive"
-      ,"NationalSix"
-      ,"StartMileage"
-      ,"EndMileage"
-      ,"TotalMileage"
-      ,"FuelType"
-      ,"Oil"
-      ,"FuelLabel"
-      ,"StandardStage"
-      ,"YNcountry"
-      ,"ProjectPrice"
-      ,"ProjectTotal"
-      ,"PriceDetail"
-      ,"Finishstate"
-      ,"QualificationStatus"
-      ,"LogisticsInformation"
-      ,"Remark"
-      ,"Contacts"
-      ,"phoneNum"
-      ,"Email"
-      ,"MoneySure"
-      ,"RegistrationDate"
-      ,"question"
-      ,"Equipments"
-        ,"CreateUser"
-        ,"CreateTime"
-        ,"UpdateTime"};
+        private List<string> columns = new List<string> {
+                   "department"
+                  ,"ExperimentalSite"
+                  ,"LocationNumber"
+                  ,"Registrant"
+
+                  ,"ItemType"
+                  ,"ItemBrief"
+                  ,"Taskcode"
+                  ,"Taskcode2"
+                  ,"StandardStage"
+                  ,"YNcountry"
+                  ,"Confidentiality"
+                  ,"ProjectPrice"
+
+                  ,"SampleType"
+                  ,"Carvin"
+                  ,"CarType"
+                  ,"SampleModel"
+                  ,"Producer"
+                  ,"PowerType"
+                  ,"EngineModel"
+                  ,"EngineProduct"
+                  ,"YNDirect"
+                  ,"TransmissionType"
+                  ,"Drivertype"
+                  ,"FuelType"
+                  ,"FuelLabel"
+                  ,"Tirepressure"
+                  ,"CanisterCode"
+                  ,"CanisterType"
+                  ,"CanisterProductor"
+
+                  ,"CanisterTotalWeight"
+                  ,"ActivatedCarbonTotalWeight"
+                  ,"ActivatedCarbonVolumeActual"
+                  ,"CanisterEffectiveVolumeActual"
+                  ,"CanisterEffectiveVolumePublic"
+                  ,"CanisterEffectiveVolumeConformance"
+                  ,"CanisterEffectiveAdsorptionActual"
+                  ,"CanisterEffectiveAdsorptionPublic"
+                  ,"CanisterEffectiveAdsorptionConformance"
+                  ,"CanisterWorkingAbilityActual"
+                  ,"CanisterWorkingAbilityPublic"
+                  ,"CanisterWorkingAbilityConformance"
+
+                  ,"TestStartDate"
+                  ,"TestEndDate"
+                  ,"Testtime"
+                  ,"StartMileage"
+                  ,"EndMileage"
+                  ,"TotalMileage"
+                  ,"NationalFive"
+                  ,"NationalSix"
+                  ,"Oil"
+                  ,"QualificationStatus"
+                  ,"Finishstate"
+                  ,"Remark"
+                 
+                  ,"LogisticsInformation"
+                  ,"Contacts"
+                  ,"phoneNum"
+                  ,"Email"
+                  ,"ProjectTotal"
+                  ,"PriceDetail"
+                  ,"MoneySure"
+
+                  ,"RegistrationDate"
+                  ,"question"
+                  ,"Equipments"
+                  ,"CreateUser"
+                  ,"CreateTime"
+                  ,"UpdateTime"
+        };
 
         /// <summary>
         /// 保存实体
@@ -135,14 +159,16 @@ namespace TaskManager.infrastructure.db
         /// 查询指定的vin的最新的样本简要信息
         /// </summary>
         /// <param name="vin">vin</param>
+        /// <param name="sampleType">样本类型</param>
         /// <returns>样本简要信息</returns>
-        public SampleBrief selectLatestSampleVin(string vin)
+        public SampleBrief selectLatestSampleVin(string vin, string sampleType)
         {
             SampleBrief result = null;
 
-            string sql = $"SELECT TOP 1 * FROM TestStatistic WHERE Carvin=@vin ORDER BY ID DESC ";
+            string sql = $"SELECT TOP 1 * FROM TestStatistic WHERE Carvin=@vin AND SampleType=@SampleType ORDER BY ID DESC ";
             var dt = this.dbProvider.ExecuteQuery(sql, new[] {
-                    new SqlParameter("vin",vin)
+                    new SqlParameter("vin",vin),
+                    new SqlParameter("SampleType",sampleType)
                 }).Tables[0];
 
             if (dt.Rows.Count == 0)
@@ -159,7 +185,8 @@ namespace TaskManager.infrastructure.db
         /// </summary>
         /// <param name="ids">id集合</param>
         /// <returns>设备使用记录测试任务属性集合</returns>
-        public List<EquipmentUsageRecordTestPart> selectPartsByIds(List<int> ids) {
+        public List<EquipmentUsageRecordTestPart> selectPartsByIds(List<int> ids)
+        {
             List<EquipmentUsageRecordTestPart> results = new List<EquipmentUsageRecordTestPart>();
 
             string sql = $"SELECT ID,department,LocationNumber,Registrant,ItemBrief,TestStartDate,TestEndDate,SampleModel,Producer,Carvin,Finishstate,Confidentiality " +
@@ -197,9 +224,13 @@ namespace TaskManager.infrastructure.db
             sampleBrief.Roz = row["FuelLabel"].ToString().Trim();
             sampleBrief.Tirepressure = row["Tirepressure"].ToString().Trim();
 
+            sampleBrief.CanisterCode = DbHelper.dataColumn2StringNoNull(row["CanisterCode"]);
+            sampleBrief.CanisterType = DbHelper.dataColumn2StringNoNull(row["CanisterType"]);
+            sampleBrief.CanisterProductor = DbHelper.dataColumn2StringNoNull(row["CanisterProductor"]);
+
             return sampleBrief;
         }
 
-        
+
     }
 }

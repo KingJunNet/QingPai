@@ -117,7 +117,7 @@ namespace TaskManager.application.service
         public SampleOfVinViewModel samplesOfVin(string vin, string sampleType)
         {
             SampleBrief sampleFromSample = this.sampleRepository.selectByVin(vin,sampleType);
-            SampleBrief sampleFromStatistic = this.testStatisticRepository.selectLatestSampleVin(vin);
+            SampleBrief sampleFromStatistic = this.testStatisticRepository.selectLatestSampleVin(vin,sampleType);
             if (sampleFromSample == null && sampleFromStatistic == null)
             {
                 return null;

@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem1 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem2 = new DevExpress.Utils.ToolTipItem();
             this.ribbonControl1 = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.backstageViewControl1 = new DevExpress.XtraBars.Ribbon.BackstageViewControl();
             this.backstageViewClientControl2 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
@@ -521,9 +521,9 @@
             this.barRemainder.ImageOptions.LargeImage = global::TaskManager.Properties.Resources.warning_32x32;
             this.barRemainder.Name = "barRemainder";
             this.barRemainder.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large;
-            toolTipItem1.Text = "查看试验任务和设备状态提醒";
-            superToolTip1.Items.Add(toolTipItem1);
-            this.barRemainder.SuperTip = superToolTip1;
+            toolTipItem2.Text = "查看试验任务和设备状态提醒";
+            superToolTip2.Items.Add(toolTipItem2);
+            this.barRemainder.SuperTip = superToolTip2;
             this.barRemainder.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barRemainder_ItemClick);
             // 
             // barButtonItem1
@@ -670,6 +670,7 @@
             // 
             this.试验统计.Elements.AddRange(new DevExpress.XtraBars.Navigation.AccordionControlElement[] {
             this.accordionControlElement44});
+            this.试验统计.Expanded = true;
             this.试验统计.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("试验统计.ImageOptions.Image")));
             this.试验统计.Name = "试验统计";
             this.试验统计.Text = "试验统计";

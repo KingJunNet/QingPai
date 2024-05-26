@@ -213,10 +213,14 @@ namespace TaskManager
             if (this.baseTestStatistic == null) {
                 return;
             }
+
+            string baseSampleType = this.baseTestStatistic.SampleType;
             string baseVin = this.baseTestStatistic.CarVin;
             string baseItemBrief = this.baseTestStatistic.ItemBrief;
 
             //回显样本信息
+            this.sampleType = baseSampleType;
+            this.titleComboxSampleType.SetValue(baseSampleType);
             this.titleComboxVin.SetValue(baseVin);
             this.afterVinChanged(baseVin);
 
@@ -231,7 +235,9 @@ namespace TaskManager
             this.titleComboxStandard.SetValue("");
             this.titleComboxItemRemark.SetValue("");
 
-            //样本vin不可修改  
+            //样本类型和vin不可修改  
+            this.titleComboxSampleType.SetReadOnly(true);
+            this.titleComboxSampleType.OriginalReadOnly = true;
             this.titleComboxVin.SetReadOnly(true);
             this.titleComboxVin.OriginalReadOnly = true;
         }
@@ -273,6 +279,9 @@ namespace TaskManager
 
             this.initEquipmentCombox();
 
+            //避免vin下拉框初始化出错
+            this.sampleType = "";
+            titleComboxSampleType.SetTextChange(SampleTypeChangeHandler);
             titleComboxVin.SetTextChange(VinChangeHandler);
             titleComboxItemBrief.SetTextChange(itemChangeHandler);
             titleComboxGroup.SetTextChange(itemChangeHandler);
@@ -284,6 +293,8 @@ namespace TaskManager
             titleComboxEquipment.SetTextUpdate(EquipmentTextUpdate);
 
             //titleComboxVin.SetNotContentBackColor(Color.Red);
+            //样本类型只可选
+            //this.titleComboxSampleType.SetNotAllowInput();
         }
 
         private void initUsingEquipmentListView()
@@ -527,6 +538,10 @@ namespace TaskManager
             titleComboxFuelType.SetValue(sample.FuelType);
             titleComboxRoz.SetValue(sample.Roz);
             titleComboxTirepressure.SetValue(sample.Tirepressure);
+
+            titleComboxCanisterCode.SetValue(sample.CanisterCode);
+            titleComboxCanisterType.SetValue(sample.CanisterType);
+            titleComboxCanisterProductor.SetValue(sample.CanisterProductor);
             //
         }
 
@@ -576,6 +591,11 @@ namespace TaskManager
             titleComboxFuelType.SetValue("");
             titleComboxRoz.SetValue("");
             titleComboxTirepressure.SetValue("");
+
+            //碳罐
+            titleComboxCanisterCode.SetValue("");
+            titleComboxCanisterType.SetValue("");
+            titleComboxCanisterProductor.SetValue("");
         }
 
         private void resetAllSampleInfoValues()
@@ -593,6 +613,11 @@ namespace TaskManager
             titleComboxFuelType.SetValue("");
             titleComboxRoz.SetValue("");
             titleComboxTirepressure.SetValue("");
+
+            //碳罐
+            titleComboxCanisterCode.SetValue("");
+            titleComboxCanisterType.SetValue("");
+            titleComboxCanisterProductor.SetValue("");
         }
 
         private void itemChangeHandler(object sender, EventArgs e)
@@ -746,7 +771,7 @@ namespace TaskManager
                     this.isUpdateSample = true;
                 }
             }
-            //是否需要更新样本
+            //是否需要更新项目设备
             if (this.isNeedUpdateItemEquipments)
             {
                 DialogResult result = MessageBox.Show("检测到该项目的使用设备信息有变化，需要将该项目使用设备信息更新至数据库么", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -847,9 +872,8 @@ namespace TaskManager
             string locationNo = titleComboxLocationNo.Text;
             string uesr = titleComboxUser.Text;
 
-
-            string vin = titleComboxVin.Text;
             string sampleType = titleComboxSampleType.Text;
+            string vin = titleComboxVin.Text;
             string carType = titleComboxCarType.Text;
             string carModel = titleComboxCarModel.Text;
             string producer = titleComboxProducer.Text;
@@ -863,15 +887,19 @@ namespace TaskManager
             string roz = titleComboxRoz.Text;
             string tirepressure = titleComboxTirepressure.Text;
 
+            //碳罐信息
+            string canisterCode = titleComboxCanisterCode.Text.Trim();
+            string canisterType = titleComboxCanisterType.Text.Trim();
+            string canisterProductor = titleComboxCanisterProductor.Text.Trim();
+
             string itemType = titleComboxItemType.Text;
             string itemBrief = titleComboxItemBrief.Text;
-            string standard = titleComboxStandard.Text;
-            DateTime beginTime = titleComboxBeginTime.Date;
-            string itemRemark = titleComboxItemRemark.Text;
-
             string taskCode = titleComboxTaskCode.Text;
             string taskCodeRemark = titleComboxTaskCodeRemark.Text;
+            string standard = titleComboxStandard.Text;
             string securityLevel = titleComboxSecurityLevel.Text;
+            DateTime beginTime = titleComboxBeginTime.Date;
+            string itemRemark = titleComboxItemRemark.Text;
 
             DateTime nowTime = DateTime.Now;
             string registrationDate = nowTime.ToString("yyyy/MM/dd HH:mm", System.Globalization.DateTimeFormatInfo.InvariantInfo); ;
@@ -882,9 +910,10 @@ namespace TaskManager
              sampleType = sampleType, vin = vin, carType = carType, carModel = carModel,
              producer = producer, engineType = engineType, engineModel = engineModel, engineProducer = engineProducer,
              ynDirect = ynDirect, transType = transType, driverType = driverType, fuelType = fuelType, roz = roz, tirepressure=tirepressure,
-             itemType = itemType, itemBrief = itemBrief, standard = standard, beginTime = beginTime, itemRemark,
-             taskCode,taskCodeRemark, securityLevel,
-             registrationDate,this.itemEquipments,createUser,nowTime);
+             canisterCode=canisterCode,canisterType=canisterType,canisterProductor=canisterProductor,
+             itemType = itemType, itemBrief = itemBrief, taskCode, taskCodeRemark,
+             standard = standard, securityLevel=securityLevel, beginTime = beginTime, itemRemark=itemRemark,
+             registrationDate=registrationDate, this.itemEquipments,createUser= createUser, nowTime=nowTime);
 
             return testStatisticEntity;
         }
@@ -917,14 +946,22 @@ namespace TaskManager
         {
             //构造样本信息
             this.updatedSampleBrief = this.testStatisticEntity.sampleBriefInfo();
-            this.updatedSampleBrief.SampleType = titleComboxSampleType.Text;
+            //this.updatedSampleBrief.SampleType = titleComboxSampleType.Text;
             if (this.sampleOfVin == null || this.sampleOfVin.FromSampleTable == null)
             {
                 this.isAddSample = true;
                 return;
             }
-            this.updatedSampleBrief.Id = this.sampleOfVin.FromSampleTable.Id;
 
+            //样本类型和vin变化了，则为新增，这种情况理论上不存在
+            if (!this.sampleOfVin.FromSampleTable.equalsSameSample(this.updatedSampleBrief))
+            {
+                this.isAddSample = true;
+                return;
+            }
+
+            //更新
+            this.updatedSampleBrief.Id = this.sampleOfVin.FromSampleTable.Id;
             this.isNeedUpdateSample = !this.sampleOfVin.FromSampleTable.equals(this.updatedSampleBrief,out this.updateSampleChangedStates);
         }
 
@@ -959,7 +996,7 @@ namespace TaskManager
 
                 //更新内存中的样本数据
                 this.updateCurFromSampleTable();
-                CacheDataHandler.Instance.addVin(this.updatedSampleBrief.Vin);
+                CacheDataHandler.Instance.addVin(this.sampleType,this.updatedSampleBrief.Vin);
             }
             else if (isUpdateSample)
             {
