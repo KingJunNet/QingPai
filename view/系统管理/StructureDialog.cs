@@ -101,7 +101,7 @@ namespace TaskManager.编辑数据
             string firstLetteText = userName.GetFirstPinyin();
             string passwordText = "Catarc@123";
             string roleText = "普通成员";
-            string selectSql = $"insert into UserTable(userID, firstLetter, userName, password, company, section, office, department,role) valus ('000','{firstLetteText}','{userName}','{passwordText}','{Unit.Text}','{Section.Text}','{Office.Text}','{Office.Text}','{roleText}')";
+            string selectSql = $"insert into UserTable(userID, firstLetter, userName, password, company, section, office, department,role) VALUES ('000','{firstLetteText}','{userName}','{passwordText}','{Unit.Text}','{Section.Text}','{Office.Text}','{Group1.Text}','{roleText}')";
             SqlHelper.ExecuteNonquery(selectSql, CommandType.Text);
         }
 

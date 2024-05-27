@@ -645,7 +645,7 @@ namespace TaskManager
 
         private bool validateTestStatisticParam(out string errorInfo)
         {
-            errorInfo = this.testStatisticEntity.validate();
+            errorInfo = this.testStatisticEntity.validateCreated();
 
             return string.IsNullOrWhiteSpace(errorInfo);
         }

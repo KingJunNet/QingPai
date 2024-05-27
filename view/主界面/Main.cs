@@ -31,8 +31,8 @@ namespace TaskManager
     //4、首次进入判断更新
     public partial class Form1 : DevExpress.XtraBars.Ribbon.RibbonForm
     {
-        public static double curVersion = 2024.0004;
-        public static double newestVersion = 2024.0004;
+        public static double curVersion = 2024.0005;
+        public static double newestVersion = 2024.0005;
 
 
         public const string RootFolder = "轻排参数表服务器";
