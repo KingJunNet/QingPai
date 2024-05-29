@@ -209,9 +209,8 @@ namespace TaskManager
                 DateCol = "Name";
                 OrderCol = "Name";
 
-                ReadOnlyCols = new List<string> { "GroupName"
-                       };
-
+                ReadOnlyCols = new List<string> { "Name","Value","GroupName",
+                    "Moudle","Registrant"};
                 Add = true;
                 Edit = true;
                 Delete = true;

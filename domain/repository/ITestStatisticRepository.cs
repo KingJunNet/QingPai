@@ -34,5 +34,21 @@ namespace TaskManager.domain.repository
         /// <param name="ids">id集合</param>
         /// <returns>设备使用记录测试任务属性集合</returns>
         List<EquipmentUsageRecordTestPart> selectPartsByIds(List<int> ids);
+
+        /// <summary>
+        /// 通过记录的虚拟Id查询真实Id
+        /// </summary>
+        /// <param name="visualIds">虚拟id集合</param>
+        /// <returns>试验统计Id信息集合</returns>
+        List<TestStatisticIdInfo> selectIdInfosByVisualIds(List<string> visualIds);
+
+        /// <summary>
+        /// 更新指定字段的值
+        /// </summary>
+        /// <param name="ids">id集合</param>
+        /// <param name="fieldName">字段名称</param>
+        /// <param name="fieldValue">字段值</param>
+        /// <returns>void</returns>
+        void updateFieldValue(List<int> ids,string fieldName,string fieldValue);
     }
 }

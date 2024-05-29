@@ -206,6 +206,48 @@ namespace TaskManager.infrastructure.db
             return results;
         }
 
+        /// <summary>
+        /// 通过记录的虚拟Id查询真实Id
+        /// </summary>
+        /// <param name="visualIds">虚拟id集合</param>
+        /// <returns>试验统计Id信息集合</returns>
+        public List<TestStatisticIdInfo> selectIdInfosByVisualIds(List<string> visualIds)
+        {
+            List<TestStatisticIdInfo> results = new List<TestStatisticIdInfo>();
+
+            string sql = $"SELECT ID,question " +
+                $" FROM TestStatistic " +
+                $" WHERE question in {DbHelper.buildInCondition(visualIds)}";
+            SqlParameter[] sqlParameters = new SqlParameter[0];
+            var dt = this.dbProvider.ExecuteQuery(sql, sqlParameters).Tables[0];
+            if (dt.Rows.Count == 0)
+            {
+                return results;
+            }
+            foreach (DataRow row in dt.Rows)
+            {
+                results.Add(DataTranslator.dataRow2TestStatisticIdInfo(row));
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// 更新指定字段的值
+        /// </summary>
+        /// <param name="ids">id集合</param>
+        /// <param name="fieldName">字段名称</param>
+        /// <param name="fieldValue">字段值</param>
+        /// <returns>void</returns>
+        public void updateFieldValue(List<int> ids, string fieldName, string fieldValue)
+        {
+            string dbSetText = $"{fieldName}=@{fieldName}";
+            string sqlText = $"UPDATE TestStatistic SET {dbSetText} where ID in {DbHelper.buildInCondition(ids)}";
+            SqlParameter[] parameters = new SqlParameter[]
+              {new SqlParameter(fieldName,DbHelper.ValueOrDBNullIfNull(fieldValue)) };
+            dbProvider.ExecuteNonQuery(sqlText, parameters);
+        }
+
         private SampleBrief dataRow2SampleBrief(DataRow row)
         {
             SampleBrief sampleBrief = new SampleBrief();

@@ -207,7 +207,7 @@ namespace TaskManager
             }
             if (!string.IsNullOrWhiteSpace(groupValue))
             {
-                nowGroupNames = groupValue.Split(',').ToList();
+                nowGroupNames = groupValue.Split(',').ToList(); 
             }
 
             return nowGroupNames;

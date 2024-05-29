@@ -18,7 +18,11 @@ namespace TaskManager.controller
 {
     public sealed class ServerConfig
     {
-        public static readonly string TASK_MANAGER_APP_EXE_NAME = "TaskMangerSetup.msi";
+        public double curVersion = 2024.0006;
+        public double newestVersion = 2024.0006;
+
+        //public static readonly string TASK_MANAGER_APP_EXE_NAME = "TaskMangerSetup.msi";
+        public static readonly string TASK_MANAGER_APP_EXE_NAME_FORMAT = "TaskMangerSetup_{0}.msi";
         public static readonly string PROJECT_CODE_NAME = "轻排程序2.0.zip";
 
         public static readonly string LIMS_API_HOST_LAN = "http://10.12.48.2";
@@ -69,9 +73,14 @@ namespace TaskManager.controller
             get { return this.softFolder; }
         }
 
+        public string AppExeName
+        {
+            get { return string.Format(TASK_MANAGER_APP_EXE_NAME_FORMAT, newestVersion); }
+        }
+
         public string AppExePath
         {
-            get { return $"{this.softFolder}\\{TASK_MANAGER_APP_EXE_NAME}"; }
+            get { return $"{this.softFolder}\\{this.AppExeName}"; }
         }
 
         public string AppExeDirectory

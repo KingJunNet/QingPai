@@ -21,6 +21,8 @@ using LabSystem.DAL;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using TaskManager.common.error;
+using TaskManager.common.utils;
 using TaskManager.domain.valueobject;
 
 namespace TaskManager
@@ -498,6 +500,10 @@ namespace TaskManager
             catch (Exception ex)
             {
                 Log.e(ex.ToString());
+                if (ex is ValidateException&&((ValidateException)ex).Code== ErrorCode.TEST_STATISTIC_ADD_NOT_VALID_ERROR_CODE)
+                {
+                    MessageBox.Show($"{ex.Message}", "错误信息", MessageBoxButtons.OK);
+                }
             }
             finally
             {

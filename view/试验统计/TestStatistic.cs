@@ -16,12 +16,15 @@ using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using LabSystem.DAL;
+using TaskManager.application.Iservice;
+using TaskManager.common.error;
 using TaskManager.common.utils;
 using TaskManager.domain.entity;
 using TaskManager.domain.repository;
 using TaskManager.domain.service;
 using TaskManager.domain.valueobject;
 using TaskManager.infrastructure.db;
+using TaskManager.model;
 using Xfrog.Net;
 
 namespace TaskManager
@@ -30,6 +33,8 @@ namespace TaskManager
     {
         private CreateTaskForm createTaskForm;
 
+        private IEquipmentQueryService equipmentQueryService;
+
         private IEquipmentUsageRecordRepository equipmentUsageRecordRepository;
 
         private ITestStatisticRepository testStatisticRepository;
@@ -37,7 +42,9 @@ namespace TaskManager
         private List<int> savedIds = new List<int>();
 
         private List<int> removedIds = new List<int>();
-        
+
+        private List<TestStatisticUsageRecordsPair> addedTestStatisticUsageRecordsPairs = new List<TestStatisticUsageRecordsPair>();
+
         public bool IsFromCustomTemplate { get; set; }
 
         private static readonly List<string> READ_ONLY_COLUMNS = new List<string> { "Carvin", "ItemBrief", "Taskcode", "Equipments",
@@ -53,10 +60,12 @@ namespace TaskManager
         public TestStatistic(FormType formType, string selectedDept) : base(formType, selectedDept)
         {
             InitializeComponent();
+            this.equipmentQueryService = new EquipmentQueryService();
             this.equipmentUsageRecordRepository = new EquipmentUsageRecordRepository();
             this.testStatisticRepository = new TestStatisticRepository();
             this._control.cellValueChangedEvent = new TableControl.CellValueChangedEvent(afterCellValueChanged);
             this._control.saveDataSourceEvent = new TableControl.SaveDataSourceEvent(handleBeforeSaveDataSource);
+            this._control.afterSavedHandle = new TableControl.AfterSavedEvent(handleAfterSaved);
             this.beforeRemovedHandle = new BeforeRemovedHandle(beforeRemovedHandler);
         }
 
@@ -67,7 +76,7 @@ namespace TaskManager
             }
         }
 
-        private DataTable handleBeforeSaveDataSource(DataTable updateTable) {
+        private DataTable handleBeforeSaveDataSourceBack(DataTable updateTable) {
             DataRowCollection rows = updateTable.Rows;
 
             DateTime nowTime = DateTime.Now;
@@ -109,6 +118,160 @@ namespace TaskManager
             }
 
                 return updateTable;
+        }
+
+        private DataTable handleBeforeSaveDataSource(DataTable updateTable)
+        {
+            DataRowCollection rows = updateTable.Rows;
+
+            DateTime nowTime = DateTime.Now;
+            List<int> deletedRowIndexs = new List<int>();
+            List<EquipmentUsageRecordTestPart> updatedTestParts = new List<EquipmentUsageRecordTestPart>();
+            List<TestStatisticEntityDataRowPair> addedTestStatisticRowPaires = new List<TestStatisticEntityDataRowPair>();
+            for (int index = 0; index < rows.Count; index++)
+            {
+                DataRow row = rows[index];
+                if (row.RowState == DataRowState.Deleted)
+                {
+                    continue;
+                }
+                else if (row.RowState == DataRowState.Added)
+                {
+                    addedTestStatisticRowPaires.Add(this.dataRow2TestStatisticEntity(row,index+1));
+                }
+                else if (row.RowState == DataRowState.Modified)
+                {
+                    //修改的
+                    int id = int.Parse(row["ID"].ToString().Trim());
+                    if (this.savedIds.Contains(id))
+                    {
+                        deletedRowIndexs.Add(index);
+                    }
+                    else
+                    {
+                        EquipmentUsageRecordTestPart testPart = DataTranslator.dataRow2EquipmentUsageRecordTestPart(row);
+                        testPart.UpdateTime = nowTime;
+                        updatedTestParts.Add(testPart);
+                    }
+                }
+            }
+
+            //移除已经更新的数据行
+            deletedRowIndexs.ForEach(index => rows.RemoveAt(index));
+
+            //更新设备设备使用记录
+            this.updateEquipmentUsageRecordsByTestChanged(updatedTestParts);
+
+            //删除设备使用记录
+            if (!Collections.isEmpty(this.removedIds))
+            {
+                this.removedIds.ForEach(id =>
+                {
+                    this.equipmentUsageRecordRepository.removeByTestTaskId(id);
+                });
+                this.removedIds.Clear();
+            }
+
+            //为新增的试验统计构造设备使用记录
+            this.buildUsageRecordsForAddedTestStatistic(addedTestStatisticRowPaires);
+
+            return updateTable;
+        }
+
+        private void handleAfterSaved()
+        {
+            if (Collections.isEmpty(this.addedTestStatisticUsageRecordsPairs))
+            {
+                return;
+            }
+            //提取虚拟id
+            List<string> testStatisticVisualIds = this.addedTestStatisticUsageRecordsPairs.Select(item => item.TestStatistic.Question).Distinct().ToList();
+
+            //获取试验统计id信息
+            List < TestStatisticIdInfo > testStatisticIdInfos= this.testStatisticRepository.selectIdInfosByVisualIds(testStatisticVisualIds);
+
+            //遍历，补充设备使用记录的TestTaskId
+            List<EquipmentUsageRecordEntity> allEquipmentUsageRecordEntities = new List<EquipmentUsageRecordEntity>();
+            foreach (TestStatisticUsageRecordsPair pair in this.addedTestStatisticUsageRecordsPairs)
+            {
+                if (!testStatisticIdInfos.Exists(item => item.VisualId.Equals(pair.TestStatistic.Question)))
+                {
+                    continue;
+                }
+                int testStatisticId= testStatisticIdInfos.FirstOrDefault(item => item.VisualId.Equals(pair.TestStatistic.Question)).Id;
+                pair.EquipmentUsageRecords.ForEach(entity => entity.TestTaskId = testStatisticId);
+                allEquipmentUsageRecordEntities.AddRange(pair.EquipmentUsageRecords);
+            }
+
+            //设备使用记录入库
+            this.equipmentUsageRecordRepository.batchSave(allEquipmentUsageRecordEntities);
+
+            //恢复试验统计的question信息
+            List<int> ids = testStatisticIdInfos.Select(item => item.Id).Distinct().ToList();
+            this.testStatisticRepository.updateFieldValue(ids, "question","");
+
+            //清理
+            this.addedTestStatisticUsageRecordsPairs.Clear();
+        }
+
+        private TestStatisticEntityDataRowPair dataRow2TestStatisticEntity(DataRow row,int position)
+        {
+            //构造出试验统计
+            TestStatisticEntity testStatisticEntity = DataTranslator.dataRow2LiteTestStatisticEntity(row);
+            string errorInfo = testStatisticEntity.validateCreated();
+            if (!string.IsNullOrWhiteSpace(errorInfo))
+            {
+                string errorMsg = $"新增的实验统计记录(位置为第{position}行)参数有误：{errorInfo}，请先完善该信息，再进行保存！";
+                throw new ValidateException(ErrorCode.TEST_STATISTIC_ADD_NOT_VALID_ERROR_CODE, errorMsg);
+            }
+            //构造
+            TestStatisticEntityDataRowPair testStatisticEntityDataRowPair = new TestStatisticEntityDataRowPair(testStatisticEntity, row);
+
+            return testStatisticEntityDataRowPair;
+        }
+
+        private void buildUsageRecordsForAddedTestStatistic(List<TestStatisticEntityDataRowPair> addedTestStatisticRowPaires)
+        {
+            if (Collections.isEmpty(addedTestStatisticRowPaires))
+            {
+                return;
+            }
+
+            addedTestStatisticUsageRecordsPairs = new List<TestStatisticUsageRecordsPair>();
+            foreach (TestStatisticEntityDataRowPair item in addedTestStatisticRowPaires)
+            {
+                TestStatisticEntity testStatistic = item.Entity;
+                List<EquipmentLite> itemEquipments = this.equipmentQueryService.equipmentsOfItem(testStatistic.ItemBrief, testStatistic.Department, testStatistic.LocationNumber);
+                //不存在设备则不做处理
+                if (Collections.isEmpty(itemEquipments))
+                {
+                    item.DataRow["Equipments"] = "";
+                    continue;
+                }
+
+                //借助question字段存储临时id
+                string cacheTestStatisticId = Guid.NewGuid().ToString();
+                testStatistic.Question = cacheTestStatisticId;
+                string equipmentsContent = testStatistic.buildEquipmentsContent(itemEquipments);
+
+                //修改试验统计记录设备信息和临时id
+                item.DataRow["question"] = cacheTestStatisticId;
+                item.DataRow["Equipments"] = equipmentsContent;
+
+                //构造设备使用记录
+                List<EquipmentUsageRecordEntity> equipmentUsageRecordEntities = new List<EquipmentUsageRecordEntity>();
+                itemEquipments.ForEach(equipment =>
+                {
+                    EquipmentUsageRecordEntity entity = new EquipmentUsageRecordEntity()
+                    .defaultParam()
+                    .equipmentInfo(equipment)
+                    .fromTest(testStatistic);
+
+                    equipmentUsageRecordEntities.Add(entity);
+                });
+                TestStatisticUsageRecordsPair statisticUsageRecordsPair = new TestStatisticUsageRecordsPair(testStatistic, equipmentUsageRecordEntities);
+                addedTestStatisticUsageRecordsPairs.Add(statisticUsageRecordsPair);
+            }
         }
 
         private void updateEquipmentUsageRecordsByTestChanged(List<EquipmentUsageRecordTestPart> updatedTestParts) {

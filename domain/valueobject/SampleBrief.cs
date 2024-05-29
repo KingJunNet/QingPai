@@ -169,7 +169,7 @@ namespace TaskManager.domain.valueobject
             }
             if (!another.Vin.Equals(this.Vin))
             {
-                changedStates.Add(new FieldChangedState("Vin", this.Vin, another.Vin));
+                changedStates.Add(new FieldChangedState("VIN/样品编号", this.Vin, another.Vin));
             }
             if (!another.CarType.Equals(this.CarType))
             {

@@ -154,11 +154,13 @@
     <Compile Include="application\service\SampleQueryService.cs" />
     <Compile Include="application\viewmodel\EquipmentBreiefViewModel.cs" />
     <Compile Include="application\viewmodel\SampleOfVinViewModel.cs" />
+    <Compile Include="common\error\ErrorCode.cs" />
     <Compile Include="common\utils\Collections.cs" />
     <Compile Include="common\utils\DbHelper.cs" />
     <Compile Include="common\utils\Report.cs" />
     <Compile Include="common\utils\ReportPlus.cs" />
     <Compile Include="common\utils\StringUtils.cs" />
+    <Compile Include="common\error\ValidateException.cs" />
     <Compile Include="controller\ConfigStorage.cs" />
     <Compile Include="controller\ServerConfig.cs" />
     <Compile Include="controller\MaskLayer .cs">
@@ -172,6 +174,8 @@
     <Compile Include="domain\entity\Removed.cs" />
     <Compile Include="domain\service\RoleManager.cs" />
     <Compile Include="domain\service\LogHandler.cs" />
+    <Compile Include="domain\valueobject\TestStatisticIdInfo.cs" />
+    <Compile Include="model\TestStaticDataRowPair.cs" />
     <Compile Include="view\系统管理\AuthorityForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -62,5 +62,12 @@ namespace TaskManager.common.utils
             string condition = $"({string.Join(",", values)})";
             return condition;
         }
+
+        public static string buildInCondition(List<string> values)
+        {
+            //string n = "'test','name'";
+            string condition = $"('{string.Join("','", values)}')";
+            return condition;
+        }
     }
 }

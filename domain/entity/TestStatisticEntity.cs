@@ -462,7 +462,7 @@ namespace TaskManager.domain.entity
             this.Equipments = this.buildEquipmentsContent(equipments);
         }
 
-        private string buildEquipmentsContent(List<EquipmentLite> equipments)
+        public string buildEquipmentsContent(List<EquipmentLite> equipments)
         {
             string result = "";
 
@@ -623,7 +623,7 @@ namespace TaskManager.domain.entity
             }
             if (string.IsNullOrWhiteSpace(this.CarVin))
             {
-                return "VIN为空";
+                return "VIN/样品编号为空";
             }
             if (string.IsNullOrWhiteSpace(this.ItemType))
             {
@@ -665,7 +665,7 @@ namespace TaskManager.domain.entity
             }
             if (string.IsNullOrWhiteSpace(this.CarVin))
             {
-                return "VIN为空";
+                return "VIN/样品编号为空";
             }
             if (string.IsNullOrWhiteSpace(this.ItemType))
             {

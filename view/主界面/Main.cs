@@ -31,8 +31,8 @@ namespace TaskManager
     //4、首次进入判断更新
     public partial class Form1 : DevExpress.XtraBars.Ribbon.RibbonForm
     {
-        public static double curVersion = 2024.0005;
-        public static double newestVersion = 2024.0005;
+        //public static double curVersion = 2024.0005;
+        //public static double newestVersion = 2024.0005;
 
 
         public const string RootFolder = "轻排参数表服务器";
@@ -150,7 +150,7 @@ namespace TaskManager
             lblUser.Text = FormSignIn.CurrentUser.Describe;
             lblDepartment.Text = FormSignIn.CurrentUser.Department;
             lblRole.Text = FormSignIn.CurrentUser.Role;
-            lblVersion.Caption = "版本号:" + curVersion;
+            lblVersion.Caption = "版本号:" +ServerConfig.Instance.curVersion;
             //lblVersion.Caption = "版本号:20220428.01";
             lblServer.Caption = "服务器:" + Sql.ServerIP;
         }
@@ -670,9 +670,9 @@ namespace TaskManager
 
             var info = new FileInfo(exePath);
 
-            newestVersion = Sql.GetExpr1("select top 1 version as Expr1 from Version", 1000.00);
+            ServerConfig.Instance.newestVersion = Sql.GetExpr1("select top 1 version as Expr1 from AppVersionTable", 1000.00);
             var count = Sql.GetExpr1("select count(*) as Expr1 from FileTable where category='APP_EXE'", 0);
-            if (!(newestVersion > curVersion) || count <= 0) return;
+            if (!(ServerConfig.Instance.newestVersion > ServerConfig.Instance.curVersion) || count <= 0) return;
             //if (!(NEWEST_Version > VERSION)) return;
             YNinstall = true;
             //if (MessageBox.Show("更新方法：点击确定进行更新" +
@@ -687,7 +687,7 @@ namespace TaskManager
             //    YNinstall = false;
             //}
             MessageBox.Show("更新方法：点击确定进行更新" +
-                                "\n版本号：" + newestVersion, "有新版本请更新");
+                                "\n版本号：" + ServerConfig.Instance.newestVersion, "有新版本请更新");
             YNinstall = false;
             //var dialog = new FolderBrowserDialog { Description = "请选择下载目标文件夹" };
             //if (dialog.ShowDialog() != DialogResult.OK) return;
@@ -750,7 +750,7 @@ namespace TaskManager
             }
 
             MessageBox.Show("更新方法：点击确定进行更新" +
-                                "\n版本号：" + newestVersion, "有新版本请更新");
+                                "\n版本号：" + ServerConfig.Instance.newestVersion, "有新版本请更新");
             try
             {
                 string appFilePath = "";
@@ -787,16 +787,16 @@ namespace TaskManager
 
         private bool isNeedUpdateApp()
         {
-            var strsql = $"select top 1 version,userScope from Version";
+            var strsql = $"select top 1 version,userScope from AppVersionTable";
             var dt = Sql.ExecuteQuery(strsql).Tables[0];
             if (dt.Rows.Count == 0)
             {
                 return false;
             }
-            newestVersion = double.Parse(dt.Rows[0]["version"].ToString());
+            ServerConfig.Instance.newestVersion = double.Parse(dt.Rows[0]["version"].ToString());
             string userScope = DbHelper.dataColumn2String(dt.Rows[0]["userScope"]);
             var count = Sql.GetExpr1("select count(*) as Expr1 from FileTable where category='APP_EXE'", 0);
-            if ((curVersion >= newestVersion) || count <= 0)
+            if ((ServerConfig.Instance.curVersion >= ServerConfig.Instance.newestVersion) || count <= 0)
             {
                 return false;
             }
@@ -820,13 +820,13 @@ namespace TaskManager
         /// <param name="e"></param>
         private void btnSubmitUpdate_Click(object sender, EventArgs e)
         {
-            string value = XtraInputBox.Show("格式如：20170901.01", "请输入新版本号", curVersion.ToString());
-            if (!double.TryParse(value, out newestVersion))
+            string value = XtraInputBox.Show("格式如：20170901.01", "请输入新版本号", ServerConfig.Instance.curVersion.ToString());
+            if (!double.TryParse(value, out ServerConfig.Instance.newestVersion))
             {
                 MessageBox.Show("版本号格式不合法");
                 return;
             }
-            else if (newestVersion < curVersion)
+            else if (ServerConfig.Instance.newestVersion < ServerConfig.Instance.curVersion)
             {
                 MessageBox.Show("版本号比当前版本号小");
                 return;
@@ -850,13 +850,13 @@ namespace TaskManager
                 var stream = new FileStream(fileDialog.FileName, FileMode.Open);
                 var paras = new[] {
                         new SqlParameter("name",Path.GetFileName(filePath) ),
-                        new SqlParameter("foreignKey",(curVersion*100).ToString() ),
+                        new SqlParameter("foreignKey",(ServerConfig.Instance.curVersion*100).ToString() ),
                         new SqlParameter("file",stream.StreamToBytes())
                         };
                 var strsql = "insert into FileTable(name,[file],category,foreignKey) values( ";
                 strsql += "@name,@file,'APP_EXE',@foreignKey)";
                 Sql.ExecuteNonQuery(strsql, paras);
-                Sql.ExecuteNonQuery("update Version set [version]=" + newestVersion);
+                Sql.ExecuteNonQuery("update AppVersionTable set [version]=" + ServerConfig.Instance.newestVersion);
                 MessageBox.Show("更新包提交成功", "提示", MessageBoxButtons.OK);
             }
             catch (Exception ex)
@@ -1069,7 +1069,7 @@ namespace TaskManager
             {
                 case FileCategory.APP_EXE:
                     serverFileDirectory = ServerConfig.Instance.AppExeDirectory;
-                    fileName = ServerConfig.TASK_MANAGER_APP_EXE_NAME;
+                    fileName = ServerConfig.Instance.AppExeName;
                     break;
                 case FileCategory.PROJECT_CODE:
                     serverFileDirectory = ServerConfig.Instance.CodeDirectory;
@@ -1095,7 +1095,7 @@ namespace TaskManager
             {
                 case FileCategory.APP_EXE:
                     serverFileDirectory = ServerConfig.Instance.AppExeDirectory;
-                    fileName = ServerConfig.TASK_MANAGER_APP_EXE_NAME;
+                    fileName = ServerConfig.Instance.AppExeName;
                     break;
                 case FileCategory.PROJECT_CODE:
                     serverFileDirectory = ServerConfig.Instance.CodeDirectory;
